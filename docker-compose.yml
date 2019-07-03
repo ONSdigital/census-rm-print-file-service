@@ -1,0 +1,27 @@
+version: '3'
+services:
+  rabbitmq:
+    container_name: rabbitmq-print-file-it
+    image: rabbitmq:3.6.10-management
+    ports:
+    - "35672:5672"
+    - "49672:15672"
+
+  print-file-service:
+    container_name: print-file-service-it
+    image: eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
+    environment:
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+      - RABBIT_VIRTUALHOST=/
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - RABBIT_QUEUE=Action.Printer.it
+      - READINESS_FILE_PATH=/tmp/ready
+    external_links:
+      - rabbitmq
+    restart: always
+    healthcheck:
+      test: sh -c "[ -f /tmp/ready ]"
+      interval: 10s
+      retries: 10

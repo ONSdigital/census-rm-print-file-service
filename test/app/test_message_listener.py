@@ -4,7 +4,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from message_listener import TemplateNotFoundError, generate_print_row, print_message_callback, start_message_listener
+from app.message_listener import TemplateNotFoundError, generate_print_row, print_message_callback, \
+    start_message_listener
 
 
 def test_generate_print_row_valid_ICL1E(cleanup_test_files):
@@ -147,13 +148,13 @@ def test_valid_action_type_is_acked(cleanup_test_files):
     mock_channel.basic_ack.assert_called_with(delivery_tag=mock_method.delivery_tag)
 
 
-def test_start_message_listener_queues_ready():
+@patch('app.message_listener.RabbitContext')
+def test_start_message_listener_queues_ready(_patch_rabbit):
     # Given
-    with patch('message_listener.RabbitContext'):
-        readiness_queue = Queue()
+    readiness_queue = Queue()
 
-        # When
-        start_message_listener(readiness_queue)
+    # When
+    start_message_listener(readiness_queue)
 
     # Then
     assert readiness_queue.get(timeout=1)

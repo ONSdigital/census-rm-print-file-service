@@ -11,5 +11,11 @@ class Config:
     RABBIT_PASSWORD = os.getenv("RABBIT_PASSWORD", "guest")
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
+    SENT_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'sent_files/'))
 
     READINESS_FILE_PATH = Path(os.getenv('READINESS_FILE_PATH', 'print-file-service-ready'))
+
+    NAME = os.getenv("NAME", "census-rm-print-file-service")
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+    LOGGING_DATE_FORMAT = os.getenv("LOGGING_DATE_FORMAT", "%Y-%m-%dT%H:%M%s")
+    JSON_INDENT_LOGGING = os.getenv("JSON_INDENT_LOGGING")

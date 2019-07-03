@@ -6,7 +6,7 @@ from structlog import wrap_logger
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-class Readiness:
+class ReadinessFile:
     def __init__(self, readiness_file: Path):
         self.readiness_file = readiness_file
 

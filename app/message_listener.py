@@ -1,14 +1,15 @@
 import csv
 import functools
 import json
+import logging
 from pathlib import Path
 
-import structlog
+from structlog import wrap_logger
 
+from app.rabbit_context import RabbitContext
 from config import Config
-from rabbit_context import RabbitContext
 
-logger = structlog.get_logger()
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 def start_message_listener(readiness_queue):
@@ -28,14 +29,17 @@ def print_message_callback(ch, method, _properties, body, partial_file_path: Pat
         generate_print_row(body, partial_file_path)
     except TemplateNotFoundError:
         ch.basic_nack(delivery_tag=method.delivery_tag)
+        return
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
 def generate_print_row(json_body: str, partial_file_path: Path):
     print_message = json.loads(json_body)
+    logger.debug('Generating print file line for message', **print_message)
     template = get_template(print_message['actionType'])
     if not template:
-        logger.error('No template found for action type', action_type=print_message['actionType'])
+        logger.error('No template found for action type', action_type=print_message.get('actionType'),
+                     batch_id=print_message.get('batchId'))
         raise TemplateNotFoundError
 
     append_print_row(partial_file_path, print_message, template)
