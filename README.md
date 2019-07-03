@@ -1,4 +1,4 @@
-# Census RM Print File Service
+# Census RM Print File Service [![Build Status](https://travis-ci.com/ONSdigital/census-rm-print-file-service.svg?branch=master)](https://travis-ci.com/ONSdigital/census-rm-print-file-service)
 A lighter weight service to replace the [census-rm-actionexporter-service](https://github.com/ONSdigital/census-rm-actionexporter-service)
 
 ## Dependencies
