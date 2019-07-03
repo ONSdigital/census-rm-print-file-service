@@ -1,3 +1,5 @@
 .*
 test
 Makefile
+partial_files/
+sent_files/

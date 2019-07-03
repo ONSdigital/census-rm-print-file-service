@@ -1,7 +1,9 @@
 FROM python:3.7-alpine
 
-WORKDIR /app
-COPY . /app
 RUN pip install pipenv
-RUN pipenv install --system --deploy
+
+WORKDIR /app
 CMD ["python3", "run.py"]
+
+COPY . /app
+RUN pipenv install --system --deploy

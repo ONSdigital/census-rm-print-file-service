@@ -16,7 +16,7 @@ services:
       - RABBIT_VIRTUALHOST=/
       - RABBIT_USERNAME=guest
       - RABBIT_PASSWORD=guest
-      - RABBIT_QUEUE=Action.Printer.it
+      - RABBIT_QUEUE=Action.Printer
       - READINESS_FILE_PATH=/tmp/ready
     external_links:
       - rabbitmq

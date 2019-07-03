@@ -17,7 +17,7 @@ def process_complete_file(file: Path):
 def check_files(partial_files_dir: Path, sent_files_dir: Path):
     for print_file in partial_files_dir.rglob('*'):
         file_name_parts = print_file.name.split('.')
-        expected_number_of_lines = int(file_name_parts[2])
+        expected_number_of_lines = int(file_name_parts[3])
         actual_number_of_lines = sum(1 for _ in print_file.open())
 
         if expected_number_of_lines == actual_number_of_lines:
