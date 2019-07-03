@@ -31,7 +31,7 @@ def run_daemons():
             sleep(1)
 
 
-def run_in_daemon(target, name, process_manager, timeout=10) -> multiprocessing.Process:
+def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.Process:
     readiness_queue = process_manager.Queue()
     daemon = multiprocessing.Process(target=target, args=[readiness_queue], daemon=True, name=name)
     daemon.start()

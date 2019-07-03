@@ -1,14 +1,14 @@
 version: '3'
 services:
   rabbitmq:
-    container_name: rabbitmq-print-file-it
+    container_name: dev-print-file-service-rabbitmq
     image: rabbitmq:3.6.10-management
     ports:
     - "35672:5672"
     - "49672:15672"
 
   print-file-service:
-    container_name: print-file-service-it
+    container_name: dev-print-file-service
     image: eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
     environment:
       - RABBIT_HOST=rabbitmq
