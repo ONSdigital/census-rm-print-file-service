@@ -11,7 +11,7 @@ make install
 ## Configuration
 The service is configured with environment variables, see [config.py](config.py).
 
-To development defaults can be used by setting `ENVIRONMENT=DEV`.
+Development defaults can be used by setting `ENVIRONMENT=DEV`.
 
 ### Logging config
 The general log level is set with `LOG_LEVEL`.
