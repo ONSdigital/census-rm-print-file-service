@@ -12,3 +12,5 @@ codecov = "*"
 [packages]
 pika = "*"
 structlog = "*"
+pgpy = "*"
+paramiko = "*"

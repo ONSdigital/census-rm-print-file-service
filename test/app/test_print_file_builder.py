@@ -81,7 +81,7 @@ def test_generate_print_row_template_not_found(cleanup_test_files):
         "addressLine2": "Duffryn",
         "townName": "Newport",
         "postcode": "NPXXXX",
-        "packCode": "PC_ICL_1"
+        "packCode": "P_IC_ICL1"
     })
 
     # When/Then

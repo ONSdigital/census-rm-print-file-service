@@ -5,7 +5,7 @@ from time import sleep
 
 from structlog import wrap_logger
 
-from app.file_sender import start_file_sender
+from app.complete_file_processor import start_file_sender
 from app.message_listener import start_message_listener
 from app.readiness_file import ReadinessFile
 from config import Config

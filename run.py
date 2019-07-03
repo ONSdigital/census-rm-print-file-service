@@ -20,6 +20,8 @@ def run():
 def initialise_directories():
     Config.PARTIAL_FILES_DIRECTORY.mkdir(exist_ok=True)
     Config.SENT_FILES_DIRECTORY.mkdir(exist_ok=True)
+    Config.ENCRYPTED_FILES_DIRECTORY.mkdir(exist_ok=True)
+    Config.MANIFEST_FILES_DIRECTORY.mkdir(exist_ok=True)
 
 
 def logger_initial_config(

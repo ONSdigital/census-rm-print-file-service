@@ -22,7 +22,7 @@ def test_invalid_action_types_are_nacked(cleanup_test_files):
         "addressLine2": "Duffryn",
         "townName": "Newport",
         "postcode": "NPXXXX",
-        "packCode": "PC_ICL_1"
+        "packCode": "P_IC_ICL1"
     })
 
     # When
@@ -51,7 +51,7 @@ def test_valid_action_type_is_acked(cleanup_test_files):
         "addressLine2": "Duffryn",
         "townName": "Newport",
         "postcode": "NPXXXX",
-        "packCode": "PC_ICL_1"
+        "packCode": "P_IC_ICL1"
     })
 
     # When

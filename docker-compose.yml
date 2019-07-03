@@ -7,6 +7,16 @@ services:
     - "35672:5672"
     - "49672:15672"
 
+  sftp:
+    container_name: dev-print-file-service-sftp
+    image: atmoz/sftp
+    volumes:
+      - ~/Documents/sftp:/home/centos/sftp
+      - ./dummy_keys/id_rsa.pub:/home/centos/.ssh/keys/id_rsa.pub:ro
+    ports:
+      - "2222:22"
+    command: centos::1001:::sftp/ppd:sftp/qm
+
   print-file-service:
     container_name: dev-print-file-service
     image: eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
@@ -18,6 +28,9 @@ services:
       - RABBIT_PASSWORD=guest
       - RABBIT_QUEUE=Action.Printer
       - READINESS_FILE_PATH=/tmp/ready
+      - ENVIRONMENT=DEV
+      - PPD_SFTP_DIRECTORY=sftp/ppd/
+      - QM_SFTP_DIRECTORY=sftp/qm/
     external_links:
       - rabbitmq
     restart: always
@@ -25,3 +38,6 @@ services:
       test: sh -c "[ -f /tmp/ready ]"
       interval: 10s
       retries: 10
+    depends_on:
+      - rabbitmq
+      - sftp
