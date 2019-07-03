@@ -11,12 +11,12 @@ class ReadinessFile:
         self.readiness_file = readiness_file
 
     def __enter__(self):
-        logger.debug('Creating readiness file')
+        logger.debug('Creating readiness file', readiness_file_path=str(self.readiness_file))
         open(self.readiness_file, 'w').close()
 
     def __exit__(self, *args):
-        logger.debug('Removing readiness file')
+        logger.debug('Removing readiness file', readiness_file_path=str(self.readiness_file))
         try:
             self.readiness_file.unlink()
         except FileNotFoundError:
-            logger.error('Readiness file not found on exit')
+            logger.error('Readiness file not found on exit', readiness_file_path=str(self.readiness_file))

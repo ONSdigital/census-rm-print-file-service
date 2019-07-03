@@ -118,6 +118,7 @@ def test_invalid_action_types_are_nacked(cleanup_test_files):
 
     # Then
     mocked_channel.basic_nack.assert_called_with(delivery_tag=mocked_method.delivery_tag)
+    mocked_channel.basic_ack.assert_not_called()
 
 
 def test_valid_action_type_is_acked(cleanup_test_files):
