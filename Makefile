@@ -10,6 +10,9 @@ lint:
 test: check lint
 	pipenv run pytest test --cov app --cov-report term-missing
 
+run:
+	ENVIRONMENT=DEV pipenv run python run.py
+
 build: install test
 	docker build . -t eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
 

@@ -8,21 +8,31 @@ Install with
 make install
 ```
 
-## Tests
-Run unit tests with
-```bash
-make test
-```
+## Configuration
+The service is configured with environment variables, see [config.py](config.py).
 
-This will also lint and check dependency package safety
+To development defaults can be used by setting `ENVIRONMENT=DEV`.
 
-## Docker image
+### Logging config
+The general log level is set with `LOG_LEVEL`.
+There is a separate setting for pika (rabbit client library) logging, `LOG_LEVEL_PIKA` which may be useful for diagnosing messing issues.
+
+## Docker
 Test and build the docker image with
 ```bash
 make build
 ```
 
-A docker compose file is also provided to run with a rabbit service, start with
+## Run
+
+### Locally
+Run locally with dev default config with
+```bash
+make run
+```
+
+### Docker Compose
+A docker compose file is also provided which will run the docker image along with a rabbit service, start with
 ```bash
 make up
 ```
@@ -31,3 +41,12 @@ and bring them down with
 ```bash
 make down
 ```
+
+## Tests
+Run unit tests with
+```bash
+make test
+```
+
+This will also lint and check dependency package safety
+

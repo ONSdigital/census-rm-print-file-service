@@ -4,11 +4,13 @@ from time import sleep
 
 from structlog import wrap_logger
 
+from config import Config
+
 logger = wrap_logger(logging.getLogger(__name__))
 
 
 def process_complete_file(file: Path):
-    # TODO Encrypt, create manifest, sftp
+    # TODO Encrypt, create manifest, send to sftp, delete partial file
     logger.info(f'doing the file stuff on {file}')
 
 
@@ -26,12 +28,9 @@ def check_files(partial_files_dir: Path, sent_files_dir: Path):
 
 
 def start_file_sender(readiness_queue):
-    logger.info('Starting file sender')
-    sent_files_dir = Path('sent_files')
-    complete_files_dir = Path('complete_files')
-
+    # TODO Connect to SFTP etc. before readying
     readiness_queue.put(True)
     logger.info('Started file sender')
     while True:
-        check_files(complete_files_dir, sent_files_dir)
+        check_files(Config.PARTIAL_FILES_DIRECTORY, Config.SENT_FILES_DIRECTORY)
         sleep(2)

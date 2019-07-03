@@ -20,9 +20,8 @@ def run_daemons():
     # File sender is stubbed
     file_sender_daemon = run_in_daemon(start_file_sender, 'file-sender', process_manager)
 
-    logger.info('Successfully started print service!')
-
     with ReadinessFile(Config.READINESS_FILE_PATH):
+        logger.info('Started print service')
         while True:
             if not file_sender_daemon.is_alive():
                 raise RuntimeError('File sender died')
