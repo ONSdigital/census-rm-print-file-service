@@ -103,5 +103,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-.idea
-.vscode
+.idea/
+.vscode/
+
+partial_files/
+sent_files/

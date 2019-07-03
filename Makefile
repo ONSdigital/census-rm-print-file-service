@@ -8,7 +8,7 @@ lint:
 	pipenv run flake8
 
 test: check lint
-	pipenv run pytest tests
+	pipenv run pytest test --cov . --cov-report term-missing
 
 build: install test
 	docker build . -t eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
