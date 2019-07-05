@@ -49,7 +49,6 @@ logger = wrap_logger(logging.getLogger(__name__))
 
 
 def process_complete_file(file: Path, pack_code):
-    # TODO Encrypt, create manifest, send to sftp, delete partial file
     message = file.read_text()
     # First encrypt the file and write it to encrypted directory
     logger.info('Encrypting file', file_name=file.name)
@@ -71,7 +70,7 @@ def process_complete_file(file: Path, pack_code):
     copy_files_to_sftp(file_paths)
 
     # Move files to sent directory
-    logger.info('Moving to send files directory', file_paths=file_paths)
+    logger.info('Moving to sent files directory', file_paths=file_paths)
     for sent_file in file_paths:
         sent_file.replace(Config.SENT_FILES_DIRECTORY.joinpath(sent_file.name))
 
@@ -99,10 +98,11 @@ def start_file_sender(readiness_queue):
 
 def copy_files_to_sftp(file_paths: Collection[Path]):
     with sftp.SftpUtility() as sftp_client:
-        print(f'Copying files to SFTP remote {sftp_client.sftp_directory}')
+        logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
         for file_path in file_paths:
             sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
-        print(f'All {len(file_paths)} files successfully written to {sftp_client.sftp_directory}')
+        logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
+                    sftp_directory=sftp_client.sftp_directory)
 
 
 def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, productpack_code: str):

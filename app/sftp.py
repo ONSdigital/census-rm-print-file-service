@@ -1,6 +1,12 @@
+import logging
+
 import paramiko
+from structlog import wrap_logger
 
 from config import Config
+
+
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 class SftpUtility:
@@ -21,7 +27,7 @@ class SftpUtility:
         self._sftp_client = self.ssh_client.open_sftp()
         if not self.sftp_directory_exists:
             self._sftp_client.mkdir(self.sftp_directory)
-            print(f'Created new directory on SFTP remote {self.sftp_directory}')
+            logger.info('Created new directory on SFTP remote', sftp_directory=self.sftp_directory)
         self._sftp_client.chdir(self.sftp_directory)
         return self
 
