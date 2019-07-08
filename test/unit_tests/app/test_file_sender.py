@@ -8,7 +8,7 @@ import paramiko
 
 from app.file_sender import copy_files_to_sftp, generate_manifest_file, process_complete_file
 
-resource_file_path = Path(__file__).parents[1].joinpath('resources')
+resource_file_path = Path(__file__).parents[2].joinpath('resources')
 
 
 def test_copy_files_to_sftp():
@@ -39,8 +39,14 @@ def test_processing_complete_file(cleanup_test_files):
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
 
+    iso_mocked = mock_time.strftime("%Y-%m-%dT%H-%M-%S")
+
     assert put_sftp_call_kwargs[0]['local_path'] == str(
-        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{mock_time.strftime("%Y-%m-%dT%H-%M-%S")}.csv'))
+        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.csv'))
+    assert put_sftp_call_kwargs[0]['filename'] == f'P_IC_ICL1_{iso_mocked}.csv'
+    assert put_sftp_call_kwargs[1]['local_path'] == str(
+        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.manifest'))
+    assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'
 
 
 def test_generating_manifest_file_ppd(cleanup_test_files):

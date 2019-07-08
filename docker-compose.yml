@@ -37,7 +37,7 @@ services:
       - SFTP_PPD_DIRECTORY=ppd/
       - SFTP_QM_DIRECTORY=qm/
       - OUR_PUBLIC_KEY_PATH=/app/dummy_keys/our_dummy_public.asc
-      - OTHER_PUBLIC_KEY_PATH=/app/dummy_keys/supplier_dummy_public.asc
+      - OTHER_PUBLIC_KEY_PATH=/app/dummy_keys/dummy_qm_supplier_public_key.asc
     external_links:
       - dev-print-file-service-rabbitmq
       - dev-print-file-service-sftp

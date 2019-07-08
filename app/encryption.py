@@ -1,5 +1,6 @@
 import pgpy
 
+from app.file_sender import PPD_SUPPLIER, QM_SUPPLIER
 from config import Config
 
 
@@ -7,10 +8,16 @@ class EncryptionFailedException(Exception):
     pass
 
 
-def pgp_encrypt_message(message):
+SUPPLIER_TO_KEY_PATH = {
+    QM_SUPPLIER: Config.QM_SUPPLIER_PUBLIC_KEY_PATH,
+    PPD_SUPPLIER: Config.PPD_SUPPLIER_PUBLIC_KEY_PATH
+}
+
+
+def pgp_encrypt_message(message, supplier):
     # A key can be loaded from a file, like so:
     our_key, _ = pgpy.PGPKey.from_file(Config.OUR_PUBLIC_KEY_PATH)
-    other_key, _ = pgpy.PGPKey.from_file(Config.OTHER_PUBLIC_KEY_PATH)
+    supplier_key, _ = pgpy.PGPKey.from_file(SUPPLIER_TO_KEY_PATH[supplier])
 
     # this creates a standard message from text
     # it will also be compressed, by default with ZIP DEFLATE, unless otherwise specified
@@ -21,7 +28,7 @@ def pgp_encrypt_message(message):
 
     # encrypt the message to multiple recipients
     encrypted_message_v1 = our_key.encrypt(text_message, cipher=cipher, sessionkey=sessionkey)
-    encrypted_message_v2 = other_key.encrypt(encrypted_message_v1, cipher=cipher, sessionkey=sessionkey)
+    encrypted_message_v2 = supplier_key.encrypt(encrypted_message_v1, cipher=cipher, sessionkey=sessionkey)
 
     # do at least this as soon as possible after encrypting to the final recipient
     del sessionkey

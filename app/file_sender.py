@@ -51,7 +51,7 @@ def process_complete_file(file: Path, pack_code):
     supplier = PACK_CODE_TO_SUPPLIER[pack_code]
     # First encrypt the file and write it to encrypted directory
     logger.info('Encrypting file', file_name=file.name)
-    encrypted_message = pgp_encrypt_message(message)
+    encrypted_message = pgp_encrypt_message(message, supplier)
     filename = f'{pack_code}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
     print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv')
     logger.info('Writing encrypted file', file_name=print_file.name)
