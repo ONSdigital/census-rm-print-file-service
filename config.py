@@ -26,7 +26,8 @@ class Config:
     SFTP_USERNAME = os.getenv('SFTP_USERNAME')
     SFTP_KEY_FILENAME = os.getenv('SFTP_KEY_FILENAME')
     SFTP_PASSPHRASE = os.getenv('SFTP_PASSPHRASE')
-    SFTP_DIRECTORY = os.getenv('SFTP_DIRECTORY')
+    SFTP_PPD_DIRECTORY = os.getenv('SFTP_PPD_DIRECTORY')
+    SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY')
 
 
 class DevConfig(Config):
@@ -39,9 +40,17 @@ class DevConfig(Config):
     SFTP_USERNAME = os.getenv('SFTP_USERNAME', 'centos')
     SFTP_KEY_FILENAME = os.getenv('SFTP_KEY_FILENAME', 'dummy_keys/dummy_rsa')
     SFTP_PASSPHRASE = os.getenv('SFTP_PASSPHRASE', 'secret')
-    SFTP_DIRECTORY = os.getenv('SFTP_DIRECTORY', 'Documents/sftp/print_service')
+    SFTP_PPD_DIRECTORY = os.getenv('SFTP_PPD_DIRECTORY', 'ppd/')
+    SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY', 'qm/')
+
+
+class TestConfig(DevConfig):
+    RABBIT_PORT = os.getenv('RABBIT_PORT', '35672')
+    SFTP_PORT = os.getenv('SFTP_PORT', '2222')
 
 
 # Use dev defaults in dev environment
 if os.getenv('ENVIRONMENT') == 'DEV':
     Config = DevConfig
+elif os.getenv('ENVIRONMENT') == 'TEST':
+    Config = TestConfig

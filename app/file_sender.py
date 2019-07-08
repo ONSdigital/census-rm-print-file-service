@@ -1,41 +1,21 @@
-import hashlib
-import os
-from typing import Collection
-
-import app.sftp as sftp
 import json
 import logging
 from datetime import datetime
 from pathlib import Path
 from time import sleep
+from typing import Collection
 
+import hashlib
 from structlog import wrap_logger
 
+import app.sftp as sftp
 from app.encryption import pgp_encrypt_message
 from config import Config
 
+QM_SUPPLIER = 'QM'
+PPD_SUPPLIER = 'PPD'
 
 PRODUCTPACK_CODE_TO_DESCRIPTION = {
-    'D_FD_H1': 'Household Questionnaire pack for England',
-    'D_FD_H2': 'Household Questionnaire pack for Wales (English)',
-    'D_FD_H2W': 'Household Questionnaire pack for Wales (Welsh)',
-    'D_FD_H4': 'Household Questionnaire pack for Northern Ireland (English)',
-    'D_FD_HC1': 'Continuation Questionnaire pack for England',
-    'D_FD_HC2': 'Continuation Questionnaire pack for Wales (English)',
-    'D_FD_HC2W': 'Continuation Questionnaire pack for Wales (Welsh)',
-    'D_FD_HC4': 'Continuation Questionnaire pack for Northern Ireland (English)',
-    'D_FD_I1': 'Individual Questionnaire pack for England',
-    'D_FD_I2': 'Individual Questionnaire pack for Wales (English)',
-    'D_FD_I2W': 'Individual Questionnaire pack for Wales (Welsh)',
-    'D_FD_I4': 'Individual Questionnaire pack for Northern Ireland (English)',
-    'D_CCS_CH1': 'CCS Interviewer Household Questionnaire for England and Wales',
-    'D_CCS_CH2W': 'CCS Interviewer Household Questionnaire for Wales (Welsh)',
-    'D_CCS_CHP1': 'CCS Postback Questionnaire for England and Wales (English)',
-    'D_CCS_CHP2W': 'CCS Postback Questionnaire for Wales (Welsh)',
-    'D_CCS_CCP1': 'CCS Postback Continuation Questionnaire for England & Wales',
-    'D_CCS_CCP2W': 'CCS Postback Continuation Questionnaire for Wales (Welsh)',
-    'D_CCS_CCE1': 'CCS Interviewer CE Manager for England & Wales (English)',
-    'D_CCS_CCE2W': 'CCS Interviewer CE Manager for Wales (Welsh)',
     'P_IC_ICL1': 'Initial contact letter households - England',
     'P_IC_ICL2': 'Initial contact letter households - Wales',
     'P_IC_ICL4': 'Initial contact letter households - Northern Ireland',
@@ -44,12 +24,27 @@ PRODUCTPACK_CODE_TO_DESCRIPTION = {
     'P_IC_H4': 'Initial contact questionnaire households - Northern Ireland'
 }
 
+PACK_CODE_TO_SUPPLIER = {
+    'P_IC_ICL1': PPD_SUPPLIER,
+    'P_IC_ICL2': PPD_SUPPLIER,
+    'P_IC_ICL4': PPD_SUPPLIER,
+    'P_IC_H1': QM_SUPPLIER,
+    'P_IC_H2': QM_SUPPLIER,
+    'P_IC_H4': QM_SUPPLIER
+}
+
+SUPPLIER_TO_SFTP_DIRECTORY = {
+    QM_SUPPLIER: Config.SFTP_QM_DIRECTORY,
+    PPD_SUPPLIER: Config.SFTP_PPD_DIRECTORY
+}
+
 
 logger = wrap_logger(logging.getLogger(__name__))
 
 
 def process_complete_file(file: Path, pack_code):
     message = file.read_text()
+    supplier = PACK_CODE_TO_SUPPLIER[pack_code]
     # First encrypt the file and write it to encrypted directory
     logger.info('Encrypting file', file_name=file.name)
     encrypted_message = pgp_encrypt_message(message)
@@ -65,9 +60,11 @@ def process_complete_file(file: Path, pack_code):
     generate_manifest_file(manifest_file, print_file, pack_code)
     file_paths = [print_file, manifest_file]
 
+
+
     # Send files to sftp
     logger.info('Sending files to SFTP', file_paths=file_paths)
-    copy_files_to_sftp(file_paths)
+    copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
 
     # Move files to sent directory
     logger.info('Moving to sent files directory', file_paths=file_paths)
@@ -77,14 +74,12 @@ def process_complete_file(file: Path, pack_code):
 
 def check_files(partial_files_dir: Path):
     for print_file in partial_files_dir.rglob('*'):
-        file_name_parts = print_file.name.split('.')
-        expected_number_of_lines = int(file_name_parts[3])
-        pack_code = file_name_parts[1]
+        action_type, pack_code, batch_id, batch_quantity = print_file.name.split('.')
         actual_number_of_lines = sum(1 for _ in print_file.open())
-        if expected_number_of_lines == actual_number_of_lines:
+        if int(batch_quantity) == actual_number_of_lines:
             process_complete_file(print_file, pack_code)
             logger.info('Removing unencrypted file', file_name=print_file.name)
-            os.remove(print_file.as_posix())
+            print_file.unlink()
 
 
 def start_file_sender(readiness_queue):
@@ -96,8 +91,8 @@ def start_file_sender(readiness_queue):
         sleep(2)
 
 
-def copy_files_to_sftp(file_paths: Collection[Path]):
-    with sftp.SftpUtility() as sftp_client:
+def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
+    with sftp.SftpUtility(remote_directory) as sftp_client:
         logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
         for file_path in file_paths:
             sftp_client.put_file(local_path=str(file_path), filename=file_path.name)

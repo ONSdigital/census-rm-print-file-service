@@ -7,23 +7,35 @@ services:
     - "35672:5672"
     - "49672:15672"
 
+  sftp:
+      container_name: dev-print-file-service-sftp
+      image: atmoz/sftp
+      volumes:
+        - ~/Documents/sftp:/home/centos/
+        - ./dummy_keys/dummy_rsa.pub:/home/centos/.ssh/keys/dummy_rsa.pub:ro
+      ports:
+        - "2222:22"
+      command: centos::1001:::ppd:qm
+
+
   print-file-service:
     container_name: dev-print-file-service
     image: eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
     environment:
-      - RABBIT_HOST=rabbitmq
+      - RABBIT_HOST=dev-print-file-service-rabbitmq
       - RABBIT_PORT=5672
       - RABBIT_VIRTUALHOST=/
       - RABBIT_USERNAME=guest
       - RABBIT_PASSWORD=guest
       - RABBIT_QUEUE=Action.Printer
       - READINESS_FILE_PATH=/tmp/ready
-      - SFTP_HOST=sftp
+      - SFTP_HOST=dev-print-file-service-sftp
       - SFTP_PORT=22
       - SFTP_USERNAME=centos
       - SFTP_KEY_FILENAME=/app/dummy_keys/dummy_rsa
       - SFTP_PASSPHRASE=secret
-      - SFTP_DIRECTORY=Documents/sftp/print_service
+      - SFTP_PPD_DIRECTORY=ppd/
+      - SFTP_QM_DIRECTORY=qm/
       - OUR_PUBLIC_KEY_PATH=/app/dummy_keys/our_dummy_public.asc
       - OTHER_PUBLIC_KEY_PATH=/app/dummy_keys/supplier_dummy_public.asc
     external_links:
