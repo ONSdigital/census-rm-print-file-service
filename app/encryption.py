@@ -1,6 +1,6 @@
-import os
-
 import pgpy
+
+from config import Config
 
 
 class EncryptionFailedException(Exception):
@@ -9,8 +9,8 @@ class EncryptionFailedException(Exception):
 
 def pgp_encrypt_message(message):
     # A key can be loaded from a file, like so:
-    our_key, _ = pgpy.PGPKey.from_file(os.getenv('OUR_PUBLIC_KEY_PATH'))
-    other_key, _ = pgpy.PGPKey.from_file(os.getenv('OTHER_PUBLIC_KEY_PATH'))
+    our_key, _ = pgpy.PGPKey.from_file(Config.OUR_PUBLIC_KEY_PATH)
+    other_key, _ = pgpy.PGPKey.from_file(Config.OTHER_PUBLIC_KEY_PATH)
 
     # this creates a standard message from text
     # it will also be compressed, by default with ZIP DEFLATE, unless otherwise specified

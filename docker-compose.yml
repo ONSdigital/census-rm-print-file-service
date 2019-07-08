@@ -39,7 +39,8 @@ services:
       - OUR_PUBLIC_KEY_PATH=/app/dummy_keys/our_dummy_public.asc
       - OTHER_PUBLIC_KEY_PATH=/app/dummy_keys/supplier_dummy_public.asc
     external_links:
-      - rabbitmq
+      - dev-print-file-service-rabbitmq
+      - dev-print-file-service-sftp
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"

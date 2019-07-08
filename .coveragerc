@@ -1,6 +1,3 @@
 [run]
 omit =
     test/*
-
-    # Currently a stub
-    app/file_sender.py

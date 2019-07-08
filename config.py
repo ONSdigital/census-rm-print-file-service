@@ -28,6 +28,8 @@ class Config:
     SFTP_PASSPHRASE = os.getenv('SFTP_PASSPHRASE')
     SFTP_PPD_DIRECTORY = os.getenv('SFTP_PPD_DIRECTORY')
     SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY')
+    OUR_PUBLIC_KEY_PATH = os.getenv('OUR_PUBLIC_KEY_PATH')
+    OTHER_PUBLIC_KEY_PATH = os.getenv('OTHER_PUBLIC_KEY_PATH')
 
 
 class DevConfig(Config):
@@ -42,11 +44,19 @@ class DevConfig(Config):
     SFTP_PASSPHRASE = os.getenv('SFTP_PASSPHRASE', 'secret')
     SFTP_PPD_DIRECTORY = os.getenv('SFTP_PPD_DIRECTORY', 'ppd/')
     SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY', 'qm/')
+    OUR_PUBLIC_KEY_PATH = Path(os.getenv('OUR_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
+                               .joinpath('our_dummy_public.asc'))
+    OTHER_PUBLIC_KEY_PATH = Path(os.getenv('OTHER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
+                                 .joinpath('supplier_dummy_public.asc'))
 
 
 class TestConfig(DevConfig):
     RABBIT_PORT = os.getenv('RABBIT_PORT', '35672')
     SFTP_PORT = os.getenv('SFTP_PORT', '2222')
+    TMP_TEST_DIRECTORY = Path(__file__).parent.resolve().joinpath('tmp_test_files')
+    PARTIAL_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('partial_files/')
+    SENT_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('sent_files/')
+    ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
 
 
 # Use dev defaults in dev environment

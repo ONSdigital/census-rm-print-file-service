@@ -33,11 +33,15 @@ PACK_CODE_TO_SUPPLIER = {
     'P_IC_H4': QM_SUPPLIER
 }
 
+SUPPLIER_TO_DATASET = {
+    QM_SUPPLIER: 'QM3.2',
+    PPD_SUPPLIER: 'PPD1.1'
+}
+
 SUPPLIER_TO_SFTP_DIRECTORY = {
     QM_SUPPLIER: Config.SFTP_QM_DIRECTORY,
     PPD_SUPPLIER: Config.SFTP_PPD_DIRECTORY
 }
-
 
 logger = wrap_logger(logging.getLogger(__name__))
 
@@ -59,8 +63,6 @@ def process_complete_file(file: Path, pack_code):
     logger.info('Creating manifest file', manifest_file=manifest_file.name)
     generate_manifest_file(manifest_file, print_file, pack_code)
     file_paths = [print_file, manifest_file]
-
-
 
     # Send files to sftp
     logger.info('Sending files to SFTP', file_paths=file_paths)
@@ -101,7 +103,7 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
 
 
 def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, productpack_code: str):
-    manifest = create_manifest(print_file_path, productpack_code)
+    manifest = create_manifest(print_file_path,  productpack_code)
     manifest_file_path.write_text(json.dumps(manifest))
 
 
@@ -109,7 +111,7 @@ def create_manifest(print_file_path: Path, productpack_code: str) -> dict:
     return {
         'schemaVersion': '1',
         'description': PRODUCTPACK_CODE_TO_DESCRIPTION[productpack_code],
-        'dataset': 'PPD1.1',
+        'dataset': SUPPLIER_TO_DATASET[PACK_CODE_TO_SUPPLIER[productpack_code]],
         'version': '1',
         'manifestCreated': datetime.utcnow().isoformat(),
         'sourceName': 'ONS_RM',
