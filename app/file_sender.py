@@ -10,38 +10,9 @@ from structlog import wrap_logger
 
 import app.sftp as sftp
 from app.encryption import pgp_encrypt_message
+from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_SUPPLIER, SUPPLIER_TO_DATASET, \
+    SUPPLIER_TO_SFTP_DIRECTORY
 from config import Config
-
-QM_SUPPLIER = 'QM'
-PPD_SUPPLIER = 'PPD'
-
-PRODUCTPACK_CODE_TO_DESCRIPTION = {
-    'P_IC_ICL1': 'Initial contact letter households - England',
-    'P_IC_ICL2': 'Initial contact letter households - Wales',
-    'P_IC_ICL4': 'Initial contact letter households - Northern Ireland',
-    'P_IC_H1': 'Initial contact questionnaire households - England',
-    'P_IC_H2': 'Initial contact questionnaire households - Wales',
-    'P_IC_H4': 'Initial contact questionnaire households - Northern Ireland'
-}
-
-PACK_CODE_TO_SUPPLIER = {
-    'P_IC_ICL1': PPD_SUPPLIER,
-    'P_IC_ICL2': PPD_SUPPLIER,
-    'P_IC_ICL4': PPD_SUPPLIER,
-    'P_IC_H1': QM_SUPPLIER,
-    'P_IC_H2': QM_SUPPLIER,
-    'P_IC_H4': QM_SUPPLIER
-}
-
-SUPPLIER_TO_DATASET = {
-    QM_SUPPLIER: 'QM3.2',
-    PPD_SUPPLIER: 'PPD1.1'
-}
-
-SUPPLIER_TO_SFTP_DIRECTORY = {
-    QM_SUPPLIER: Config.SFTP_QM_DIRECTORY,
-    PPD_SUPPLIER: Config.SFTP_PPD_DIRECTORY
-}
 
 logger = wrap_logger(logging.getLogger(__name__))
 
@@ -85,7 +56,11 @@ def check_files(partial_files_dir: Path):
 
 
 def start_file_sender(readiness_queue):
-    # TODO Connect to SFTP etc. before readying
+    logger.info('Testing connection to SFTP target directories')
+    with sftp.SftpUtility(Config.SFTP_QM_DIRECTORY):
+        logger.info('Successfully connected to SFTP QM directory')
+    with sftp.SftpUtility(Config.SFTP_PPD_DIRECTORY):
+        logger.info('Successfully connected to SFTP PPD directory')
     readiness_queue.put(True)
     logger.info('Started file sender')
     while True:

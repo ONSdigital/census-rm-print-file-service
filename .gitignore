@@ -108,3 +108,5 @@ venv.bak/
 
 partial_files/
 sent_files/
+encrypted_files/
+.DS_Store

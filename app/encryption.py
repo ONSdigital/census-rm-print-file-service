@@ -1,17 +1,11 @@
 import pgpy
 
-from app.file_sender import PPD_SUPPLIER, QM_SUPPLIER
+from app.mappings import SUPPLIER_TO_KEY_PATH
 from config import Config
 
 
 class EncryptionFailedException(Exception):
     pass
-
-
-SUPPLIER_TO_KEY_PATH = {
-    QM_SUPPLIER: Config.QM_SUPPLIER_PUBLIC_KEY_PATH,
-    PPD_SUPPLIER: Config.PPD_SUPPLIER_PUBLIC_KEY_PATH
-}
 
 
 def pgp_encrypt_message(message, supplier):

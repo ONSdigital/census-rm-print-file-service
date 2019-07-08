@@ -48,10 +48,12 @@ class DevConfig(Config):
     SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY', 'qm/')
     OUR_PUBLIC_KEY_PATH = Path(os.getenv('OUR_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
                                .joinpath('our_dummy_public.asc'))
-    QM_SUPPLIER_PUBLIC_KEY_PATH = Path(os.getenv('QM_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
-                                 .joinpath('dummy_qm_supplier_public_key.asc'))
-    PPD_SUPPLIER_PUBLIC_KEY = Path(os.getenv('PPD_SUPPLIER_PUBLIC_KEY') or Path(__file__).parent.joinpath('dummy_keys')
-                                 .joinpath('dummy_ppd_supplier_public_key.asc'))
+    QM_SUPPLIER_PUBLIC_KEY_PATH = Path(
+        os.getenv('QM_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
+        .joinpath('dummy_qm_supplier_public_key.asc'))
+    PPD_SUPPLIER_PUBLIC_KEY_PATH = Path(
+        os.getenv('PPD_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
+        .joinpath('dummy_ppd_supplier_public_key.asc'))
 
 
 class TestConfig(DevConfig):
