@@ -24,8 +24,8 @@ class Config:
     NAME = os.getenv('NAME', 'census-rm-print-file-service')
     LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
     LOG_DATE_FORMAT = os.getenv('LOG_DATE_FORMAT', '%Y-%m-%dT%H:%M%s')
-    LOG_JSON_INDENT = os.getenv('LOG_JSON_INDENT', 0)
     LOG_LEVEL_PIKA = os.getenv('LOG_LEVEL_PIKA', 'ERROR')
+    LOG_LEVEL_PARAMIKO = os.getenv('LOG_LEVEL_PARAMIKO', 'ERROR')
 
     SFTP_HOST = os.getenv('SFTP_HOST')
     SFTP_PORT = os.getenv('SFTP_PORT')
@@ -38,8 +38,8 @@ class Config:
     OUR_PUBLIC_KEY_PATH = Path(os.getenv('OUR_PUBLIC_KEY_PATH')) if os.getenv('OUR_PUBLIC_KEY_PATH') else None
     QM_SUPPLIER_PUBLIC_KEY_PATH = Path(os.getenv('QM_SUPPLIER_PUBLIC_KEY_PATH')) if os.getenv(
         'QM_SUPPLIER_PUBLIC_KEY_PATH') else None
-    PPD_SUPPLIER_PUBLIC_KEY_PATH = Path(os.getenv('PPD_SUPPLIER_PUBLIC_KEY_PATH')) if os.getenv(
-        'PPD_SUPPLIER_PUBLIC_KEY_PATH') else None
+    PPO_SUPPLIER_PUBLIC_KEY_PATH = Path(os.getenv('PPO_SUPPLIER_PUBLIC_KEY_PATH')) if os.getenv(
+        'PPO_SUPPLIER_PUBLIC_KEY_PATH') else None
 
     ENVIRONMENT = os.getenv('ENVIRONMENT', 'PROD')
 

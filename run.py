@@ -14,7 +14,7 @@ def run():
     logger_initial_config()
     logger = wrap_logger(logging.getLogger(__name__))
     logger.info('Starting print file service', app_log_level=Config.LOG_LEVEL, pika_log_level=Config.LOG_LEVEL_PIKA,
-                environment=Config.ENVIRONMENT)
+                paramiko_log_level=Config.LOG_LEVEL_PARAMIKO, environment=Config.ENVIRONMENT)
     initialise_directories()
     run_daemons()
 
@@ -25,44 +25,28 @@ def initialise_directories():
     Config.ENCRYPTED_FILES_DIRECTORY.mkdir(exist_ok=True)
 
 
-def logger_initial_config(
-        service_name=None, log_level=None, logger_format=None, logger_date_format=None
-):
-    if not logger_date_format:
-        logger_date_format = Config.LOG_DATE_FORMAT
-    if not log_level:
-        log_level = Config.LOG_LEVEL
-    if not logger_format:
-        logger_format = "%(message)s"
-    if not service_name:
-        service_name = Config.NAME
-    try:
-        indent = int(Config.LOG_JSON_INDENT)
-    except TypeError:
-        indent = None
-    except ValueError:
-        indent = None
-
+def logger_initial_config():
     def add_service(_1, _2, event_dict):
         """
         Add the service name to the event dict.
         """
-        event_dict["service"] = service_name
+        event_dict["service"] = Config.NAME
         return event_dict
 
-    logging.basicConfig(stream=sys.stdout, level=log_level, format=logger_format)
+    logging.basicConfig(stream=sys.stdout, level=Config.LOG_LEVEL, format="%(message)s")
 
     configure(
         processors=[
             add_log_level,
             filter_by_level,
             add_service,
-            TimeStamper(fmt=logger_date_format, utc=True, key="created_at"),
-            JSONRenderer(indent=indent),
+            TimeStamper(fmt=Config.LOG_DATE_FORMAT, utc=True, key="created_at"),
+            JSONRenderer(),
         ]
     )
 
     logging.getLogger('pika').setLevel(Config.LOG_LEVEL_PIKA)
+    logging.getLogger('paramiko').setLevel(Config.LOG_LEVEL_PARAMIKO)
 
 
 if __name__ == '__main__':
