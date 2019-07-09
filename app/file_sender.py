@@ -1,3 +1,4 @@
+import hashlib
 import json
 import logging
 from datetime import datetime
@@ -5,21 +6,21 @@ from pathlib import Path
 from time import sleep
 from typing import Collection
 
-import hashlib
 from structlog import wrap_logger
 
 import app.sftp as sftp
 from app.encryption import pgp_encrypt_message
-from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_SUPPLIER, SUPPLIER_TO_DATASET, \
-    SUPPLIER_TO_SFTP_DIRECTORY
+from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET, \
+    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER
 from config import Config
+
 
 logger = wrap_logger(logging.getLogger(__name__))
 
 
 def process_complete_file(file: Path, pack_code):
     message = file.read_text()
-    supplier = PACK_CODE_TO_SUPPLIER[pack_code]
+    supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
     # First encrypt the file and write it to encrypted directory
     logger.info('Encrypting file', file_name=file.name)
     encrypted_message = pgp_encrypt_message(message, supplier)
@@ -78,7 +79,7 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
 
 
 def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, productpack_code: str):
-    manifest = create_manifest(print_file_path,  productpack_code)
+    manifest = create_manifest(print_file_path, productpack_code)
     manifest_file_path.write_text(json.dumps(manifest))
 
 
@@ -86,7 +87,7 @@ def create_manifest(print_file_path: Path, productpack_code: str) -> dict:
     return {
         'schemaVersion': '1',
         'description': PRODUCTPACK_CODE_TO_DESCRIPTION[productpack_code],
-        'dataset': SUPPLIER_TO_DATASET[PACK_CODE_TO_SUPPLIER[productpack_code]],
+        'dataset': PACK_CODE_TO_DATASET[productpack_code],
         'version': '1',
         'manifestCreated': datetime.utcnow().isoformat(),
         'sourceName': 'ONS_RM',

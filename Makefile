@@ -10,10 +10,7 @@ lint:
 unit_tests: check lint
 	 pipenv run pytest test/unit_tests --cov app --cov-report term-missing
 
-integration_tests:
-	docker-compose down
-	docker-compose up -d
-	bash ./test/integration_tests/wait_for_print_file_service.sh
+integration_tests: down up
 	pipenv run pytest test/integration_tests
 	docker-compose down
 
@@ -28,6 +25,7 @@ build_and_test: install unit_tests docker_build integration_tests
 
 up:
 	docker-compose up -d
+	bash ./test/integration_tests/wait_for_print_file_service.sh
 
 down:
 	docker-compose down

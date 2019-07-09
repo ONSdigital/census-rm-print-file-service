@@ -75,8 +75,8 @@ class DevConfig(Config):
     QM_SUPPLIER_PUBLIC_KEY_PATH = Path(
         os.getenv('QM_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
         .joinpath('dummy_qm_supplier_public_key.asc'))
-    PPD_SUPPLIER_PUBLIC_KEY_PATH = Path(
-        os.getenv('PPD_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
+    PPO_SUPPLIER_PUBLIC_KEY_PATH = Path(
+        os.getenv('PPO_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
         .joinpath('dummy_ppd_supplier_public_key.asc'))
 
 

@@ -1,14 +1,15 @@
+import fnmatch
+
 import json
 from pathlib import Path
 from time import sleep
-
-import fnmatch
 
 import paramiko
 import pytest
 
 from app.rabbit_context import RabbitContext
 from config import TestConfig
+
 
 ICL1E_message_template = {
     "actionType": "ICL1E",

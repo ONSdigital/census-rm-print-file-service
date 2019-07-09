@@ -8,6 +8,7 @@ import paramiko
 
 from app.file_sender import copy_files_to_sftp, generate_manifest_file, process_complete_file
 
+
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
 
 
