@@ -12,7 +12,7 @@ unit_tests: check lint
 
 integration_tests:
 	docker-compose down
-	docker-compose up
+	docker-compose up -d
 	bash ./test/integration_tests/wait_for_print_file_service.sh
 	pipenv run pytest test/integration_tests
 	docker-compose down

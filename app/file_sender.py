@@ -59,7 +59,7 @@ def start_file_sender(readiness_queue):
     logger.info('Testing connection to SFTP target directories')
     with sftp.SftpUtility(Config.SFTP_QM_DIRECTORY):
         logger.info('Successfully connected to SFTP QM directory')
-    with sftp.SftpUtility(Config.SFTP_PPD_DIRECTORY):
+    with sftp.SftpUtility(Config.SFTP_PPO_DIRECTORY):
         logger.info('Successfully connected to SFTP PPD directory')
     readiness_queue.put(True)
     logger.info('Started file sender')

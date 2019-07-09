@@ -10,9 +10,11 @@ from config import Config
 
 
 def run():
+    Config.check_config()
     logger_initial_config()
     logger = wrap_logger(logging.getLogger(__name__))
-    logger.info('Starting print file service', logging_level=Config.LOG_LEVEL, logging_level_pika=Config.LOG_LEVEL_PIKA)
+    logger.info('Starting print file service', app_log_level=Config.LOG_LEVEL, pika_log_level=Config.LOG_LEVEL_PIKA,
+                environment=Config.ENVIRONMENT)
     initialise_directories()
     run_daemons()
 

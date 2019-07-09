@@ -60,9 +60,9 @@ def test_end_to_end_with_ppd(clear_down_sftp_folders):
     sftp = ssh_client.open_sftp()
     attempts = 0
     while attempts <= 10:
-        matched_print_files = [filename for filename in sftp.listdir(TestConfig.SFTP_PPD_DIRECTORY)
+        matched_print_files = [filename for filename in sftp.listdir(TestConfig.SFTP_PPO_DIRECTORY)
                                if fnmatch.fnmatch(filename, 'P_IC_ICL1_*.csv')]
-        matched_manifest_files = [filename for filename in sftp.listdir(TestConfig.SFTP_PPD_DIRECTORY)
+        matched_manifest_files = [filename for filename in sftp.listdir(TestConfig.SFTP_PPO_DIRECTORY)
                                   if fnmatch.fnmatch(filename, 'P_IC_ICL1_*.manifest')]
         attempts += 1
         if len(matched_print_files) and len(matched_manifest_files):
@@ -120,8 +120,8 @@ def clear_down_sftp_folders():
                        timeout=120)
     sftp = ssh_client.open_sftp()
 
-    for file in sftp.listdir(TestConfig.SFTP_PPD_DIRECTORY):
-        sftp.remove(TestConfig.SFTP_PPD_DIRECTORY + file)
+    for file in sftp.listdir(TestConfig.SFTP_PPO_DIRECTORY):
+        sftp.remove(TestConfig.SFTP_PPO_DIRECTORY + file)
 
     for file in sftp.listdir(TestConfig.SFTP_QM_DIRECTORY):
         sftp.remove(TestConfig.SFTP_QM_DIRECTORY + file)

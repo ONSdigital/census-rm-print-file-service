@@ -11,11 +11,12 @@ services:
       container_name: dev-print-file-service-sftp
       image: atmoz/sftp
       volumes:
-        - ~/Documents/sftp:/home/centos/
+        - ~/Documents/sftp/ppo_dev:/home/centos/ppo_dev
+        - ~/Documents/sftp/qmprint_dev:/home/centos/qmprint_dev
         - ./dummy_keys/dummy_rsa.pub:/home/centos/.ssh/keys/dummy_rsa.pub:ro
       ports:
         - "2222:22"
-      command: centos::1001:::ppd:qm
+      command: centos::1001
 
 
   print-file-service:
@@ -34,8 +35,6 @@ services:
       - SFTP_USERNAME=centos
       - SFTP_KEY_FILENAME=/app/dummy_keys/dummy_rsa
       - SFTP_PASSPHRASE=secret
-      - SFTP_PPD_DIRECTORY=ppd/
-      - SFTP_QM_DIRECTORY=qm/
       - ENVIRONMENT=DEV
     external_links:
       - dev-print-file-service-rabbitmq

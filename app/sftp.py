@@ -1,4 +1,5 @@
 import logging
+from contextlib import suppress
 
 import paramiko
 from structlog import wrap_logger
@@ -26,8 +27,13 @@ class SftpUtility:
     def __enter__(self):
         self._sftp_client = self.ssh_client.open_sftp()
         if not self.sftp_directory_exists:
-            self._sftp_client.mkdir(self.sftp_directory)
-            logger.info('Created new directory on SFTP remote', sftp_directory=self.sftp_directory)
+            logger.info('Recursively creating new directory on SFTP remote', sftp_directory=self.sftp_directory)
+            sftp_dirs = self.sftp_directory.split('/')
+            parent = ''
+            for sftp_dir in sftp_dirs:
+                parent += '/' + sftp_dir
+                with suppress(IOError):
+                    self._sftp_client.mkdir(parent)
         self._sftp_client.chdir(self.sftp_directory)
         return self
 
