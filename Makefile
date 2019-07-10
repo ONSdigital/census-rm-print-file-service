@@ -24,7 +24,7 @@ docker_build:
 build_and_test: install unit_tests docker_build integration_tests
 
 up:
-	docker-compose up
+	docker-compose up -d
 	bash ./test/integration_tests/wait_for_print_file_service.sh
 
 down:
