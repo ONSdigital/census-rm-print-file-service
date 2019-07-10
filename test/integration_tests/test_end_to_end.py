@@ -10,8 +10,8 @@ import pytest
 from app.rabbit_context import RabbitContext
 from config import TestConfig
 
-ICL1E_message_template = {
-    "actionType": "ICL1E",
+ICL_message_template = {
+    "actionType": None,
     "batchId": "1",
     "batchQuantity": None,
     "uac": "test_uac",
@@ -23,11 +23,11 @@ ICL1E_message_template = {
     "addressLine2": "Duffryn",
     "townName": "Newport",
     "postcode": "NPXXXX",
-    "packCode": "P_IC_ICL1"
+    "packCode": None
 }
 
-ICHHQW_message_template = {
-    "actionType": "ICHHQE",
+ICHHQ_message_template = {
+    "actionType": None,
     "batchId": "1",
     "batchQuantity": None,
     "uac": "english_uac",
@@ -42,76 +42,216 @@ ICHHQW_message_template = {
     "addressLine2": "Duffryn",
     "townName": "Newport",
     "postcode": "NPXXXX",
-    "packCode": "P_IC_H2"
+    "packCode": None
 }
 
 
-def test_end_to_end_with_ppd(clear_down_sftp_folders):
+def test_icl1e_files():
     # Given
-    send_action_messages(ICL1E_message_template, quantity=3)
+    icl1e_message = ICL_message_template.copy()
+    icl1e_message.update({'actionType': 'ICL1E', 'batchQuantity': 1, 'packCode': 'P_IC_ICL1'})
+    send_action_messages(icl1e_message, icl1e_message['batchQuantity'])
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 ICL1E_message_template['packCode'])
+                                                                                 icl1e_message['packCode'])
 
     # Then
-    with sftp.open(TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file) as actual_manifest_file:
-        manifest_json = json.loads(actual_manifest_file.read())
+    get_and_check_manifest_file(sftp=sftp,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Initial contact letter households - England',
+                                    'dataset': 'PPD1.1'})
 
-    assert manifest_json['schemaVersion'] == '1'
-    assert manifest_json['version'] == '1'
-    assert manifest_json['description'] == 'Initial contact letter households - England'
-    assert manifest_json['sourceName'] == 'ONS_RM'
-    assert manifest_json['dataset'] == 'PPD1.1'
-    assert manifest_json['files'][0]['relativePath'] == './'
-
-    with sftp.open(TestConfig.SFTP_PPO_DIRECTORY + matched_print_file) as actual_print_file:
-        decrypted_print_file = decrypt_message(actual_print_file.read(),
-                                               Path(__file__).parents[2].joinpath('dummy_keys',
-                                                                                  'dummy_ppd_supplier_private_key.asc'),
-                                               'test')
-
-    assert decrypted_print_file == (
-        'test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-        'test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-        'test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppd_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
 
-def test_end_to_end_with_qm(clear_down_sftp_folders):
+def test_icl2w_files():
     # Given
-    send_action_messages(ICHHQW_message_template, quantity=3)
+    icl2w_message = ICL_message_template.copy()
+    icl2w_message.update({'actionType': 'ICL2W', 'batchQuantity': 1, 'packCode': 'P_IC_ICL2'})
+    send_action_messages(icl2w_message, icl2w_message['batchQuantity'])
+    sftp = open_sftp_client()
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 icl2w_message['packCode'])
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Initial contact letter households - Wales',
+                                    'dataset': 'PPD1.1'})
+
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppd_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2\n')
+
+
+def test_icl4n_files():
+    # Given
+    icl4n_message = ICL_message_template.copy()
+    icl4n_message.update({'actionType': 'ICL2W', 'batchQuantity': 1, 'packCode': 'P_IC_ICL4'})
+    send_action_messages(icl4n_message, icl4n_message['batchQuantity'])
+    sftp = open_sftp_client()
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 icl4n_message['packCode'])
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Initial contact letter households - Northern Ireland',
+                                    'dataset': 'PPD1.1'})
+
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppd_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4\n')
+
+
+def test_ichhqe_files():
+    # Given
+    ichhqe_message = ICHHQ_message_template.copy()
+    ichhqe_message.update({'actionType': 'ICHHQE', 'batchQuantity': 3, 'packCode': 'P_IC_H1'})
+    send_action_messages(ichhqe_message, quantity=3)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 ICHHQW_message_template['packCode'])
+                                                                                 ichhqe_message['packCode'])
 
     # Then
-    with sftp.open(TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file) as actual_manifest_file:
-        manifest_json = json.loads(actual_manifest_file.read())
+    get_and_check_manifest_file(sftp=sftp,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Initial contact questionnaire households - England',
+                                    'dataset': 'QM3.2'})
 
-    assert manifest_json['schemaVersion'] == '1'
-    assert manifest_json['version'] == '1'
-    assert manifest_json['description'] == 'Initial contact questionnaire households - Wales'
-    assert manifest_json['sourceName'] == 'ONS_RM'
-    assert manifest_json['dataset'] == 'QM3.2'
-    assert manifest_json['files'][0]['relativePath'] == './'
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'))
 
-    with sftp.open(TestConfig.SFTP_QM_DIRECTORY + matched_print_file) as actual_print_file:
-        decrypted_print_file = decrypt_message(actual_print_file.read(),
-                                               Path(__file__).parents[2].joinpath('dummy_keys',
-                                                                                  'dummy_qm_supplier_private_key.asc'),
-                                               'supplier')
-    assert decrypted_print_file == (
-        'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
-        'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
-        'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
-        'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
-        'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
-        'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n')
+
+def test_ichhqw_files():
+    # Given
+    ichhqw_message = ICHHQ_message_template.copy()
+    ichhqw_message.update({'actionType': 'ICHHQW', 'batchQuantity': 3, 'packCode': 'P_IC_H2'})
+    send_action_messages(ichhqw_message, quantity=3)
+    sftp = open_sftp_client()
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 ichhqw_message['packCode'])
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Initial contact questionnaire households - Wales',
+                                    'dataset': 'QM3.2'})
+
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'))
+
+
+def test_ichhqwn_files():
+    # Given
+    ichhqn_message = ICHHQ_message_template.copy()
+    ichhqn_message.update({'actionType': 'ICHHQN', 'batchQuantity': 3, 'packCode': 'P_IC_H4'})
+    send_action_messages(ichhqn_message, quantity=3)
+    sftp = open_sftp_client()
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 ichhqn_message['packCode'])
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Initial contact questionnaire households - Northern Ireland',
+                                    'dataset': 'QM3.2'})
+
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'))
+
+
+def test_our_decryption_key():
+    # Given
+    icl1e_message = ICL_message_template.copy()
+    icl1e_message.update({'actionType': 'ICL1E', 'batchQuantity': 1, 'packCode': 'P_IC_ICL1'})
+    send_action_messages(icl1e_message, icl1e_message['batchQuantity'])
+    sftp = open_sftp_client()
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 icl1e_message['packCode'])
+
+    # Then
+    get_and_check_print_file(
+        sftp=sftp,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'our_dummy_private.asc'),
+        decryption_key_passphrase='test',
+        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
 
 def open_sftp_client():
@@ -146,6 +286,26 @@ def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_atte
     return matched_manifest_files[0], matched_print_files[0]
 
 
+def get_and_check_manifest_file(sftp, remote_manifest_path, expected_values):
+    with sftp.open(remote_manifest_path) as actual_manifest_file:
+        manifest_json = json.loads(actual_manifest_file.read())
+    for key, value in expected_values.items():
+        assert manifest_json[key] == value
+
+    assert manifest_json['files'][0]['relativePath'] == './'
+    assert manifest_json['sourceName'] == 'ONS_RM'
+    assert manifest_json['schemaVersion'] == '1'
+    assert manifest_json['version'] == '1'
+
+
+def get_and_check_print_file(sftp, remote_print_file_path, decryption_key_path, decryption_key_passphrase, expected):
+    with sftp.open(remote_print_file_path) as actual_print_file:
+        decrypted_print_file = decrypt_message(actual_print_file.read(),
+                                               decryption_key_path,
+                                               decryption_key_passphrase)
+    assert decrypted_print_file == expected
+
+
 def send_action_messages(message_dict, quantity):
     message_dict['batchQuantity'] = str(quantity)
     with RabbitContext() as rabbit:
@@ -162,7 +322,7 @@ def decrypt_message(message, key_file_path, key_passphrase):
         return message_text.message
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def clear_down_sftp_folders():
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())

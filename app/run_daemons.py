@@ -1,6 +1,6 @@
+import _queue
 import logging
 import multiprocessing
-from _queue import Empty
 from time import sleep
 
 from structlog import wrap_logger
@@ -37,5 +37,5 @@ def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.P
     try:
         if readiness_queue.get(block=True, timeout=timeout):
             return daemon
-    except Empty:
-        raise RuntimeError(f'Error starting daemon: [{name}]')
+    except _queue.Empty as err:
+        raise RuntimeError(f'Error starting daemon: [{name}]') from err
