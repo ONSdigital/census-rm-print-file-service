@@ -14,7 +14,6 @@ from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET, 
     SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER
 from config import Config
 
-
 logger = wrap_logger(logging.getLogger(__name__))
 
 
@@ -59,8 +58,6 @@ def check_partial_files(partial_files_dir: Path):
         actual_number_of_lines = sum(1 for _ in print_file.open())
         if int(batch_quantity) == actual_number_of_lines:
             process_complete_file(print_file, pack_code)
-            logger.info('Removing unencrypted file', file_name=print_file.name)
-            print_file.unlink()
 
 
 def start_file_sender(readiness_queue):
