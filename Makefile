@@ -8,7 +8,7 @@ lint:
 	pipenv run flake8
 
 unit_tests: check lint
-	 pipenv run pytest test/unit_tests --cov app --cov-report term-missing
+	pipenv run pytest test/unit_tests --cov app --cov-report term-missing
 
 integration_tests: down up
 	pipenv run pytest test/integration_tests

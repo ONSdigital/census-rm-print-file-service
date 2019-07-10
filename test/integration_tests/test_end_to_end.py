@@ -198,7 +198,7 @@ def test_ichhqw_files():
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'))
 
 
-def test_ichhqwn_files():
+def test_ichhqn_files():
     # Given
     ichhqn_message = ICHHQ_message_template.copy()
     ichhqn_message.update({'actionType': 'ICHHQN', 'batchQuantity': 3, 'packCode': 'P_IC_H4'})
@@ -280,7 +280,7 @@ def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_atte
             break
         sleep(1)
     else:
-        raise AssertionError('Reached timeout before files was created')
+        raise AssertionError('Reached timeout before files were created')
     assert len(matched_manifest_files) == 1
     assert len(matched_print_files) == 1
     return matched_manifest_files[0], matched_print_files[0]

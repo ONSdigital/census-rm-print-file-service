@@ -16,7 +16,6 @@ class Config:
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD')
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
-    SENT_FILES_DIRECTORY = Path(os.getenv('SENT_FILES_DIRECTORY', 'sent_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))
 
     READINESS_FILE_PATH = Path(os.getenv('READINESS_FILE_PATH', 'print-file-service-ready'))
@@ -85,7 +84,6 @@ class TestConfig(DevConfig):
     SFTP_PORT = os.getenv('SFTP_PORT', '2222')
     TMP_TEST_DIRECTORY = Path(__file__).parent.joinpath('tmp_test_files')
     PARTIAL_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('partial_files/')
-    SENT_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('sent_files/')
     ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
 
 

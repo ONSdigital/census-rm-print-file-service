@@ -4,7 +4,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 from time import sleep
-from typing import Collection
+from typing import Collection, Iterable
 
 from structlog import wrap_logger
 
@@ -18,35 +18,42 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(file: Path, pack_code):
-    message = file.read_text()
+def process_complete_file(print_file: Path, pack_code):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
-    # First encrypt the file and write it to encrypted directory
-    logger.info('Encrypting file', file_name=file.name)
-    encrypted_message = pgp_encrypt_message(message, supplier)
-    filename = f'{pack_code}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
-    print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv')
-    logger.info('Writing encrypted file', file_name=print_file.name)
-    with open(print_file, 'w') as encrypted_file:
-        encrypted_file.write(encrypted_message)
 
-    # Create the manifest
+    logger.info('Encrypting print_file', file_name=print_file.name)
+    encrypted_print_file, filename = encrypt_print_file(print_file, pack_code, supplier)
+
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
-    logger.info('Creating manifest file', manifest_file=manifest_file.name)
-    generate_manifest_file(manifest_file, print_file, pack_code)
-    file_paths = [print_file, manifest_file]
+    logger.info('Creating manifest print_file', manifest_file=manifest_file.name)
+    generate_manifest_file(manifest_file, encrypted_print_file, pack_code)
+    file_paths = [encrypted_print_file, manifest_file]
 
-    # Send files to sftp
     logger.info('Sending files to SFTP', file_paths=file_paths)
     copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
 
-    # Move files to sent directory
-    logger.info('Moving to sent files directory', file_paths=file_paths)
-    for sent_file in file_paths:
-        sent_file.replace(Config.SENT_FILES_DIRECTORY.joinpath(sent_file.name))
+    # TODO upload encrypted print file and manifest to GCS
+
+    file_paths.append(print_file)
+    logger.info('Deleting local files', local_files_to_delete=(str(path) for path in file_paths))
+    delete_local_files(file_paths)
 
 
-def check_files(partial_files_dir: Path):
+def encrypt_print_file(print_file, pack_code, supplier):
+    encrypted_message = pgp_encrypt_message(print_file.read_text(), supplier)
+    filename = f'{pack_code}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
+    encrypted_print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv')
+    logger.info('Writing encrypted file', file_name=encrypted_print_file.name)
+    encrypted_print_file.write_text(encrypted_message)
+    return encrypted_print_file, filename
+
+
+def delete_local_files(file_paths: Iterable[Path]):
+    for file_path in file_paths:
+        file_path.unlink()
+
+
+def check_partial_files(partial_files_dir: Path):
     for print_file in partial_files_dir.rglob('*'):
         action_type, pack_code, batch_id, batch_quantity = print_file.name.split('.')
         actual_number_of_lines = sum(1 for _ in print_file.open())
@@ -65,7 +72,7 @@ def start_file_sender(readiness_queue):
     readiness_queue.put(True)
     logger.info('Started file sender')
     while True:
-        check_files(Config.PARTIAL_FILES_DIRECTORY)
+        check_partial_files(Config.PARTIAL_FILES_DIRECTORY)
         sleep(2)
 
 

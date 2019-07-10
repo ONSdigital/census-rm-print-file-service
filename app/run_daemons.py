@@ -13,11 +13,13 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
+class DaemonStartupError(Exception):
+    pass
+
+
 def run_daemons():
     process_manager = multiprocessing.Manager()
     message_listener_daemon = run_in_daemon(start_message_listener, 'message-listener', process_manager)
-
-    # File sender is stubbed
     file_sender_daemon = run_in_daemon(start_file_sender, 'file-sender', process_manager)
 
     with ReadinessFile(Config.READINESS_FILE_PATH):
@@ -38,4 +40,4 @@ def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.P
         if readiness_queue.get(block=True, timeout=timeout):
             return daemon
     except _queue.Empty as err:
-        raise RuntimeError(f'Error starting daemon: [{name}]') from err
+        raise DaemonStartupError(f'Error starting daemon: [{name}]') from err

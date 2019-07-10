@@ -1,13 +1,15 @@
 import json
+import os
+import shutil
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import Mock, patch, call
 
-import os
 import paramiko
+import pytest
 
 from app.file_sender import copy_files_to_sftp, generate_manifest_file, process_complete_file
-
+from config import TestConfig
 
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
 
@@ -31,11 +33,13 @@ def test_copy_files_to_sftp():
         [call(str(file_path), file_path.name) for file_path in test_files])
 
 
-def test_processing_complete_file(cleanup_test_files):
+def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'), 'P_IC_ICL1')
+        process_complete_file(complete_file_path, 'P_IC_ICL1')
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -48,6 +52,18 @@ def test_processing_complete_file(cleanup_test_files):
     assert put_sftp_call_kwargs[1]['local_path'] == str(
         cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.manifest'))
     assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'
+
+
+def test_local_files_are_deleted_after_upload(cleanup_test_files):
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+    with patch('app.file_sender.sftp.SftpUtility'):
+        process_complete_file(complete_file_path, 'P_IC_ICL1')
+
+    with pytest.raises(StopIteration):
+        next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
+    with pytest.raises(StopIteration):
+        next(TestConfig.ENCRYPTED_FILES_DIRECTORY.iterdir())
 
 
 def test_generating_manifest_file_ppd(cleanup_test_files):
