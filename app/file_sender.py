@@ -28,13 +28,13 @@ def process_complete_file(print_file: Path, pack_code):
     generate_manifest_file(manifest_file, encrypted_print_file, pack_code)
     file_paths = [encrypted_print_file, manifest_file]
 
-    logger.info('Sending files to SFTP', file_paths=file_paths)
+    logger.info('Sending files to SFTP', file_paths=list(map(str, file_paths)))
     copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
 
     # TODO upload encrypted print file and manifest to GCS
 
     file_paths.append(print_file)
-    logger.info('Deleting local files', local_files_to_delete=(str(path) for path in file_paths))
+    logger.info('Deleting local files', file_paths=list(map(str, file_paths)))
     delete_local_files(file_paths)
 
 
