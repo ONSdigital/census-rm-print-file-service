@@ -76,7 +76,7 @@ class DevConfig(Config):
         .joinpath('dummy_qm_supplier_public_key.asc'))
     PPO_SUPPLIER_PUBLIC_KEY_PATH = Path(
         os.getenv('PPO_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
-        .joinpath('dummy_ppd_supplier_public_key.asc'))
+        .joinpath('dummy_ppo_supplier_public_key.asc'))
 
 
 class TestConfig(DevConfig):

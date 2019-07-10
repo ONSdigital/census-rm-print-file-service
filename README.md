@@ -64,3 +64,15 @@ Run with
 make integraton_tests
 ```
 The end to end integration tests require the app to be running with test config, the make target includes spinning up the docker-compose and waiting for start up.
+
+
+## Dummy keys
+This repo contains dummy keys for SSH and encryption in testing/dev. These keys *must not* be used outside development environments, unless the `ENVIRONMENT` is set to `DEV` or `TEST` the app will not use them requires configuration to specify the keys.
+
+### Dummy Key Passphrases
+| Dummy Key          | Passphrase |
+| ------------------ | ---------- |
+| Our dummy          | test       |
+| Dummy PPO supplier | test       |
+| Dummy QM supplier  | supplier   |
+| Dummy RSA          | secret     |

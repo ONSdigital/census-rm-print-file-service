@@ -69,7 +69,7 @@ def test_icl1e_files():
         sftp=sftp,
         remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppd_supplier_private_key.asc'),
+                                                               'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
         expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
@@ -97,7 +97,7 @@ def test_icl2w_files():
         sftp=sftp,
         remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppd_supplier_private_key.asc'),
+                                                               'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
         expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2\n')
 
@@ -125,7 +125,7 @@ def test_icl4n_files():
         sftp=sftp,
         remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppd_supplier_private_key.asc'),
+                                                               'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
         expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4\n')
 
