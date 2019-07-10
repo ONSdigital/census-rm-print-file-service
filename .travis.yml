@@ -10,10 +10,6 @@ language: python
 python:
   - "3.7"
 
-before_install:
-  - mkdir -p ~/Documents/sftp/ppo_dev/print_services
-  - mkdir -p ~/Documents/sftp/qmprint_dev/print_services
-
 install:
   - pip install pipenv
   - pipenv install --dev --deploy

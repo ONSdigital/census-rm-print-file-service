@@ -14,7 +14,7 @@ services:
       - ./dummy_keys/dummy_rsa.pub:/home/centos/.ssh/keys/dummy_rsa.pub:ro
     ports:
       - "2222:22"
-    command: centos::1001
+    command: centos::::ppo_dev,qmprint_dev
 
 
   print-file-service:
