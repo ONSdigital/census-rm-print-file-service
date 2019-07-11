@@ -12,3 +12,8 @@ codecov = "*"
 [packages]
 pika = "*"
 structlog = "*"
+pgpy = "*"
+paramiko = "*"
+
+[requires]
+python_version = "3.7"

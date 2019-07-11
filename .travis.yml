@@ -15,7 +15,7 @@ install:
   - pipenv install --dev --deploy
 
 script:
-  - make build
+  - make build_and_test
 
 after_success:
   - pipenv run codecov

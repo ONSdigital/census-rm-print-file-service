@@ -4,22 +4,39 @@ services:
     container_name: dev-print-file-service-rabbitmq
     image: rabbitmq:3.6.10-management
     ports:
-    - "35672:5672"
-    - "49672:15672"
+      - "35672:5672"
+      - "49672:15672"
+
+  sftp:
+    container_name: dev-print-file-service-sftp
+    image: atmoz/sftp
+    volumes:
+      - ./dummy_keys/dummy_rsa.pub:/home/centos/.ssh/keys/dummy_rsa.pub:ro
+    ports:
+      - "2222:22"
+    command: centos::::ppo_dev,qmprint_dev
+
 
   print-file-service:
     container_name: dev-print-file-service
     image: eu.gcr.io/census-rm-ci/rm/census-rm-print-file-service:latest
     environment:
-      - RABBIT_HOST=rabbitmq
+      - RABBIT_HOST=dev-print-file-service-rabbitmq
       - RABBIT_PORT=5672
       - RABBIT_VIRTUALHOST=/
       - RABBIT_USERNAME=guest
       - RABBIT_PASSWORD=guest
       - RABBIT_QUEUE=Action.Printer
       - READINESS_FILE_PATH=/tmp/ready
+      - SFTP_HOST=dev-print-file-service-sftp
+      - SFTP_PORT=22
+      - SFTP_USERNAME=centos
+      - SFTP_KEY_FILENAME=/app/dummy_keys/dummy_rsa
+      - SFTP_PASSPHRASE=secret
+      - ENVIRONMENT=DEV
     external_links:
-      - rabbitmq
+      - dev-print-file-service-rabbitmq
+      - dev-print-file-service-sftp
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
