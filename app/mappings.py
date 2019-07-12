@@ -9,7 +9,7 @@ PPD1_1_DATASET = 'PPD1.1'
 
 PRODUCTPACK_CODE_TO_DESCRIPTION = {
     'P_IC_ICL1': 'Initial contact letter households - England',
-    'P_IC_ICL2': 'Initial contact letter households - Wales',
+    'P_IC_ICL2B': 'Initial contact letter households - Wales',
     'P_IC_ICL4': 'Initial contact letter households - Northern Ireland',
     'P_IC_H1': 'Initial contact questionnaire households - England',
     'P_IC_H2': 'Initial contact questionnaire households - Wales',
@@ -18,7 +18,7 @@ PRODUCTPACK_CODE_TO_DESCRIPTION = {
 
 PACK_CODE_TO_DATASET = {
     'P_IC_ICL1': PPD1_1_DATASET,
-    'P_IC_ICL2': PPD1_1_DATASET,
+    'P_IC_ICL2B': PPD1_1_DATASET,
     'P_IC_ICL4': PPD1_1_DATASET,
     'P_IC_H1': QM3_2_DATASET,
     'P_IC_H2': QM3_2_DATASET,
