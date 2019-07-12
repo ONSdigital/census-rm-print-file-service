@@ -77,7 +77,7 @@ def test_icl1e_files():
 def test_icl2w_files():
     # Given
     icl2w_message = ICL_message_template.copy()
-    icl2w_message.update({'actionType': 'ICL2W', 'batchQuantity': 1, 'packCode': 'P_IC_ICL2'})
+    icl2w_message.update({'actionType': 'ICL2W', 'batchQuantity': 1, 'packCode': 'P_IC_ICL2B'})
     send_action_messages(icl2w_message, icl2w_message['batchQuantity'])
     sftp = open_sftp_client()
 
@@ -99,7 +99,7 @@ def test_icl2w_files():
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2\n')
+        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2B\n')
 
 
 def test_icl4n_files():
