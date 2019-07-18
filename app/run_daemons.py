@@ -49,4 +49,3 @@ def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.P
 @retry(wait_exponential_multiplier=1000, wait_exponential_max=20000, stop_max_attempt_number=10)
 def retry_run_daemon(target, name, process_manager, timeout=3):
     return run_in_daemon(target, name, process_manager, timeout=timeout)
-

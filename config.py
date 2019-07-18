@@ -63,7 +63,7 @@ class DevConfig(Config):
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME', 'guest')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD', 'guest')
 
-    FILE_SENDER_POLLING_DELAY = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
+    FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
 
     SFTP_HOST = os.getenv('SFTP_HOST', 'localhost')
     SFTP_PORT = os.getenv('SFTP_PORT', '122')
