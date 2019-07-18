@@ -47,8 +47,8 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     iso_mocked = mock_time.strftime("%Y-%m-%dT%H-%M-%S")
 
     assert put_sftp_call_kwargs[0]['local_path'] == str(
-        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.csv'))
-    assert put_sftp_call_kwargs[0]['filename'] == f'P_IC_ICL1_{iso_mocked}.csv'
+        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.csv.gpg'))
+    assert put_sftp_call_kwargs[0]['filename'] == f'P_IC_ICL1_{iso_mocked}.csv.gpg'
     assert put_sftp_call_kwargs[1]['local_path'] == str(
         cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.manifest'))
     assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'

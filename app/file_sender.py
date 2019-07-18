@@ -41,7 +41,7 @@ def process_complete_file(print_file: Path, pack_code):
 def encrypt_print_file(print_file, pack_code, supplier):
     encrypted_message = pgp_encrypt_message(print_file.read_text(), supplier)
     filename = f'{pack_code}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
-    encrypted_print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv')
+    encrypted_print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv.gpg')
     logger.info('Writing encrypted file', file_name=encrypted_print_file.name)
     encrypted_print_file.write_text(encrypted_message)
     return encrypted_print_file, filename
