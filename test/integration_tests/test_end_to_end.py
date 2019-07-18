@@ -35,6 +35,7 @@ ICHHQ_message_template = {
     'uacWales': "welsh_uac",
     'qidWales': "welsh_qid",
     "caseRef": "test_caseref",
+    "fieldCoordinatorId": "test_qm_coordinator_id",
     "title": "Mr",
     "forename": "Test",
     "surname": "McTest",
@@ -156,11 +157,11 @@ def test_ichhqe_files():
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'))
 
 
@@ -190,11 +191,11 @@ def test_ichhqw_files():
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'))
 
 
@@ -224,11 +225,11 @@ def test_ichhqn_files():
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_caseref|'
+            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'))
 
 
