@@ -11,8 +11,8 @@ class ReadinessFile:
         self.readiness_file = readiness_file
 
     def __enter__(self):
-        logger.debug('Creating readiness file', readiness_file_path=str(self.readiness_file))
-        open(self.readiness_file, 'w').close()
+        logger.debug('Creating readiness files', readiness_file_path=str(self.readiness_file))
+        self.readiness_file.touch()
 
     def __exit__(self, *args):
         logger.debug('Removing readiness file', readiness_file_path=str(self.readiness_file))

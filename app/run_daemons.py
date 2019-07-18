@@ -3,6 +3,7 @@ import multiprocessing
 import queue
 from time import sleep
 
+from retrying import retry
 from structlog import wrap_logger
 
 from app.file_sender import start_file_sender
@@ -26,9 +27,11 @@ def run_daemons():
         logger.info('Started print service')
         while True:
             if not file_sender_daemon.is_alive():
-                raise RuntimeError('File sender died')
+                logger.error('File sender daemon died, attempting to restart')
+                file_sender_daemon = retry_run_daemon(start_file_sender, 'file-sender', process_manager)
             if not message_listener_daemon.is_alive():
-                raise RuntimeError('Message listener died')
+                logger.error('Message listener daemon died, attempting to restart')
+                message_listener_daemon = retry_run_daemon(start_message_listener, 'message-listener', process_manager)
             sleep(1)
 
 
@@ -41,3 +44,9 @@ def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.P
             return daemon
     except queue.Empty as err:
         raise DaemonStartupError(f'Error starting daemon: [{name}]') from err
+
+
+@retry(wait_exponential_multiplier=1000, wait_exponential_max=20000, stop_max_attempt_number=10)
+def retry_run_daemon(target, name, process_manager, timeout=3):
+    return run_in_daemon(target, name, process_manager, timeout=timeout)
+

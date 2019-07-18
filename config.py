@@ -17,6 +17,7 @@ class Config:
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))
+    FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 10))
 
     READINESS_FILE_PATH = Path(os.getenv('READINESS_FILE_PATH', 'print-file-service-ready'))
 
@@ -62,6 +63,8 @@ class DevConfig(Config):
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME', 'guest')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD', 'guest')
 
+    FILE_SENDER_POLLING_DELAY = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
+
     SFTP_HOST = os.getenv('SFTP_HOST', 'localhost')
     SFTP_PORT = os.getenv('SFTP_PORT', '122')
     SFTP_USERNAME = os.getenv('SFTP_USERNAME', 'centos')
@@ -69,6 +72,7 @@ class DevConfig(Config):
     SFTP_PASSPHRASE = os.getenv('SFTP_PASSPHRASE', 'secret')
     SFTP_PPO_DIRECTORY = os.getenv('SFTP_PPO_DIRECTORY', 'ppo_dev/print_services/')
     SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY', 'qmprint_dev/print_services/')
+
     OUR_PUBLIC_KEY_PATH = Path(os.getenv('OUR_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
                                .joinpath('our_dummy_public.asc'))
     QM_SUPPLIER_PUBLIC_KEY_PATH = Path(
