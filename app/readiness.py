@@ -26,4 +26,4 @@ class Readiness:
         try:
             self.readiness_file.unlink()
         except FileNotFoundError:
-            logger.debug('Readiness file not found on exit', health_file_path=str(self.readiness_file))
+            logger.debug('Readiness file not found', health_file_path=str(self.readiness_file))
