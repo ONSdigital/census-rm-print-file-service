@@ -1,5 +1,4 @@
 import queue
-from time import sleep
 from unittest.mock import patch, ANY
 
 import pytest
@@ -86,10 +85,8 @@ def test_file_sender_restarts_on_error(patched_retry_run_daemon, patched_process
     patched_retry_run_daemon.assert_called_once_with(ANY, 'file-sender', ANY)
 
 
-def raise_exception(*_, **kwargs):
-    sleep(kwargs['delay'])
+def raise_exception(*_, **_kwargs):
     raise Exception('An error happened')
-    # pass
 
 
 def raise_queue_empty(*_args, **_kwargs):
