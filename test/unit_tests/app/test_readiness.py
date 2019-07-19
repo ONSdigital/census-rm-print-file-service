@@ -3,25 +3,25 @@ from pathlib import Path
 
 import pytest
 
-from app.readiness_file import ReadinessFile
+from app.readiness import Readiness
 
 
 def test_readiness_file_is_present_while_in_context(readiness_file_path):
-    with ReadinessFile(readiness_file_path):
-        assert readiness_file_path.exists(), 'Readiness file not found within readiness context'
+    with Readiness(readiness_file_path):
+        assert readiness_file_path.exists(), 'readiness file not found within readiness context'
 
 
 def test_readiness_file_is_not_present_after_exiting_context(readiness_file_path):
-    with ReadinessFile(readiness_file_path):
+    with Readiness(readiness_file_path):
         pass
-    assert not readiness_file_path.exists(), 'Readiness file was still present after exiting context'
+    assert not readiness_file_path.exists(), 'readiness file was still present after exiting context'
 
 
 def test_readiness_file_is_not_present_after_uncaught_exception_in_context(readiness_file_path):
     with pytest.raises(Exception):
-        with ReadinessFile(readiness_file_path):
+        with Readiness(readiness_file_path):
             raise Exception
-    assert not readiness_file_path.exists(), 'Readiness file was still present after uncaught exception in context'
+    assert not readiness_file_path.exists(), 'readiness file was still present after uncaught exception in context'
 
 
 @pytest.fixture
