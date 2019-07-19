@@ -23,7 +23,7 @@ QUESTIONNAIRE_TEMPLATE = ('uac',
                           'qid',
                           'uacWales',
                           'qidWales',
-                          'caseRef',
+                          'fieldCoordinatorId',
                           'title',
                           'forename',
                           'surname',
@@ -47,8 +47,7 @@ def generate_print_row(json_body: str, partial_file_path: Path):
         logger.error('No template found for action type', action_type=print_message.get('actionType'),
                      batch_id=print_message.get('batchId'))
         raise TemplateNotFoundError
-
-    append_print_row(print_message, template, partial_file_path, )
+    append_print_row(print_message, template, partial_file_path)
 
 
 def get_filename(print_message):

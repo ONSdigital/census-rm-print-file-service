@@ -44,7 +44,8 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
         "qid": "test_qid",
         "uacWales": "test_wales_uac",
         "qidWales": "test_wales_qid",
-        "caseRef": "test_caseref",
+        "caseRef": "test_caseref",  # NB: ignored
+        "fieldCoordinatorId": "test_qm_coordinator_id",
         "title": "Mr",
         "forename": "Test",
         "surname": "McTest",
@@ -61,7 +62,7 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
     # Then
     generated_print_file = partial_files_directory.joinpath('ICHHQE.P_IC_H1.1.3')
     assert generated_print_file.read_text() == (
-        'test_uac|test_qid|test_wales_uac|test_wales_qid|test_caseref|'
+        'test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id|'
         'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n')
 
 
