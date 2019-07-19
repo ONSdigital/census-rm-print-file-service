@@ -273,7 +273,7 @@ def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_atte
     attempts = 0
     while attempts <= max_attempts:
         matched_print_files = [filename for filename in sftp.listdir(remote_directory)
-                               if fnmatch.fnmatch(filename, f'{pack_code}_*.csv')]
+                               if fnmatch.fnmatch(filename, f'{pack_code}_*.csv.gpg')]
         matched_manifest_files = [filename for filename in sftp.listdir(remote_directory)
                                   if fnmatch.fnmatch(filename, f'{pack_code}_*.manifest')]
         attempts += 1
