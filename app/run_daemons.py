@@ -3,11 +3,12 @@ import multiprocessing
 import queue
 from time import sleep
 
+from retrying import retry
 from structlog import wrap_logger
 
 from app.file_sender import start_file_sender
+from app.readiness import Readiness
 from app.message_listener import start_message_listener
-from app.readiness_file import ReadinessFile
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -19,16 +20,22 @@ class DaemonStartupError(Exception):
 
 def run_daemons():
     process_manager = multiprocessing.Manager()
-    message_listener_daemon = run_in_daemon(start_message_listener, 'message-listener', process_manager)
-    file_sender_daemon = run_in_daemon(start_file_sender, 'file-sender', process_manager)
+    daemons = [
+        {'name': 'message-listener', 'target': start_message_listener, 'process': None},
+        {'name': 'file-sender', 'target': start_file_sender, 'process': None}
+    ]
+    for daemon in daemons:
+        daemon['process'] = run_in_daemon(daemon['target'], daemon['name'], process_manager)
 
-    with ReadinessFile(Config.READINESS_FILE_PATH):
+    with Readiness(readiness_file=Config.READINESS_FILE_PATH) as readiness:
         logger.info('Started print service')
         while True:
-            if not file_sender_daemon.is_alive():
-                raise RuntimeError('File sender died')
-            if not message_listener_daemon.is_alive():
-                raise RuntimeError('Message listener died')
+            for daemon in daemons:
+                if not daemon['process'].is_alive():
+                    logger.error('Daemon died, attempting to restart', daemon=daemon['name'])
+                    readiness.show_unready()
+                    daemon['process'] = retry_run_daemon(daemon['target'], daemon['name'], process_manager)
+                    readiness.show_ready()
             sleep(1)
 
 
@@ -41,3 +48,8 @@ def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.P
             return daemon
     except queue.Empty as err:
         raise DaemonStartupError(f'Error starting daemon: [{name}]') from err
+
+
+@retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
+def retry_run_daemon(target, name, process_manager, timeout=3) -> multiprocessing.Process:
+    return run_in_daemon(target, name, process_manager, timeout=timeout)

@@ -55,8 +55,6 @@ Run with
 ```bash
 make unit_tests
 ```
-Note that you may see some stray error logs in the unit test output, this is a bug with pytest not fully suppressing all output from subprocesses and can safely be ignored if the tests are passing
-
 This will also lint and check dependency package safety
 
 ### Integration tests

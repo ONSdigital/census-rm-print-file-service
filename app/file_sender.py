@@ -70,7 +70,7 @@ def start_file_sender(readiness_queue):
     logger.info('Started file sender')
     while True:
         check_partial_files(Config.PARTIAL_FILES_DIRECTORY)
-        sleep(2)
+        sleep(Config.FILE_POLLING_DELAY_SECONDS)
 
 
 def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
