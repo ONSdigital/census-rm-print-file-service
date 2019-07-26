@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import json
 import logging
@@ -11,7 +12,7 @@ from structlog import wrap_logger
 import app.sftp as sftp
 from app.encryption import pgp_encrypt_message
 from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET, \
-    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER
+    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, DATASET_TO_PRINT_TEMPLATE
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -52,11 +53,19 @@ def delete_local_files(file_paths: Iterable[Path]):
         file_path.unlink()
 
 
+def quarantine_partial_file(print_file: Path):
+    pass
+
+
 def check_partial_files(partial_files_dir: Path):
     for print_file in partial_files_dir.rglob('*'):
         action_type, pack_code, batch_id, batch_quantity = print_file.name.split('.')
         actual_number_of_lines = sum(1 for _ in print_file.open())
         if int(batch_quantity) == actual_number_of_lines:
+            if not check_partial_has_no_duplicates(print_file, pack_code):
+                logger.error('Quarantining print file with duplicates', partial_file_name=print_file.name)
+                quarantine_partial_file(print_file)
+                return
             process_complete_file(print_file, pack_code)
 
 
@@ -104,3 +113,20 @@ def create_manifest(print_file_path: Path, productpack_code: str) -> dict:
             }
         ]
     }
+
+
+def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: str):
+    uacs = set()
+    fieldnames = DATASET_TO_PRINT_TEMPLATE[PACK_CODE_TO_DATASET[pack_code]]
+    with open(partial_file_path) as partial_file:
+        reader = csv.DictReader(partial_file, fieldnames=fieldnames, delimiter='|')
+        uac_columns = {fieldname for fieldname in fieldnames if 'uac' in fieldname}
+        for line_number, row in enumerate(reader, 1):
+            if any((row.get(uac_column) and row.get(uac_column) in uacs) for uac_column in uac_columns):
+                logger.error('Duplicate uac found in print file',
+                             partial_file_name=partial_file_path.name,
+                             line_number=line_number)
+                return False
+            for uac_column in uac_columns:
+                uacs.add(row[uac_column])
+    return True

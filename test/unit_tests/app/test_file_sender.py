@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import shutil
 from datetime import datetime
@@ -8,7 +9,8 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 
-from app.file_sender import copy_files_to_sftp, generate_manifest_file, process_complete_file
+from app.file_sender import copy_files_to_sftp, generate_manifest_file, process_complete_file, \
+    check_partial_has_no_duplicates
 from config import TestConfig
 
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
@@ -92,3 +94,29 @@ def test_generating_manifest_file_qm(cleanup_test_files):
     assert manifest_json['description'] == 'Initial contact questionnaire households - England'
     assert manifest_json['sourceName'] == 'ONS_RM'
     assert manifest_json['dataset'] == 'QM3.2'
+
+
+def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files, caplog):
+    # Given
+    partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac')
+
+    # When
+    with caplog.at_level(logging.ERROR):
+        result = check_partial_has_no_duplicates(partial_duplicate_path, 'P_IC_ICL1')
+
+    # Then
+    assert not result, 'Check should return False for file with duplicates'
+    assert 'Duplicate uac found in print file' in caplog.text
+    assert 'line_number=2' in caplog.text
+    assert f'partial_file_name={partial_duplicate_path.name}' in caplog.text
+
+
+def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
+    # Given
+    partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2')
+
+    # When
+    result = check_partial_has_no_duplicates(partial_duplicate_path, 'P_IC_ICL1')
+
+    # Then
+    assert result, 'Check should return True for file without duplicates'
