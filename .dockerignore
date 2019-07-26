@@ -3,3 +3,5 @@ test
 Makefile
 partial_files/
 encrypted_files/
+quarantined_files/
+working_files/

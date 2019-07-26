@@ -1,5 +1,6 @@
 import fnmatch
 import json
+import uuid
 from pathlib import Path
 from time import sleep
 
@@ -12,9 +13,9 @@ from config import TestConfig
 
 ICL_message_template = {
     "actionType": None,
-    "batchId": "1",
+    "batchId": None,
     "batchQuantity": None,
-    "uac": "test_uac",
+    "uac": None,
     "caseRef": "test_caseref",
     "title": "Mr",
     "forename": "Test",
@@ -28,11 +29,11 @@ ICL_message_template = {
 
 ICHHQ_message_template = {
     "actionType": None,
-    "batchId": "1",
+    "batchId": None,
     "batchQuantity": None,
-    "uac": "english_uac",
+    "uac": None,
     'qid': "english_qid",
-    'uacWales': "welsh_uac",
+    'uacWales': None,
     'qidWales': "welsh_qid",
     "caseRef": "test_caseref",
     "fieldCoordinatorId": "test_qm_coordinator_id",
@@ -49,15 +50,14 @@ ICHHQ_message_template = {
 
 def test_icl1e_files():
     # Given
-    icl1e_message = ICL_message_template.copy()
-    icl1e_message.update({'actionType': 'ICL1E', 'batchQuantity': 1, 'packCode': 'P_IC_ICL1'})
-    send_action_messages(icl1e_message, icl1e_message['batchQuantity'])
+    icl1e_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICL1E', 'P_IC_ICL1')
+    send_action_messages(icl1e_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 icl1e_message['packCode'])
+                                                                                 'P_IC_ICL1')
 
     # Then
     get_and_check_manifest_file(sftp=sftp,
@@ -72,20 +72,19 @@ def test_icl1e_files():
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
 
 def test_icl2w_files():
     # Given
-    icl2w_message = ICL_message_template.copy()
-    icl2w_message.update({'actionType': 'ICL2W', 'batchQuantity': 1, 'packCode': 'P_IC_ICL2B'})
-    send_action_messages(icl2w_message, icl2w_message['batchQuantity'])
+    icl2w_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL2W', 'P_IC_ICL2B')
+    send_action_messages(icl2w_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 icl2w_message['packCode'])
+                                                                                 'P_IC_ICL2B')
 
     # Then
     get_and_check_manifest_file(sftp=sftp,
@@ -100,20 +99,19 @@ def test_icl2w_files():
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2B\n')
+        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2B\n')
 
 
 def test_icl4n_files():
     # Given
-    icl4n_message = ICL_message_template.copy()
-    icl4n_message.update({'actionType': 'ICL2W', 'batchQuantity': 1, 'packCode': 'P_IC_ICL4'})
-    send_action_messages(icl4n_message, icl4n_message['batchQuantity'])
+    icl4n_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL2W', 'P_IC_ICL4')
+    send_action_messages(icl4n_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 icl4n_message['packCode'])
+                                                                                 'P_IC_ICL4')
 
     # Then
     get_and_check_manifest_file(sftp=sftp,
@@ -128,20 +126,19 @@ def test_icl4n_files():
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4\n')
+        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4\n')
 
 
 def test_ichhqe_files():
     # Given
-    ichhqe_message = ICHHQ_message_template.copy()
-    ichhqe_message.update({'actionType': 'ICHHQE', 'batchQuantity': 3, 'packCode': 'P_IC_H1'})
-    send_action_messages(ichhqe_message, quantity=3)
+    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 3, 'ICHHQE', 'P_IC_H1')
+    send_action_messages(ichhqe_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 ichhqe_message['packCode'])
+                                                                                 'P_IC_H1')
 
     # Then
     get_and_check_manifest_file(sftp=sftp,
@@ -157,25 +154,24 @@ def test_ichhqe_files():
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'))
 
 
 def test_ichhqw_files():
     # Given
-    ichhqw_message = ICHHQ_message_template.copy()
-    ichhqw_message.update({'actionType': 'ICHHQW', 'batchQuantity': 3, 'packCode': 'P_IC_H2'})
-    send_action_messages(ichhqw_message, quantity=3)
+    ichhqw_messages, _ = build_test_messages(ICHHQ_message_template, 3, 'ICHHQW', 'P_IC_H2')
+    send_action_messages(ichhqw_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 ichhqw_message['packCode'])
+                                                                                 'P_IC_H2')
 
     # Then
     get_and_check_manifest_file(sftp=sftp,
@@ -191,25 +187,24 @@ def test_ichhqw_files():
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'))
 
 
 def test_ichhqn_files():
     # Given
-    ichhqn_message = ICHHQ_message_template.copy()
-    ichhqn_message.update({'actionType': 'ICHHQN', 'batchQuantity': 3, 'packCode': 'P_IC_H4'})
-    send_action_messages(ichhqn_message, quantity=3)
+    ichhqn_messages, _ = build_test_messages(ICHHQ_message_template, 3, 'ICHHQN', 'P_IC_H4')
+    send_action_messages(ichhqn_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 ichhqn_message['packCode'])
+                                                                                 'P_IC_H4')
 
     # Then
     get_and_check_manifest_file(sftp=sftp,
@@ -225,25 +220,24 @@ def test_ichhqn_files():
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
-            'english_uac|english_qid|welsh_uac|welsh_qid|test_qm_coordinator_id|'
+            '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
             'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'))
 
 
 def test_our_decryption_key():
     # Given
-    icl1e_message = ICL_message_template.copy()
-    icl1e_message.update({'actionType': 'ICL1E', 'batchQuantity': 1, 'packCode': 'P_IC_ICL1'})
-    send_action_messages(icl1e_message, icl1e_message['batchQuantity'])
+    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')
+    send_action_messages(icl1e_messages)
     sftp = open_sftp_client()
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 icl1e_message['packCode'])
+                                                                                 'P_IC_ICL1')
 
     # Then
     get_and_check_print_file(
@@ -252,7 +246,58 @@ def test_our_decryption_key():
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'our_dummy_private.asc'),
         decryption_key_passphrase='test',
-        expected='test_uac|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+
+
+def test_icl1e_with_duplicate_uacs_is_quarantined():
+    # Given
+    icl1e_messages, batch_id = build_test_messages(ICL_message_template, 3, 'ICL1E', 'P_IC_ICL1')
+    icl1e_messages[0]['uac'] = 'test_duplicate'
+    icl1e_messages[2]['uac'] = 'test_duplicate'
+    send_action_messages(icl1e_messages)
+    quarantined_files_directory = Path(__file__).parents[2].joinpath('working_files',
+                                                                     'quarantined_files')
+    expected_quarantined_file = quarantined_files_directory.joinpath(f'ICL1E.P_IC_ICL1.{batch_id}.3')
+
+    # When
+    for _attempt in range(10):
+        if expected_quarantined_file.exists():
+            break
+        sleep(1)
+
+    # Then
+    assert expected_quarantined_file.read_text() == (
+        'test_duplicate|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+        '1|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+        'test_duplicate|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+
+
+def test_ichhqw_with_duplicate_uacs_is_quarantined():
+    # Given
+    icl1e_messages, batch_id = build_test_messages(ICHHQ_message_template, 3, 'ICHHQW', 'P_IC_H2')
+    icl1e_messages[0]['uac'] = 'test_duplicate'
+    icl1e_messages[2]['uacWales'] = 'test_duplicate'
+    send_action_messages(icl1e_messages)
+    quarantined_files_directory = Path(__file__).parents[2].joinpath('working_files',
+                                                                     'quarantined_files')
+    expected_quarantined_file = quarantined_files_directory.joinpath(f'ICHHQW.P_IC_H2.{batch_id}.3')
+
+    # When
+    for _attempt in range(10):
+        if expected_quarantined_file.exists():
+            break
+        sleep(1)
+    else:
+        raise AssertionError('Reached max attempts before file was quarantined created')
+
+    # Then
+    assert expected_quarantined_file.read_text() == (
+            'test_duplicate|english_qid|1|welsh_qid|test_qm_coordinator_id|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+            '4|english_qid|test_duplicate|welsh_qid|test_qm_coordinator_id|'
+            'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n')
 
 
 def open_sftp_client():
@@ -270,18 +315,16 @@ def open_sftp_client():
 
 
 def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_attempts=10):
-    attempts = 0
-    while attempts <= max_attempts:
+    for _attempt in range(max_attempts):
         matched_print_files = [filename for filename in sftp.listdir(remote_directory)
                                if fnmatch.fnmatch(filename, f'{pack_code}_*.csv.gpg')]
         matched_manifest_files = [filename for filename in sftp.listdir(remote_directory)
                                   if fnmatch.fnmatch(filename, f'{pack_code}_*.manifest')]
-        attempts += 1
         if len(matched_print_files) and len(matched_manifest_files):
             break
         sleep(1)
     else:
-        raise AssertionError('Reached timeout before files were created')
+        raise AssertionError('Reached max attempts before files were created')
     assert len(matched_manifest_files) == 1
     assert len(matched_print_files) == 1
     return matched_manifest_files[0], matched_print_files[0]
@@ -307,10 +350,28 @@ def get_and_check_print_file(sftp, remote_print_file_path, decryption_key_path, 
     assert decrypted_print_file == expected
 
 
-def send_action_messages(message_dict, quantity):
-    message_dict['batchQuantity'] = str(quantity)
+def build_test_messages(message_template, quantity, action_type, pack_code):
+    messages = []
+    batch_id = str(uuid.uuid4())
+    for _ in range(quantity):
+        messages.append(message_template.copy())
+    test_uac = 0
+    for message in messages:
+        message.update({'actionType': action_type,
+                        'batchQuantity': quantity,
+                        'packCode': pack_code,
+                        'batchId': batch_id,
+                        'uac': str(test_uac)})
+        test_uac += 1
+        if 'uacWales' in message_template.keys():
+            message['uacWales'] = str(test_uac)
+            test_uac += 1
+    return messages, batch_id
+
+
+def send_action_messages(message_dicts):
     with RabbitContext() as rabbit:
-        for _ in range(quantity):
+        for message_dict in message_dicts:
             rabbit.channel.basic_publish(exchange='', routing_key=TestConfig.RABBIT_QUEUE,
                                          body=json.dumps(message_dict))
 
