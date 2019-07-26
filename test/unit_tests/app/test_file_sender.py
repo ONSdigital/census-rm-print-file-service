@@ -9,8 +9,9 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 
-from app.file_sender import copy_files_to_sftp, generate_manifest_file, process_complete_file, \
-    check_partial_has_no_duplicates
+from app.file_sender import copy_files_to_sftp, process_complete_file, \
+    check_partial_has_no_duplicates, quarantine_partial_file
+from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
@@ -119,4 +120,20 @@ def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
     result = check_partial_has_no_duplicates(partial_duplicate_path, 'P_IC_ICL1')
 
     # Then
-    assert result, 'Check should return True for file without duplicates'
+    assert result
+
+
+def test_quarantine_partial_file(cleanup_test_files):
+    # Given
+    partial_print_file = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.2')))
+    partial_print_file_text = partial_print_file.read_text()
+    expected_destination = Path(TestConfig.QUARANTINED_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.2'))
+
+    # When
+    quarantine_partial_file(partial_print_file)
+
+    # Then
+    assert not partial_print_file.exists()
+    assert expected_destination.exists()
+    assert expected_destination.read_text() == partial_print_file_text
