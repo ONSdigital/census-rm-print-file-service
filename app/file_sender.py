@@ -1,5 +1,4 @@
-import hashlib
-import json
+import csv
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -10,8 +9,9 @@ from structlog import wrap_logger
 
 import app.sftp as sftp
 from app.encryption import pgp_encrypt_message
-from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET, \
-    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER
+from app.manifest_file_builder import generate_manifest_file
+from app.mappings import PACK_CODE_TO_DATASET, \
+    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, DATASET_TO_PRINT_TEMPLATE
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -52,11 +52,21 @@ def delete_local_files(file_paths: Iterable[Path]):
         file_path.unlink()
 
 
+def quarantine_partial_file(partial_file_path: Path):
+    quarantine_destination = Config.QUARANTINED_FILES_DIRECTORY.joinpath(partial_file_path.name)
+    partial_file_path.replace(quarantine_destination)
+    logger.info('Quarantined partial print file', quarantined_file_path=str(quarantine_destination))
+
+
 def check_partial_files(partial_files_dir: Path):
     for print_file in partial_files_dir.rglob('*'):
         action_type, pack_code, batch_id, batch_quantity = print_file.name.split('.')
         actual_number_of_lines = sum(1 for _ in print_file.open())
         if int(batch_quantity) == actual_number_of_lines:
+            if not check_partial_has_no_duplicates(print_file, pack_code):
+                logger.info('Quarantining print file with duplicates', partial_file_name=print_file.name)
+                quarantine_partial_file(print_file)
+                return
             process_complete_file(print_file, pack_code)
 
 
@@ -82,25 +92,18 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
                     sftp_directory=sftp_client.sftp_directory)
 
 
-def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, productpack_code: str):
-    manifest = create_manifest(print_file_path, productpack_code)
-    manifest_file_path.write_text(json.dumps(manifest))
-
-
-def create_manifest(print_file_path: Path, productpack_code: str) -> dict:
-    return {
-        'schemaVersion': '1',
-        'description': PRODUCTPACK_CODE_TO_DESCRIPTION[productpack_code],
-        'dataset': PACK_CODE_TO_DATASET[productpack_code],
-        'version': '1',
-        'manifestCreated': datetime.utcnow().isoformat(),
-        'sourceName': 'ONS_RM',
-        'files': [
-            {
-                'name': print_file_path.name,
-                'relativePath': './',
-                'sizeBytes': str(print_file_path.stat().st_size),
-                'md5Sum': hashlib.md5(print_file_path.read_text().encode()).hexdigest()
-            }
-        ]
-    }
+def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: str):
+    uacs = set()
+    fieldnames = DATASET_TO_PRINT_TEMPLATE[PACK_CODE_TO_DATASET[pack_code]]
+    with open(partial_file_path) as partial_file:
+        reader = csv.DictReader(partial_file, fieldnames=fieldnames, delimiter='|')
+        uac_columns = {fieldname for fieldname in fieldnames if 'uac' in fieldname}
+        for line_number, row in enumerate(reader, 1):
+            if any((row.get(uac_column) and row.get(uac_column) in uacs) for uac_column in uac_columns):
+                logger.error('Duplicate uac found in print file',
+                             partial_file_name=partial_file_path.name,
+                             line_number=line_number)
+                return False
+            for uac_column in uac_columns:
+                uacs.add(row[uac_column])
+    return True

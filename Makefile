@@ -10,7 +10,7 @@ lint:
 unit_tests: check lint
 	pipenv run pytest test/unit_tests --cov app --cov-report term-missing
 
-integration_tests: down up
+integration_tests: clean_working_files down up
 	pipenv run pytest test/integration_tests
 	docker-compose down
 
@@ -29,3 +29,6 @@ up:
 
 down:
 	docker-compose down
+
+clean_working_files:
+	rm -rf working_files

@@ -34,9 +34,11 @@ services:
       - SFTP_KEY_FILENAME=/app/dummy_keys/dummy_rsa
       - SFTP_PASSPHRASE=secret
       - ENVIRONMENT=DEV
-    external_links:
-      - dev-print-file-service-rabbitmq
-      - dev-print-file-service-sftp
+      - QUARANTINED_FILES_DIRECTORY=/working_files/quarantined_files
+      - PARTIAL_FILES_DIRECTORY=/working_files/partial_files
+      - ENCRYPTED_FILES_DIRECTORY=/working_files/encrypted_files
+    volumes:
+      - ./working_files:/working_files
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"

@@ -12,7 +12,9 @@ def cleanup_test_files():
     test_file_path.mkdir()
     partial_files_directory = test_file_path.joinpath('partial_files/')
     encrypted_files_directory = test_file_path.joinpath('encrypted_files/')
+    quarantined_file_directory = test_file_path.joinpath('quarantined_files/')
     partial_files_directory.mkdir(exist_ok=True)
     encrypted_files_directory.mkdir(exist_ok=True)
-    yield test_file_path, partial_files_directory, encrypted_files_directory
+    quarantined_file_directory.mkdir(exist_ok=True)
+    yield test_file_path, partial_files_directory, encrypted_files_directory, quarantined_file_directory
     shutil.rmtree(test_file_path)

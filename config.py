@@ -17,6 +17,7 @@ class Config:
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))
+    QUARANTINED_FILES_DIRECTORY = Path(os.getenv('QUARANTINED_FILES_DIRECTORY', 'quarantined_files/'))
     FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 10))
 
     READINESS_FILE_PATH = Path(os.getenv('READINESS_FILE_PATH', 'print-file-service-ready'))
@@ -89,6 +90,7 @@ class TestConfig(DevConfig):
     TMP_TEST_DIRECTORY = Path(__file__).parent.joinpath('tmp_test_files')
     PARTIAL_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('partial_files/')
     ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
+    QUARANTINED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('quarantined_files/')
 
 
 # Use dev or test defaults depending on environment
