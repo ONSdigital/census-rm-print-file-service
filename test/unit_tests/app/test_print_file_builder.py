@@ -14,9 +14,6 @@ def test_generate_print_row_valid_ICL1E(cleanup_test_files):
         "batchQuantity": 3,
         "uac": "test_uac",
         "caseRef": "test_caseref",
-        "title": "Mr",
-        "forename": "Test",
-        "surname": "McTest",
         "addressLine1": "123 Fake Street",
         "addressLine2": "Duffryn",
         "townName": "Newport",
@@ -29,7 +26,7 @@ def test_generate_print_row_valid_ICL1E(cleanup_test_files):
 
     # Then
     generated_print_file = partial_files_directory.joinpath('ICL1E.P_IC_ICL1.1.3')
-    assert generated_print_file.read_text() == ('test_uac|test_caseref|Mr|Test|McTest|123 Fake Street'
+    assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
                                                 '|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
 
@@ -46,9 +43,6 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
         "qidWales": "test_wales_qid",
         "caseRef": "test_caseref",  # NB: ignored
         "fieldCoordinatorId": "test_qm_coordinator_id",
-        "title": "Mr",
-        "forename": "Test",
-        "surname": "McTest",
         "addressLine1": "123 Fake Street",
         "addressLine2": "Duffryn",
         "townName": "Newport",
@@ -63,7 +57,7 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
     generated_print_file = partial_files_directory.joinpath('ICHHQE.P_IC_H1.1.3')
     assert generated_print_file.read_text() == (
         'test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id|'
-        'Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n')
+        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n')
 
 
 def test_generate_print_row_template_not_found(cleanup_test_files):
@@ -75,9 +69,6 @@ def test_generate_print_row_template_not_found(cleanup_test_files):
         "batchQuantity": 3,
         "uac": "test_uac",
         "caseRef": "c",
-        "title": "Mr",
-        "forename": "Test",
-        "surname": "McTest",
         "addressLine1": "123 Fake Street",
         "addressLine2": "Duffryn",
         "townName": "Newport",

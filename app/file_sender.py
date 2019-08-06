@@ -11,7 +11,7 @@ import app.sftp as sftp
 from app.encryption import pgp_encrypt_message
 from app.manifest_file_builder import generate_manifest_file
 from app.mappings import PACK_CODE_TO_DATASET, \
-    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, DATASET_TO_PRINT_TEMPLATE
+    SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, SUPPLIER_TO_PRINT_TEMPLATE
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -36,6 +36,9 @@ def process_complete_file(print_file: Path, pack_code):
     file_paths.append(print_file)
     logger.info('Deleting local files', file_paths=list(map(str, file_paths)))
     delete_local_files(file_paths)
+
+    # Wait for a second so there is no chance of reusing the same file name
+    sleep(1)
 
 
 def encrypt_print_file(print_file, pack_code, supplier):
@@ -94,7 +97,7 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: str):
     uacs = set()
-    fieldnames = DATASET_TO_PRINT_TEMPLATE[PACK_CODE_TO_DATASET[pack_code]]
+    fieldnames = SUPPLIER_TO_PRINT_TEMPLATE[DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]]
     with open(partial_file_path) as partial_file:
         reader = csv.DictReader(partial_file, fieldnames=fieldnames, delimiter='|')
         uac_columns = {fieldname for fieldname in fieldnames if 'uac' in fieldname}
