@@ -9,6 +9,7 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 
+from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file
 from app.manifest_file_builder import generate_manifest_file
@@ -42,7 +43,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, 'P_IC_ICL1')
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1)
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -61,7 +62,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     with patch('app.file_sender.sftp.SftpUtility'):
-        process_complete_file(complete_file_path, 'P_IC_ICL1')
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1)
 
     with pytest.raises(StopIteration):
         next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
@@ -72,8 +73,8 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
 def test_generating_manifest_file_ppd(cleanup_test_files):
     encrypted_directory = cleanup_test_files[2]
     manifest_file = encrypted_directory.joinpath('P_IC_ICL1_2019-07-05T08-15-41.manifest')
-    print_file = resource_file_path.joinpath('P_IC_ICL1_2019-07-05T08-15-41.csv')
-    generate_manifest_file(manifest_file, print_file, 'P_IC_ICL1')
+    print_file = resource_file_path.joinpath('P_IC_ICL1_2019-07-05T08-15-41.csv.gpg')
+    generate_manifest_file(manifest_file, print_file, PackCode.P_IC_ICL1)
 
     manifest_json = json.loads(manifest_file.read_text())
 
@@ -86,8 +87,8 @@ def test_generating_manifest_file_ppd(cleanup_test_files):
 def test_generating_manifest_file_qm(cleanup_test_files):
     encrypted_directory = cleanup_test_files[2]
     manifest_file = encrypted_directory.joinpath('P_IC_H1_2019-07-08T11-57-11.manifest')
-    print_file = resource_file_path.joinpath('P_IC_H1_2019-07-08T11-57-11.csv')
-    generate_manifest_file(manifest_file, print_file, 'P_IC_H1')
+    print_file = resource_file_path.joinpath('P_IC_H1_2019-07-08T11-57-11.csv.gpg')
+    generate_manifest_file(manifest_file, print_file, PackCode.P_IC_H1)
 
     manifest_json = json.loads(manifest_file.read_text())
 
@@ -103,7 +104,7 @@ def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files, cap
 
     # When
     with caplog.at_level(logging.ERROR):
-        result = check_partial_has_no_duplicates(partial_duplicate_path, 'P_IC_ICL1')
+        result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1)
 
     # Then
     assert not result, 'Check should return False for file with duplicates'
@@ -117,7 +118,7 @@ def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
     partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2')
 
     # When
-    result = check_partial_has_no_duplicates(partial_duplicate_path, 'P_IC_ICL1')
+    result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1)
 
     # Then
     assert result

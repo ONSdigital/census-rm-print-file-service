@@ -3,7 +3,8 @@ from unittest.mock import patch, ANY
 
 import pytest
 
-from app.run_daemons import DaemonStartupError, run_daemons
+from app.run_daemons import run_daemons
+from app.exceptions import DaemonStartupError
 
 
 @patch('app.run_daemons.multiprocessing.Process')

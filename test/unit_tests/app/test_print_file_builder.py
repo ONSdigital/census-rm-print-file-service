@@ -2,7 +2,8 @@ import json
 
 import pytest
 
-from app.print_file_builder import generate_print_row, TemplateNotFoundError
+from app.exceptions import MalformedMessageError
+from app.print_file_builder import generate_print_row
 
 
 def test_generate_print_row_valid_ICL1E(cleanup_test_files):
@@ -60,7 +61,7 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
         '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n')
 
 
-def test_generate_print_row_template_not_found(cleanup_test_files):
+def test_generate_print_row_invalid_action_type(cleanup_test_files):
     # Given
     partial_files_directory = cleanup_test_files[1]
     json_body = json.dumps({
@@ -77,5 +78,5 @@ def test_generate_print_row_template_not_found(cleanup_test_files):
     })
 
     # When/Then
-    with pytest.raises(TemplateNotFoundError):
+    with pytest.raises(MalformedMessageError):
         generate_print_row(json_body, partial_files_directory)

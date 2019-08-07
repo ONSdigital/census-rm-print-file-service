@@ -1,92 +1,62 @@
+from app.constants import PackCode, Dataset, Supplier, PrintTemplate, ActionType
 from config import Config
 
-PPO_LETTER_TEMPLATE = ('uac',
-                       'caseRef',
-                       'title',
-                       'forename',
-                       'surname',
-                       'addressLine1',
-                       'addressLine2',
-                       'addressLine3',
-                       'townName',
-                       'postcode',
-                       'packCode')
-
-QM_QUESTIONNAIRE_TEMPLATE = ('uac',
-                             'qid',
-                             'uacWales',
-                             'qidWales',
-                             'fieldCoordinatorId',
-                             'title',
-                             'forename',
-                             'surname',
-                             'addressLine1',
-                             'addressLine2',
-                             'addressLine3',
-                             'townName',
-                             'postcode',
-                             'packCode')
-
-QM_SUPPLIER = 'QM'
-PPO_SUPPLIER = 'PPO'
-
-QM3_2_DATASET = 'QM3.2'
-QM3_4_DATASET = 'QM3.4'
-PPD1_1_DATASET = 'PPD1.1'
-
-PRODUCTPACK_CODE_TO_DESCRIPTION = {
-    'P_IC_ICL1': 'Initial contact letter households - England',
-    'P_IC_ICL2B': 'Initial contact letter households - Wales',
-    'P_IC_ICL4': 'Initial contact letter households - Northern Ireland',
-    'P_IC_H1': 'Initial contact questionnaire households - England',
-    'P_IC_H2': 'Initial contact questionnaire households - Wales',
-    'P_IC_H4': 'Initial contact questionnaire households - Northern Ireland',
-    'P_OR_H1': 'Household Questionnaire for England',
-    'P_OR_H2': 'Household Questionnaire for Wales (English)',
-    'P_OR_H2W': 'Household Questionnaire for Wales (Welsh)',
-    'P_OR_H4': 'Household Questionnaire for Northern Ireland (English)'
+PACK_CODE_TO_DESCRIPTION = {
+    PackCode.P_IC_ICL1: 'Initial contact letter households - England',
+    PackCode.P_IC_ICL2B: 'Initial contact letter households - Wales',
+    PackCode.P_IC_ICL4: 'Initial contact letter households - Northern Ireland',
+    PackCode.P_IC_H1: 'Initial contact questionnaire households - England',
+    PackCode.P_IC_H2: 'Initial contact questionnaire households - Wales',
+    PackCode.P_IC_H4: 'Initial contact questionnaire households - Northern Ireland',
+    PackCode.P_OR_H1: 'Household Questionnaire for England',
+    PackCode.P_OR_H2: 'Household Questionnaire for Wales (English)',
+    PackCode.P_OR_H2W: 'Household Questionnaire for Wales (Welsh)',
+    PackCode.P_OR_H4: 'Household Questionnaire for Northern Ireland (English)'
 }
 
 PACK_CODE_TO_DATASET = {
-    'P_IC_ICL1': PPD1_1_DATASET,
-    'P_IC_ICL2B': PPD1_1_DATASET,
-    'P_IC_ICL4': PPD1_1_DATASET,
-    'P_IC_H1': QM3_2_DATASET,
-    'P_IC_H2': QM3_2_DATASET,
-    'P_IC_H4': QM3_2_DATASET,
-    'P_OR_H1': QM3_4_DATASET,
-    'P_OR_H2': QM3_4_DATASET,
-    'P_OR_H2W': QM3_4_DATASET,
-    'P_OR_H4': QM3_4_DATASET
+    PackCode.P_IC_ICL1: Dataset.PPD1_1,
+    PackCode.P_IC_ICL2B: Dataset.PPD1_1,
+    PackCode.P_IC_ICL4: Dataset.PPD1_1,
+    PackCode.P_IC_H1: Dataset.QM3_2,
+    PackCode.P_IC_H2: Dataset.QM3_2,
+    PackCode.P_IC_H4: Dataset.QM3_2,
+    PackCode.P_OR_H1: Dataset.QM3_4,
+    PackCode.P_OR_H2: Dataset.QM3_4,
+    PackCode.P_OR_H2W: Dataset.QM3_4,
+    PackCode.P_OR_H4: Dataset.QM3_4
 }
 
 DATASET_TO_SUPPLIER = {
-    QM3_2_DATASET: QM_SUPPLIER,
-    QM3_4_DATASET: QM_SUPPLIER,
-    PPD1_1_DATASET: PPO_SUPPLIER
+    Dataset.QM3_2: Supplier.QM,
+    Dataset.QM3_4: Supplier.QM,
+    Dataset.PPD1_1: Supplier.PPO
 }
 
 SUPPLIER_TO_SFTP_DIRECTORY = {
-    QM_SUPPLIER: Config.SFTP_QM_DIRECTORY,
-    PPO_SUPPLIER: Config.SFTP_PPO_DIRECTORY
+    Supplier.QM: Config.SFTP_QM_DIRECTORY,
+    Supplier.PPO: Config.SFTP_PPO_DIRECTORY
 }
 
 SUPPLIER_TO_KEY_PATH = {
-    QM_SUPPLIER: Config.QM_SUPPLIER_PUBLIC_KEY_PATH,
-    PPO_SUPPLIER: Config.PPO_SUPPLIER_PUBLIC_KEY_PATH
+    Supplier.QM: Config.QM_SUPPLIER_PUBLIC_KEY_PATH,
+    Supplier.PPO: Config.PPO_SUPPLIER_PUBLIC_KEY_PATH
 }
 
 ACTION_TYPE_TO_PRINT_TEMPLATE = {
-    'ICL1E': PPO_LETTER_TEMPLATE,
-    'ICL2W': PPO_LETTER_TEMPLATE,
-    'ICL4N': PPO_LETTER_TEMPLATE,
-    'ICHHQE': QM_QUESTIONNAIRE_TEMPLATE,
-    'ICHHQW': QM_QUESTIONNAIRE_TEMPLATE,
-    'ICHHQN': QM_QUESTIONNAIRE_TEMPLATE,
-    'P_OR_HX': QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.ICL1E: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.ICL2W: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.ICL4N: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.ICHHQE: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.ICHHQW: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.ICHHQN: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_OR_H1: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_OR_H2: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_OR_H2W: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_OR_H4: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
-    PPO_SUPPLIER: PPO_LETTER_TEMPLATE,
-    QM_SUPPLIER: QM_QUESTIONNAIRE_TEMPLATE
+    Supplier.PPO: PrintTemplate.PPO_LETTER_TEMPLATE,
+    Supplier.QM: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE
 }

@@ -3,19 +3,20 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from app.mappings import PRODUCTPACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET
+from app.constants import PackCode
+from app.mappings import PACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET
 
 
-def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, productpack_code: str):
-    manifest = create_manifest(print_file_path, productpack_code)
+def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, pack_code: PackCode):
+    manifest = create_manifest(print_file_path, pack_code)
     manifest_file_path.write_text(json.dumps(manifest))
 
 
-def create_manifest(print_file_path: Path, productpack_code: str) -> dict:
+def create_manifest(print_file_path: Path, pack_code: PackCode) -> dict:
     return {
         'schemaVersion': '1',
-        'description': PRODUCTPACK_CODE_TO_DESCRIPTION[productpack_code],
-        'dataset': PACK_CODE_TO_DATASET[productpack_code],
+        'description': PACK_CODE_TO_DESCRIPTION[pack_code],
+        'dataset': PACK_CODE_TO_DATASET[pack_code].value,
         'version': '1',
         'manifestCreated': datetime.utcnow().isoformat(),
         'sourceName': 'ONS_RM',

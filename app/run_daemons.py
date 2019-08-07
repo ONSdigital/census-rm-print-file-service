@@ -6,16 +6,13 @@ from time import sleep
 from retrying import retry
 from structlog import wrap_logger
 
+from app.exceptions import DaemonStartupError
 from app.file_sender import start_file_sender
 from app.readiness import Readiness
 from app.message_listener import start_message_listener
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
-
-
-class DaemonStartupError(Exception):
-    pass
 
 
 def run_daemons():
