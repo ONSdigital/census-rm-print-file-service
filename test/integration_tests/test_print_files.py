@@ -210,9 +210,9 @@ def test_P_OR_H1(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'
-            '1|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'
-            '2|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'))
 
 
 def test_P_OR_H2(sftp_client):
@@ -239,9 +239,9 @@ def test_P_OR_H2(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'
-            '1|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'
-            '2|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'))
 
 
 def test_P_OR_H2W(sftp_client):
@@ -268,9 +268,9 @@ def test_P_OR_H2W(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'
-            '1|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'
-            '2|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'))
 
 
 def test_P_OR_H4(sftp_client):
@@ -297,9 +297,9 @@ def test_P_OR_H4(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
-            '1|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
-            '2|english_qid|||||||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'))
 
 
 def test_our_decryption_key(sftp_client):
