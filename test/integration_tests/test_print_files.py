@@ -188,7 +188,7 @@ def test_ICHHQN(sftp_client):
 
 def test_P_OR_H1(sftp_client):
     # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_H1', 'P_OR_H1')
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H1')
     send_action_messages(messages)
 
     # When
@@ -217,7 +217,7 @@ def test_P_OR_H1(sftp_client):
 
 def test_P_OR_H2(sftp_client):
     # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_H2', 'P_OR_H2')
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H2')
     send_action_messages(messages)
 
     # When
@@ -246,7 +246,7 @@ def test_P_OR_H2(sftp_client):
 
 def test_P_OR_H2W(sftp_client):
     # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_H2W', 'P_OR_H2W')
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H2W')
     send_action_messages(messages)
 
     # When
@@ -275,7 +275,7 @@ def test_P_OR_H2W(sftp_client):
 
 def test_P_OR_H4(sftp_client):
     # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_H4', 'P_OR_H4')
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H4')
     send_action_messages(messages)
 
     # When
