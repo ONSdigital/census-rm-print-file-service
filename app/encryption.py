@@ -1,11 +1,8 @@
 import pgpy
 
+from app.exceptions import EncryptionFailedException
 from app.mappings import SUPPLIER_TO_KEY_PATH
 from config import Config
-
-
-class EncryptionFailedException(Exception):
-    pass
 
 
 def pgp_encrypt_message(message, supplier):

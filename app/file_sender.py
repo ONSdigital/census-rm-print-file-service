@@ -8,6 +8,7 @@ from typing import Collection, Iterable
 from structlog import wrap_logger
 
 import app.sftp as sftp
+from app.constants import PackCode, ActionType
 from app.encryption import pgp_encrypt_message
 from app.manifest_file_builder import generate_manifest_file
 from app.mappings import PACK_CODE_TO_DATASET, \
@@ -17,7 +18,7 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(print_file: Path, pack_code):
+def process_complete_file(print_file: Path, pack_code: PackCode):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
     logger.info('Encrypting print_file', file_name=print_file.name)
@@ -41,9 +42,9 @@ def process_complete_file(print_file: Path, pack_code):
     sleep(1)
 
 
-def encrypt_print_file(print_file, pack_code, supplier):
+def encrypt_print_file(print_file, pack_code: PackCode, supplier):
     encrypted_message = pgp_encrypt_message(print_file.read_text(), supplier)
-    filename = f'{pack_code}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
+    filename = f'{pack_code.value}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
     encrypted_print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv.gpg')
     logger.info('Writing encrypted file', file_name=encrypted_print_file.name)
     encrypted_print_file.write_text(encrypted_message)
@@ -58,27 +59,32 @@ def delete_local_files(file_paths: Iterable[Path]):
 def quarantine_partial_file(partial_file_path: Path):
     quarantine_destination = Config.QUARANTINED_FILES_DIRECTORY.joinpath(partial_file_path.name)
     partial_file_path.replace(quarantine_destination)
-    logger.info('Quarantined partial print file', quarantined_file_path=str(quarantine_destination))
+    logger.warn('Quarantined partial print file', quarantined_file_path=str(quarantine_destination))
 
 
 def check_partial_files(partial_files_dir: Path):
     for print_file in partial_files_dir.rglob('*'):
-        action_type, pack_code, batch_id, batch_quantity = print_file.name.split('.')
+        action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(print_file.name)
         actual_number_of_lines = sum(1 for _ in print_file.open())
         if int(batch_quantity) == actual_number_of_lines:
             if not check_partial_has_no_duplicates(print_file, pack_code):
-                logger.info('Quarantining print file with duplicates', partial_file_name=print_file.name)
+                logger.warn('Quarantining print file with duplicates', partial_file_name=print_file.name)
                 quarantine_partial_file(print_file)
                 return
             process_complete_file(print_file, pack_code)
 
 
+def get_metadata_from_partial_file_name(partial_file_name: str):
+    action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
+    return ActionType(action_type), PackCode(pack_code), batch_id, batch_quantity
+
+
 def start_file_sender(readiness_queue):
     logger.info('Testing connection to SFTP target directories')
     with sftp.SftpUtility(Config.SFTP_QM_DIRECTORY):
-        logger.info('Successfully connected to SFTP QM directory')
+        logger.info('Successfully connected to SFTP QM directory', sftp_directory=Config.SFTP_QM_DIRECTORY)
     with sftp.SftpUtility(Config.SFTP_PPO_DIRECTORY):
-        logger.info('Successfully connected to SFTP PPD directory')
+        logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
     readiness_queue.put(True)
     logger.info('Started file sender')
     while True:
@@ -95,7 +101,7 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
                     sftp_directory=sftp_client.sftp_directory)
 
 
-def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: str):
+def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode):
     uacs = set()
     fieldnames = SUPPLIER_TO_PRINT_TEMPLATE[DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]]
     with open(partial_file_path) as partial_file:

@@ -33,11 +33,23 @@ def logger_initial_config():
         event_dict["service"] = Config.NAME
         return event_dict
 
+    def add_log_severity(_1, method_name, event_dict):
+        """
+        Add the logging level to the event dict as 'severity'
+        """
+        if method_name == "warn":
+            # The stdlib has an alias
+            method_name = "warning"
+
+        event_dict["severity"] = method_name
+        return event_dict
+
     logging.basicConfig(stream=sys.stdout, level=Config.LOG_LEVEL, format="%(message)s")
 
     configure(
         processors=[
             add_log_level,
+            add_log_severity,
             filter_by_level,
             add_service,
             TimeStamper(fmt=Config.LOG_DATE_FORMAT, utc=True, key="created_at"),
