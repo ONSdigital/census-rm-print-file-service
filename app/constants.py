@@ -53,15 +53,6 @@ class PackCode(Enum):
     P_TB_TBURD1 = "P_TB_TBURD1"
     P_TB_TBVIE1 = "P_TB_TBVIE1"
     P_TB_TBYSH1 = "P_TB_TBYSH1"
-    UACHHT1 = "UACHHT1"
-    UACHHT2 = "UACHHT2"
-    UACHHT2W = "UACHHT2W"
-    UACHHT4 = "UACHHT4"
-    UACIT1 = "UACIT1"
-    UACIT2 = "UACIT2"
-    UACIT2W = "UACIT2W"
-    UACIT4 = "UACIT4"
-
 
 class Dataset(Enum):
     QM3_2 = 'QM3.2'
