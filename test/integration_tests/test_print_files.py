@@ -304,7 +304,7 @@ def test_P_OR_H4(sftp_client):
 
 def test_P_LP_HL1(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'P_LP_HLX', 'P_LP_HL1')
+    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
     send_action_messages(icl1e_messages)
 
     # When
