@@ -54,6 +54,7 @@ class PackCode(Enum):
     P_TB_TBVIE1 = "P_TB_TBVIE1"
     P_TB_TBYSH1 = "P_TB_TBYSH1"
 
+
 class Dataset(Enum):
     QM3_2 = 'QM3.2'
     QM3_4 = 'QM3.4'

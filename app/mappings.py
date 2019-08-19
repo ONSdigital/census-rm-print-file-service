@@ -22,7 +22,7 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_TB_TBCAN4: 'Translation Booklet for Northern Ireland - Cantonese',
     PackCode.P_TB_TBFRE1: 'Translation Booklet for England & Wales - French',
     PackCode.P_TB_TBGUJ1: 'Translation Booklet for England & Wales - Gujarati',
-    PackCode.P_TB_TBGUR1: 'Translation Booklet for England & Wales - Panjabi – Gurmukhi	',
+    PackCode.P_TB_TBGUR1: 'Translation Booklet for England & Wales - Panjabi – Gurmukhi',
     PackCode.P_TB_TBIRI4: 'Translation Booklet for Northern Ireland - Irish',
     PackCode.P_TB_TBITA1: 'Translation Booklet for England & Wales - Italian',
     PackCode.P_TB_TBKUR1: 'Translation Booklet for England & Wales - Kurdish',
@@ -110,7 +110,7 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.ICHHQW: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.ICHHQN: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
-    ActionType.P_LP_HX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE
 
 }
