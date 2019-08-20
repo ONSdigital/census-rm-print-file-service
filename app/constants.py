@@ -12,6 +12,15 @@ class ActionType(Enum):
     ICHHQW = 'ICHHQW'
     ICHHQN = 'ICHHQN'
 
+    # Reminder letters
+    P_RL_1RL1_1 = 'P_RL_1RL1_1'
+    P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
+    P_RL_1RL4 = 'P_RL_1RL4'
+    P_RL_1RL1_2 = 'P_RL_1RL1_2'
+    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
+    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
+    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
+
     # On request questionnaire fulfilments
     P_OR_HX = 'P_OR_HX'
 
@@ -21,14 +30,6 @@ class ActionType(Enum):
     # Translation booklet fulfilments
     P_TB_TBX = 'P_TB_TBX'
 
-    # Reminder letters
-    P_RL_1RL1_1 = 'P_RL_1RL1_1'
-    P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
-    P_RL_1RL4 = 'P_RL_1RL4'
-    P_RL_1RL1_2 = 'P_RL_1RL1_2'
-    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
-    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
-    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
 
 class PackCode(Enum):
@@ -42,6 +43,15 @@ class PackCode(Enum):
     P_IC_H2 = 'P_IC_H2'
     P_IC_H4 = 'P_IC_H4'
 
+    # Reminder letters
+    P_RL_1RL1_1 = 'P_RL_1RL1_1'
+    P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
+    P_RL_1RL4 = 'P_RL_1RL4'
+    P_RL_1RL1_2 = 'P_RL_1RL1_2'
+    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
+    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
+    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
+
     # On request questionnaire fulfilments
     P_OR_H1 = 'P_OR_H1'
     P_OR_H2 = 'P_OR_H2'
@@ -53,15 +63,6 @@ class PackCode(Enum):
     P_OR_HC2 = 'P_OR_HC2'
     P_OR_HC2W = 'P_OR_HC2W'
     P_OR_HC4 = 'P_OR_HC4'
-
-    # Reminder letters
-    P_RL_1RL1_1 = 'P_RL_1RL1_1'
-    P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
-    P_RL_1RL4 = 'P_RL_1RL4'
-    P_RL_1RL1_2 = 'P_RL_1RL1_2'
-    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
-    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
-    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
     # Large print fulfilments
     P_LP_HL1 = "P_LP_HL1"
