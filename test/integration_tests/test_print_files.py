@@ -9,7 +9,7 @@ import pytest
 
 from config import TestConfig
 from test.integration_tests.utilities import build_test_messages, send_action_messages, ICL_message_template, \
-    ICHHQ_message_template, P_OR_message_template
+    ICHHQ_message_template, P_OR_message_template, PPD1_3_message_template
 
 
 def test_ICL1E(sftp_client):
@@ -304,7 +304,7 @@ def test_P_OR_H4(sftp_client):
 
 def test_P_LP_HL1(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
+    icl1e_messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
     send_action_messages(icl1e_messages)
 
     # When
@@ -325,12 +325,12 @@ def test_P_LP_HL1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_LP_HL1\n')
+        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_LP_HL1\n')
 
 
 def test_P_TB_TBPOL1(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'P_TB_TBX', 'P_TB_TBPOL1', uac=False)
+    icl1e_messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_TB_TBX', 'P_TB_TBPOL1', uac=False)
     send_action_messages(icl1e_messages)
 
     # When
@@ -351,7 +351,7 @@ def test_P_TB_TBPOL1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_TB_TBPOL1\n')
+        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_TB_TBPOL1\n')
 
 
 def test_our_decryption_key(sftp_client):

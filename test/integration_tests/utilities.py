@@ -16,6 +16,20 @@ ICL_message_template = {
     "postcode": "NPXXXX",
     "packCode": None
 }
+
+PPD1_3_message_template = {
+    "uac": None,
+    "caseRef": "test_caseref",
+    "title": "Mr",
+    "forename": "Test",
+    "surname": "McTest",
+    "addressLine1": "123 Fake Street",
+    "addressLine2": "Duffryn",
+    "townName": "Newport",
+    "postcode": "NPXXXX",
+    "packCode": None
+}
+
 ICHHQ_message_template = {
     "actionType": None,
     "batchId": None,
