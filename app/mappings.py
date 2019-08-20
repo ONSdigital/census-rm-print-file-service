@@ -12,6 +12,13 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_OR_H2: 'Household Questionnaire for Wales (English)',
     PackCode.P_OR_H2W: 'Household Questionnaire for Wales (Welsh)',
     PackCode.P_OR_H4: 'Household Questionnaire for Northern Ireland (English)',
+    PackCode.P_RL_1RL1_1: '1st Reminder, Letter - for England addresses',
+    PackCode.P_RL_1RL1_2: '2nd Reminder, Letter - for England addresses',
+    PackCode.P_RL_1RL2B_1: '1st Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
+    PackCode.P_RL_1RL2B_2: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
+    PackCode.P_RL_1RL4: '1st Reminder, Letter - for Ireland addresses',
+    PackCode.P_RL_2RL1_3a: '3rd Reminder, Letter - for England addresses',
+    PackCode.P_RL_2RL2B_3a: '3rd Reminder, Letter - for Wales addresses	'
 }
 
 PACK_CODE_TO_DATASET = {
@@ -25,12 +32,20 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_OR_H2: Dataset.QM3_4,
     PackCode.P_OR_H2W: Dataset.QM3_4,
     PackCode.P_OR_H4: Dataset.QM3_4,
+    PackCode.P_RL_1RL1_1: Dataset.PPD1_2,
+    PackCode.P_RL_1RL1_2: Dataset.PPD1_2,
+    PackCode.P_RL_1RL2B_1: Dataset.PPD1_2,
+    PackCode.P_RL_1RL2B_2: Dataset.PPD1_2,
+    PackCode.P_RL_1RL4: Dataset.PPD1_2,
+    PackCode.P_RL_2RL1_3a: Dataset.PPD1_2,
+    PackCode.P_RL_2RL2B_3a: Dataset.PPD1_2,
 }
 
 DATASET_TO_SUPPLIER = {
     Dataset.QM3_2: Supplier.QM,
     Dataset.QM3_4: Supplier.QM,
     Dataset.PPD1_1: Supplier.PPO,
+    Dataset.PPD1_2: Supplier.PPO
 }
 
 SUPPLIER_TO_SFTP_DIRECTORY = {
@@ -51,6 +66,13 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.ICHHQW: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.ICHHQN: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_RL_1RL1_1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL1_2: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL4: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_2RL1_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL2B_1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_2RL2B_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
