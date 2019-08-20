@@ -304,8 +304,8 @@ def test_P_OR_H4(sftp_client):
 
 def test_P_LP_HL1(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
-    send_action_messages(icl1e_messages)
+    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
@@ -330,8 +330,8 @@ def test_P_LP_HL1(sftp_client):
 
 def test_P_TB_TBPOL1(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_TB_TBX', 'P_TB_TBPOL1', uac=False)
-    send_action_messages(icl1e_messages)
+    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_TB_TBX', 'P_TB_TBPOL1', uac=False)
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
