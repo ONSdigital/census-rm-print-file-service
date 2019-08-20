@@ -9,7 +9,7 @@ import pytest
 
 from config import TestConfig
 from test.integration_tests.utilities import build_test_messages, send_action_messages, ICL_message_template, \
-    ICHHQ_message_template, P_OR_message_template
+    ICHHQ_message_template, P_OR_message_template, reminder_message_template
 
 
 def test_ICL1E(sftp_client):
@@ -300,6 +300,32 @@ def test_P_OR_H4(sftp_client):
             '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
             '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
             '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'))
+
+
+def test_P_RL_1RL1_1(sftp_client):
+    # Given
+    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RL_1RL1_1', 'P_RL_1RL1_1')
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'P_RL_1RL1_1')
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': '1st Reminder, Letter - for England addresses',
+                                    'dataset': 'PPD1.2'})
+
+    get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1_1\n')
 
 
 def test_our_decryption_key(sftp_client):
