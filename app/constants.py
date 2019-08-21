@@ -2,15 +2,26 @@ from enum import Enum
 
 
 class ActionType(Enum):
+    # Initial contact letters
     ICL1E = 'ICL1E'
     ICL2W = 'ICL2W'
     ICL4N = 'ICL4N'
+
+    # Initial contact questionnaires
     ICHHQE = 'ICHHQE'
     ICHHQW = 'ICHHQW'
     ICHHQN = 'ICHHQN'
+
+    # On request questionnaire fulfilments
     P_OR_HX = 'P_OR_HX'
+
+    # Large print fulfilments
     P_LP_HLX = 'P_LP_HLX'
+
+    # Translation booklet fulfilments
     P_TB_TBX = 'P_TB_TBX'
+
+    # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
     P_RL_1RL4 = 'P_RL_1RL4'
@@ -21,16 +32,23 @@ class ActionType(Enum):
 
 
 class PackCode(Enum):
+    # Initial contact letters
     P_IC_ICL1 = 'P_IC_ICL1'
     P_IC_ICL2B = 'P_IC_ICL2B'
     P_IC_ICL4 = 'P_IC_ICL4'
+
+    # Initial contact questionnaires
     P_IC_H1 = 'P_IC_H1'
     P_IC_H2 = 'P_IC_H2'
     P_IC_H4 = 'P_IC_H4'
+
+    # On request questionnaire fulfilments
     P_OR_H1 = 'P_OR_H1'
     P_OR_H2 = 'P_OR_H2'
     P_OR_H2W = 'P_OR_H2W'
     P_OR_H4 = 'P_OR_H4'
+
+    # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
     P_RL_1RL4 = 'P_RL_1RL4'
@@ -38,10 +56,14 @@ class PackCode(Enum):
     P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
     P_RL_2RL1_3a = 'P_RL_2RL1_3a'
     P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
+
+    # Large print fulfilments
     P_LP_HL1 = "P_LP_HL1"
     P_LP_HL2 = "P_LP_HL2"
     P_LP_HL2W = "P_LP_HL2W"
     P_LP_HL4 = "P_LP_HL4"
+
+    # Translation booklet fulfilments
     P_TB_TBARA1 = "P_TB_TBARA1"
     P_TB_TBBEN1 = "P_TB_TBBEN1"
     P_TB_TBCAN1 = "P_TB_TBCAN1"
