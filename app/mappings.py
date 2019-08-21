@@ -18,7 +18,7 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_1RL2B_2: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
     PackCode.P_RL_1RL4: '1st Reminder, Letter - for Ireland addresses',
     PackCode.P_RL_2RL1_3a: '3rd Reminder, Letter - for England addresses',
-    PackCode.P_RL_2RL2B_3a: '3rd Reminder, Letter - for Wales addresses	',
+    PackCode.P_RL_2RL2B_3a: '3rd Reminder, Letter - for Wales addresses',
     PackCode.P_LP_HL1: 'Household Questionnaire Large Print pack for England',
     PackCode.P_LP_HL2: 'Household Questionnaire Large Print pack for Wales (English)',
     PackCode.P_LP_HL2W: 'Household Questionnaire Large Print pack for Wales (Welsh)',
