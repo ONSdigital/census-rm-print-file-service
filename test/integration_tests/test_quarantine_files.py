@@ -1,8 +1,10 @@
 from pathlib import Path
 from time import sleep
 
+import pytest
+
 from test.integration_tests.utilities import build_test_messages, send_action_messages, ICL_message_template, \
-    ICHHQ_message_template
+    print_questionnaire_message_template
 
 QUARANTINED_FILES_DIRECTORY = Path(__file__).parents[2].joinpath('working_files',
                                                                  'quarantined_files')
@@ -28,7 +30,7 @@ def test_icl1e_with_duplicate_uacs_is_quarantined():
 
 def test_ichhqw_with_duplicate_uacs_is_quarantined():
     # Given
-    messages, batch_id = build_test_messages(ICHHQ_message_template, 3, 'ICHHQW', 'P_IC_H2')
+    messages, batch_id = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQW', 'P_IC_H2')
     messages[0]['uac'] = 'test_duplicate'
     messages[2]['uacWales'] = 'test_duplicate'
     send_action_messages(messages)
@@ -53,4 +55,4 @@ def wait_for_quarantined_file(expected_quarantined_file, max_attempts=10):
             break
         sleep(1)
     else:
-        raise AssertionError('Reached max attempts before file was quarantined created')
+        pytest.fail('Reached max attempts before file was quarantined created')

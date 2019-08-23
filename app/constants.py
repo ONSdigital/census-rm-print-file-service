@@ -21,6 +21,11 @@ class ActionType(Enum):
     P_RL_2RL1_3a = 'P_RL_2RL1_3a'
     P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
+    # Reminder Questionnaires
+    P_QU_H1 = 'P_QU_H1'
+    P_QU_H2 = 'P_QU_H2'
+    P_QU_H4 = 'P_QU_H4'
+
     # On request questionnaire fulfilments
     P_OR_HX = 'P_OR_HX'
 
@@ -29,7 +34,6 @@ class ActionType(Enum):
 
     # Translation booklet fulfilments
     P_TB_TBX = 'P_TB_TBX'
-
 
 
 class PackCode(Enum):
@@ -51,6 +55,11 @@ class PackCode(Enum):
     P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
     P_RL_2RL1_3a = 'P_RL_2RL1_3a'
     P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
+
+    # Reminder Questionnaires
+    P_QU_H1 = "P_QU_H1"
+    P_QU_H2 = "P_QU_H2"
+    P_QU_H4 = "P_QU_H4"
 
     # On request questionnaire fulfilments
     P_OR_H1 = 'P_OR_H1'
@@ -100,6 +109,7 @@ class PackCode(Enum):
 
 class Dataset(Enum):
     QM3_2 = 'QM3.2'
+    QM3_3 = 'QM3.3'
     QM3_4 = 'QM3.4'
     PPD1_1 = 'PPD1.1'
     PPD1_2 = 'PPD1.2'
