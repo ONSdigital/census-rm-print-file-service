@@ -48,6 +48,12 @@ class PackCode(Enum):
     P_OR_H2W = 'P_OR_H2W'
     P_OR_H4 = 'P_OR_H4'
 
+    # On request continuation questionnaire fulfilments
+    P_OR_HC1 = 'P_OR_HC1'
+    P_OR_HC2 = 'P_OR_HC2'
+    P_OR_HC2W = 'P_OR_HC2W'
+    P_OR_HC4 = 'P_OR_HC4'
+
     # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
