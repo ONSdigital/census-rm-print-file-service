@@ -17,6 +17,17 @@ ICL_message_template = {
     "packCode": None
 }
 
+reminder_message_template = {
+    "uac": None,
+    "caseRef": "test_caseref",
+    "addressLine1": "123 Fake Street",
+    "addressLine2": "Duffryn",
+    "townName": "Newport",
+    "postcode": "NPXXXX",
+    "packCode": None
+}
+
+
 PPD1_3_message_template = {
     "uac": None,
     "caseRef": "test_caseref",
