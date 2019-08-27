@@ -525,7 +525,7 @@ def test_P_OR_I1(sftp_client):
 
 def test_P_OR_I2(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICHHQE', 'P_OR_I2')
+    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICHHQW', 'P_OR_I2')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -552,7 +552,7 @@ def test_P_OR_I2(sftp_client):
 
 def test_P_OR_I2W(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICHHQE', 'P_OR_I2W')
+    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICHHQW', 'P_OR_I2W')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -579,7 +579,7 @@ def test_P_OR_I2W(sftp_client):
 
 def test_P_OR_I4(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICHHQE', 'P_OR_I4')
+    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICHHQN', 'P_OR_I4')
     send_action_messages(ichhqe_messages)
 
     # When
