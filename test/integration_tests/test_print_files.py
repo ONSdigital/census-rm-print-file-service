@@ -302,6 +302,122 @@ def test_P_OR_H4(sftp_client):
             '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'))
 
 
+def test_P_OR_HC1(sftp_client):
+    # Given
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC1')
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'P_OR_HC1')
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Continuation Questionnaire for England',
+                                    'dataset': 'QM3.4'})
+
+    get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1\n'))
+
+
+def test_P_OR_HC2(sftp_client):
+    # Given
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC2')
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'P_OR_HC2')
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Continuation Questionnaire for Wales (English)',
+                                    'dataset': 'QM3.4'})
+
+    get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2\n'))
+
+
+def test_P_OR_HC2W(sftp_client):
+    # Given
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC2W')
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'P_OR_HC2W')
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Continuation Questionnaire for Wales (Welsh)',
+                                    'dataset': 'QM3.4'})
+
+    get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W\n'))
+
+
+def test_P_OR_HC4(sftp_client):
+    # Given
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC4')
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'P_OR_HC4')
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Continuation Questionnaire for Northern Ireland (English)',
+                                    'dataset': 'QM3.4'})
+
+    get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4\n'))
+
+
 def test_P_RL_1RL1_1(sftp_client):
     # Given
     messages, _ = build_test_messages(reminder_message_template, 1, 'P_RL_1RL1_1', 'P_RL_1RL1_1')
