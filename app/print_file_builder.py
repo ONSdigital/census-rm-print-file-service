@@ -36,6 +36,7 @@ def append_print_row(print_message, template, partial_print_file: Path):
 
 
 def get_message_metadata(print_message):
+
     try:
         action_type = ActionType(print_message['actionType'])
         pack_code = PackCode(print_message['packCode'])

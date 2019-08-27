@@ -46,6 +46,7 @@ ICHHQ_message_template = {
     "postcode": "NPXXXX",
     "packCode": None
 }
+
 P_OR_message_template = {
     "actionType": None,
     "batchId": None,

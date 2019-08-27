@@ -41,7 +41,10 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_TB_TBURD1: 'Translation Booklet for England & Wales - Urdu',
     PackCode.P_TB_TBVIE1: 'Translation Booklet for England & Wales - Vietnamese',
     PackCode.P_TB_TBYSH1: 'Translation Booklet for England & Wales - Yiddish',
-
+    PackCode.P_OR_I1: 'Individual Questionnaire for England',
+    PackCode.P_OR_I2: 'Individual Questionnaire for Wales (English)',
+    PackCode.P_OR_I2W: 'Individual Questionnaire for Wales (Welsh)',
+    PackCode.P_OR_I4: 'Individual Questionnaire for Northern Ireland (English)',
 }
 
 PACK_CODE_TO_DATASET = {
@@ -83,6 +86,10 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_TB_TBULS4: Dataset.PPD1_3,
     PackCode.P_TB_TBVIE1: Dataset.PPD1_3,
     PackCode.P_TB_TBYSH1: Dataset.PPD1_3,
+    PackCode.P_OR_I1: Dataset.QM3_4,
+    PackCode.P_OR_I2: Dataset.QM3_4,
+    PackCode.P_OR_I2W: Dataset.QM3_4,
+    PackCode.P_OR_I4: Dataset.QM3_4
 }
 
 DATASET_TO_SUPPLIER = {
@@ -112,7 +119,6 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE
-
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
