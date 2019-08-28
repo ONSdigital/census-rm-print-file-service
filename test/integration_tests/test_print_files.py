@@ -15,7 +15,7 @@ from test.integration_tests.utilities import build_test_messages, send_action_me
 
 def test_ICL1E(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'ICL1E', 'P_IC_ICL1')
+    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')
     send_action_messages(icl1e_messages)
 
     # When
