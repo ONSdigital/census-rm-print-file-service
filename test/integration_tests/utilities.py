@@ -41,7 +41,7 @@ PPD1_3_message_template = {
     "packCode": None
 }
 
-ICHHQ_message_template = {
+print_questionnaire_message_template = {
     "actionType": None,
     "batchId": None,
     "batchQuantity": None,
@@ -57,6 +57,7 @@ ICHHQ_message_template = {
     "postcode": "NPXXXX",
     "packCode": None
 }
+
 P_OR_message_template = {
     "actionType": None,
     "batchId": None,

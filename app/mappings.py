@@ -52,7 +52,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_TB_TBURD1: 'Translation Booklet for England & Wales - Urdu',
     PackCode.P_TB_TBVIE1: 'Translation Booklet for England & Wales - Vietnamese',
     PackCode.P_TB_TBYSH1: 'Translation Booklet for England & Wales - Yiddish',
-
+    PackCode.P_QU_H1: '3rd Reminder, Questionnaire - for England addresses',
+    PackCode.P_QU_H2: '3rd Reminder, Questionnaire - for Wales addresses',
+    PackCode.P_QU_H4: '2nd Reminder, Questionnaire - for Ireland addresses',
 }
 
 PACK_CODE_TO_DATASET = {
@@ -105,10 +107,14 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_TB_TBULS4: Dataset.PPD1_3,
     PackCode.P_TB_TBVIE1: Dataset.PPD1_3,
     PackCode.P_TB_TBYSH1: Dataset.PPD1_3,
+    PackCode.P_QU_H1: Dataset.QM3_3,
+    PackCode.P_QU_H2: Dataset.QM3_3,
+    PackCode.P_QU_H4: Dataset.QM3_3,
 }
 
 DATASET_TO_SUPPLIER = {
     Dataset.QM3_2: Supplier.QM,
+    Dataset.QM3_3: Supplier.QM,
     Dataset.QM3_4: Supplier.QM,
     Dataset.PPD1_1: Supplier.PPO,
     Dataset.PPD1_2: Supplier.PPO,
@@ -141,7 +147,10 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RL_1RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL2B_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE
+    ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_QU_H1: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_QU_H2: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_QU_H4: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 
 }
 
