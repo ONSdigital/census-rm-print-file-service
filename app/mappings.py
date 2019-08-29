@@ -148,7 +148,10 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RL_1RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL2B_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE
+    ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_OR_I1: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_OR_I2: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_OR_I4: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
