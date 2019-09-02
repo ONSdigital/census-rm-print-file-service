@@ -6,6 +6,9 @@ services:
     ports:
       - "35672:5672"
       - "49672:15672"
+    volumes:
+      - ./test/resources/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./test/resources/definitions.json:/opt/definitions.json:ro
 
   sftp:
     container_name: dev-print-file-service-sftp

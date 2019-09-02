@@ -7,14 +7,15 @@ import paramiko
 import pgpy
 import pytest
 
+from app.constants import ActionType, PackCode
 from config import TestConfig
 from test.integration_tests.utilities import build_test_messages, send_action_messages, ICL_message_template, \
-    ICHHQ_message_template, P_OR_message_template, PPD1_3_message_template, reminder_message_template
+    print_questionnaire_message_template, P_OR_message_template, PPD1_3_message_template, reminder_message_template
 
 
 def test_ICL1E(sftp_client):
     # Given
-    icl1e_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'ICL1E', 'P_IC_ICL1')
+    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')
     send_action_messages(icl1e_messages)
 
     # When
@@ -92,7 +93,7 @@ def test_ICL4N(sftp_client):
 
 def test_ICHHQE(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 3, 'ICHHQE', 'P_IC_H1')
+    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQE', 'P_IC_H1')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -124,7 +125,7 @@ def test_ICHHQE(sftp_client):
 
 def test_ICHHQW(sftp_client):
     # Given
-    ichhqw_messages, _ = build_test_messages(ICHHQ_message_template, 3, 'ICHHQW', 'P_IC_H2')
+    ichhqw_messages, _ = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQW', 'P_IC_H2')
     send_action_messages(ichhqw_messages)
 
     # When
@@ -156,7 +157,7 @@ def test_ICHHQW(sftp_client):
 
 def test_ICHHQN(sftp_client):
     # Given
-    ichhqn_messages, _ = build_test_messages(ICHHQ_message_template, 3, 'ICHHQN', 'P_IC_H4')
+    ichhqn_messages, _ = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQN', 'P_IC_H4')
     send_action_messages(ichhqn_messages)
 
     # When
@@ -498,7 +499,7 @@ def test_P_TB_TBPOL1(sftp_client):
 
 def test_P_OR_I1(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'P_OR_I1', 'P_OR_I1')
+    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_I1', 'P_OR_I1')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -525,7 +526,7 @@ def test_P_OR_I1(sftp_client):
 
 def test_P_OR_I2(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'P_OR_I2', 'P_OR_I2')
+    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_I2', 'P_OR_I2')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -552,7 +553,7 @@ def test_P_OR_I2(sftp_client):
 
 def test_P_OR_I2W(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'P_OR_I2', 'P_OR_I2W')
+    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_I2', 'P_OR_I2W')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -579,7 +580,7 @@ def test_P_OR_I2W(sftp_client):
 
 def test_P_OR_I4(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(ICHHQ_message_template, 1, 'P_OR_I4', 'P_OR_I4')
+    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_I4', 'P_OR_I4')
     send_action_messages(ichhqe_messages)
 
     # When
@@ -602,6 +603,39 @@ def test_P_OR_I4(sftp_client):
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
             '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I4\n'))
+
+
+def test_P_QU_H2(sftp_client):
+    # Given
+    messages, _ = build_test_messages(print_questionnaire_message_template, 3, ActionType.P_QU_H2.value,
+                                      PackCode.P_QU_H2.value)
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'P_QU_H2')
+
+    # Then
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': '3rd Reminder, Questionnaire - for Wales addresses',
+                                    'dataset': 'QM3.3'})
+
+    get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected=(
+            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2\n'
+            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2\n'
+            '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2\n'))
 
 
 def test_our_decryption_key(sftp_client):
@@ -634,7 +668,7 @@ def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_atte
             break
         sleep(1)
     else:
-        raise AssertionError('Reached max attempts before files were created')
+        pytest.fail('Reached max attempts before files were created')
     assert len(matched_manifest_files) == 1
     assert len(matched_print_files) == 1
     return matched_manifest_files[0], matched_print_files[0]
