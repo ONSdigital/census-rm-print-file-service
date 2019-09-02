@@ -16,9 +16,7 @@ class ActionType(Enum):
     P_OR_HX = 'P_OR_HX'
 
     # On request individual fulfilment questionaires
-    P_OR_I1 = 'P_OR_I1'
-    P_OR_I2 = 'P_OR_I2'
-    P_OR_I4 = 'P_OR_I4'
+    P_OR_IX = 'P_OR_IX'
 
     # Large print fulfilments
     P_LP_HLX = 'P_LP_HLX'
