@@ -499,8 +499,8 @@ def test_P_TB_TBPOL1(sftp_client):
 
 def test_P_OR_I1(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I1')
-    send_action_messages(ichhqe_messages)
+    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I1')
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
@@ -526,8 +526,8 @@ def test_P_OR_I1(sftp_client):
 
 def test_P_OR_I2(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I2')
-    send_action_messages(ichhqe_messages)
+    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I2')
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
@@ -553,8 +553,8 @@ def test_P_OR_I2(sftp_client):
 
 def test_P_OR_I2W(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I2W')
-    send_action_messages(ichhqe_messages)
+    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I2W')
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
@@ -580,8 +580,8 @@ def test_P_OR_I2W(sftp_client):
 
 def test_P_OR_I4(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I4')
-    send_action_messages(ichhqe_messages)
+    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I4')
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
