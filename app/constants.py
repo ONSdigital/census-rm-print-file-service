@@ -7,10 +7,22 @@ class ActionType(Enum):
     ICL2W = 'ICL2W'
     ICL4N = 'ICL4N'
 
-    # Initial contact questionnaires
+    # Initial contact household questionnaires
     ICHHQE = 'ICHHQE'
     ICHHQW = 'ICHHQW'
     ICHHQN = 'ICHHQN'
+
+    # On request questionnaire fulfilments
+    P_OR_HX = 'P_OR_HX'
+
+    # On request individual fulfilment questionaires
+    P_OR_IX = 'P_OR_IX'
+
+    # Large print fulfilments
+    P_LP_HLX = 'P_LP_HLX'
+
+    # Translation booklet fulfilments
+    P_TB_TBX = 'P_TB_TBX'
 
     # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
@@ -25,15 +37,6 @@ class ActionType(Enum):
     P_QU_H1 = 'P_QU_H1'
     P_QU_H2 = 'P_QU_H2'
     P_QU_H4 = 'P_QU_H4'
-
-    # On request questionnaire fulfilments
-    P_OR_HX = 'P_OR_HX'
-
-    # Large print fulfilments
-    P_LP_HLX = 'P_LP_HLX'
-
-    # Translation booklet fulfilments
-    P_TB_TBX = 'P_TB_TBX'
 
 
 class PackCode(Enum):
@@ -72,6 +75,12 @@ class PackCode(Enum):
     P_OR_HC2 = 'P_OR_HC2'
     P_OR_HC2W = 'P_OR_HC2W'
     P_OR_HC4 = 'P_OR_HC4'
+
+    # On request individual questionnaire fulfilments
+    P_OR_I1 = 'P_OR_I1'
+    P_OR_I2 = 'P_OR_I2'
+    P_OR_I2W = 'P_OR_I2W'
+    P_OR_I4 = 'P_OR_I4'
 
     # Large print fulfilments
     P_LP_HL1 = "P_LP_HL1"
