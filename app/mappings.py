@@ -59,6 +59,12 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_QU_H1: '3rd Reminder, Questionnaire - for England addresses',
     PackCode.P_QU_H2: '3rd Reminder, Questionnaire - for Wales addresses',
     PackCode.P_QU_H4: '2nd Reminder, Questionnaire - for Ireland addresses',
+    PackCode.P_RD_2RL1_1: 'Response driven reminder group 1 English',
+    PackCode.P_RD_2RL2B_1: 'Response driven reminder group 1 Welsh',
+    PackCode.P_RD_2RL1_2: 'Response driven reminder group 2 English',
+    PackCode.P_RD_2RL2B_2: 'Response driven reminder group 2 Welsh',
+    PackCode.P_RD_2RL1_3: 'Response driven reminder group 3 English',
+    PackCode.P_RD_2RL2B_3: 'Response driven reminder group 3 Welsh'
 }
 
 PACK_CODE_TO_DATASET = {
@@ -118,6 +124,12 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_QU_H1: Dataset.QM3_3,
     PackCode.P_QU_H2: Dataset.QM3_3,
     PackCode.P_QU_H4: Dataset.QM3_3,
+    PackCode.P_RD_2RL1_1: Dataset.PPD1_2,
+    PackCode.P_RD_2RL2B_1: Dataset.PPD1_2,
+    PackCode.P_RD_2RL1_2: Dataset.PPD1_2,
+    PackCode.P_RD_2RL2B_2: Dataset.PPD1_2,
+    PackCode.P_RD_2RL1_3: Dataset.PPD1_2,
+    PackCode.P_RD_2RL2B_3: Dataset.PPD1_2
 }
 
 DATASET_TO_SUPPLIER = {
@@ -160,7 +172,12 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_QU_H1: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_QU_H2: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_QU_H4: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
-
+    ActionType.P_RD_2RL1_1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_2RL2B_1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_2RL1_2: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_2RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_2RL1_3: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_2RL2B_3: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {

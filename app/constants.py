@@ -38,6 +38,14 @@ class ActionType(Enum):
     P_QU_H2 = 'P_QU_H2'
     P_QU_H4 = 'P_QU_H4'
 
+    # Response driven reminders
+    P_RD_2RL1_1 = 'P_RD_2RL1_1'
+    P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
+    P_RD_2RL1_2 = 'P_RD_2RL1_2'
+    P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
+    P_RD_2RL1_3 = 'P_RD_2RL1_3'
+    P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
+
 
 class PackCode(Enum):
     # Initial contact letters
@@ -114,6 +122,13 @@ class PackCode(Enum):
     P_TB_TBURD1 = "P_TB_TBURD1"
     P_TB_TBVIE1 = "P_TB_TBVIE1"
     P_TB_TBYSH1 = "P_TB_TBYSH1"
+
+    P_RD_2RL1_1 = 'P_RD_2RL1_1'
+    P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
+    P_RD_2RL1_2 = 'P_RD_2RL1_2'
+    P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
+    P_RD_2RL1_3 = 'P_RD_2RL1_3'
+    P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
 
 
 class Dataset(Enum):
