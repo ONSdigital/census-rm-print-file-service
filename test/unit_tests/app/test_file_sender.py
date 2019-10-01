@@ -43,7 +43,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -62,7 +62,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     with patch('app.file_sender.sftp.SftpUtility'):
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
 
     with pytest.raises(StopIteration):
         next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
@@ -138,3 +138,34 @@ def test_quarantine_partial_file(cleanup_test_files):
     assert not partial_print_file.exists()
     assert expected_destination.exists()
     assert expected_destination.read_text() == partial_print_file_text
+
+
+def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
+    # Given
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+
+    failure_exception_message = 'Simulate SFTP transfer failure'
+
+    def simulate_sftp_failure(*_args, **_kwargs):
+        raise Exception(failure_exception_message)
+
+    mock_time = datetime(2019, 1, 1, 7, 6, 5)
+    iso_mock_time = mock_time.strftime("%Y-%m-%dT%H-%M-%S")
+
+    with patch('app.file_sender.copy_files_to_sftp') as patch_copy_files_to_sftp, \
+            patch('app.file_sender.delete_local_files') as patch_delete_local_files, \
+            pytest.raises(Exception) as raised_exception, \
+            patch('app.file_sender.datetime') as patch_datetime:
+        patch_datetime.utcnow.return_value = mock_time
+        patch_copy_files_to_sftp.side_effect = simulate_sftp_failure
+
+        # When
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
+
+    # Then
+    patch_delete_local_files.assert_has_calls(
+        [call([cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mock_time}.csv.gpg'),
+               cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mock_time}.manifest')])])
+
+    assert str(raised_exception.value) == failure_exception_message
