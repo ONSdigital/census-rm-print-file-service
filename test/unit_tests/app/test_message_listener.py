@@ -12,7 +12,6 @@ from run import logger_initial_config
 
 def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog):
     # Given
-    partial_files_directory = cleanup_test_files[1]
     json_body = json.dumps({
         "actionType": "NOT_A_VALID_ACTION_TYPE",
         "batchId": "1",
@@ -34,7 +33,7 @@ def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog
     mock_properties.message_id = 'mock_message_id'
 
     # When
-    print_message_callback(mock_channel, mock_method, mock_properties, json_body, partial_files_directory)
+    print_message_callback(mock_channel, mock_method, mock_properties, json_body, cleanup_test_files.partial_files)
 
     # Then
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
@@ -47,7 +46,6 @@ def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog
 
 def test_valid_action_type_is_acked(cleanup_test_files):
     # Given
-    partial_files_directory = cleanup_test_files[1]
     json_body = json.dumps({
         "actionType": "ICL1E",
         "batchId": "1",
@@ -67,7 +65,7 @@ def test_valid_action_type_is_acked(cleanup_test_files):
     # When
     mock_channel = Mock()
     mock_method = Mock()
-    print_message_callback(mock_channel, mock_method, Mock(), json_body, partial_files_directory)
+    print_message_callback(mock_channel, mock_method, Mock(), json_body, cleanup_test_files.partial_files)
 
     # Then
     mock_channel.basic_ack.assert_called_with(delivery_tag=mock_method.delivery_tag)
@@ -88,14 +86,14 @@ def test_start_message_listener_queues_ready(_patch_rabbit):
 def test_invalid_json_messages_are_nacked(cleanup_test_files, init_logger, caplog):
     # Given
     invalid_json_body = "not_valid_json"
-    partial_files_directory = cleanup_test_files[1]
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
 
     # When
-    print_message_callback(mock_channel, mock_method, mock_properties, invalid_json_body, partial_files_directory)
+    print_message_callback(mock_channel, mock_method, mock_properties, invalid_json_body,
+                           cleanup_test_files.partial_files)
 
     # Then
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
@@ -109,7 +107,7 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
     # Given
     class MockActionType(Enum):
         VALID_ACTION_TYPE_NO_TEMPLATE = 'VALID_ACTION_TYPE_NO_TEMPLATE'
-    partial_files_directory = cleanup_test_files[1]
+
     json_body = json.dumps({
         "actionType": MockActionType.VALID_ACTION_TYPE_NO_TEMPLATE.value,
         "batchId": "1",
@@ -132,7 +130,7 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
 
     # When
     with patch('app.print_file_builder.ActionType', new=MockActionType):
-        print_message_callback(mock_channel, mock_method, mock_properties, json_body, partial_files_directory)
+        print_message_callback(mock_channel, mock_method, mock_properties, json_body, cleanup_test_files.partial_files)
 
     # Then
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
