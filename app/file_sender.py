@@ -36,7 +36,7 @@ def process_complete_file(print_file: Path, pack_code: PackCode, batch_id, batch
         copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
 
     except Exception as ex:
-        context_logger.exception('Failed to send files to SFTP', file_paths=list(map(str, file_paths)))
+        context_logger.error('Failed to send files to SFTP', file_paths=list(map(str, file_paths)))
         context_logger.warn('Deleting failed encrypted and manifest print files', file_paths=list(map(str, file_paths)))
         delete_local_files(file_paths)
         raise ex
