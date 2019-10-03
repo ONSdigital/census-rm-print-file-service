@@ -11,7 +11,7 @@ import pytest
 
 from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
-    check_partial_has_no_duplicates, quarantine_partial_file
+    check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 
@@ -43,7 +43,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -51,10 +51,10 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     iso_mocked = mock_time.strftime("%Y-%m-%dT%H-%M-%S")
 
     assert put_sftp_call_kwargs[0]['local_path'] == str(
-        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.csv.gpg'))
+        cleanup_test_files.encrypted_files.joinpath(f'P_IC_ICL1_{iso_mocked}.csv.gpg'))
     assert put_sftp_call_kwargs[0]['filename'] == f'P_IC_ICL1_{iso_mocked}.csv.gpg'
     assert put_sftp_call_kwargs[1]['local_path'] == str(
-        cleanup_test_files[2].joinpath(f'P_IC_ICL1_{iso_mocked}.manifest'))
+        cleanup_test_files.encrypted_files.joinpath(f'P_IC_ICL1_{iso_mocked}.manifest'))
     assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'
 
 
@@ -62,7 +62,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     with patch('app.file_sender.sftp.SftpUtility'):
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
 
     with pytest.raises(StopIteration):
         next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
@@ -71,8 +71,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
 
 
 def test_generating_manifest_file_ppd(cleanup_test_files):
-    encrypted_directory = cleanup_test_files[2]
-    manifest_file = encrypted_directory.joinpath('P_IC_ICL1_2019-07-05T08-15-41.manifest')
+    manifest_file = cleanup_test_files.encrypted_files.joinpath('P_IC_ICL1_2019-07-05T08-15-41.manifest')
     print_file = resource_file_path.joinpath('P_IC_ICL1_2019-07-05T08-15-41.csv.gpg')
     generate_manifest_file(manifest_file, print_file, PackCode.P_IC_ICL1)
 
@@ -85,8 +84,7 @@ def test_generating_manifest_file_ppd(cleanup_test_files):
 
 
 def test_generating_manifest_file_qm(cleanup_test_files):
-    encrypted_directory = cleanup_test_files[2]
-    manifest_file = encrypted_directory.joinpath('P_IC_H1_2019-07-08T11-57-11.manifest')
+    manifest_file = cleanup_test_files.encrypted_files.joinpath('P_IC_H1_2019-07-08T11-57-11.manifest')
     print_file = resource_file_path.joinpath('P_IC_H1_2019-07-08T11-57-11.csv.gpg')
     generate_manifest_file(manifest_file, print_file, PackCode.P_IC_H1)
 
@@ -138,3 +136,54 @@ def test_quarantine_partial_file(cleanup_test_files):
     assert not partial_print_file.exists()
     assert expected_destination.exists()
     assert expected_destination.read_text() == partial_print_file_text
+
+
+def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
+    # Given
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+
+    sftp_failure_exception_message = 'Simulate SFTP transfer failure'
+
+    def simulate_sftp_failure(*_args, **_kwargs):
+        raise Exception(sftp_failure_exception_message)
+
+    with patch('app.file_sender.sftp.paramiko.SSHClient') as client, \
+            pytest.raises(Exception) as raised_exception:
+        client.return_value.open_sftp.side_effect = simulate_sftp_failure
+
+        # When
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
+
+    # Then
+    # Check encrypted_files_directory is empty
+    assert not any(cleanup_test_files.encrypted_files.iterdir())
+
+    # Check complete partial file is still there
+    assert complete_file_path.exists()
+
+    # Check original exception is re-raised
+    assert str(raised_exception.value) == sftp_failure_exception_message
+
+
+def test_check_partial_files_processes_complete_file(cleanup_test_files):
+    # Given
+    partial_file_path = Path(cleanup_test_files.partial_files.joinpath('ICL1E.P_IC_ICL1.1.1'))
+    partial_file_path.touch()
+
+    mock_storage_client = Mock()
+
+    # When
+    with patch('app.file_sender.sftp.paramiko.SSHClient') as client:
+        client.return_value.open_sftp.return_value = mock_storage_client  # mock the sftp client connection
+        mock_storage_client.stat.return_value.st_mode = paramiko.sftp_client.stat.S_IFDIR  # mock directory exists
+
+        check_partial_files(cleanup_test_files.partial_files)
+        client.assert_not_called()
+
+        Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                             cleanup_test_files.partial_files.joinpath('ICL1E.P_IC_ICL1.1.1')))
+        check_partial_files(cleanup_test_files.partial_files)
+
+    # Then
+    client.assert_called_once()

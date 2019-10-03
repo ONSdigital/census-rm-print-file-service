@@ -18,24 +18,34 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(print_file: Path, pack_code: PackCode):
+def process_complete_file(print_file: Path, pack_code: PackCode, batch_id, batch_quantity):
+    context_logger = logger.bind(pack_code=pack_code.value, batch_id=batch_id, batch_quantity=batch_quantity)
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
-    logger.info('Encrypting print_file', file_name=print_file.name)
+    context_logger.info('Encrypting print file')
     encrypted_print_file, filename = encrypt_print_file(print_file, pack_code, supplier)
 
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
-    logger.info('Creating manifest print_file', manifest_file=manifest_file.name)
+    context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
     generate_manifest_file(manifest_file, encrypted_print_file, pack_code)
     file_paths = [encrypted_print_file, manifest_file]
 
-    logger.info('Sending files to SFTP', file_paths=list(map(str, file_paths)))
-    copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
+    context_logger.info('Sending files to SFTP', file_paths=list(map(str, file_paths)))
+
+    try:
+        copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
+
+    except Exception as ex:
+        context_logger.error('Failed to send files to SFTP', file_paths=list(map(str, file_paths)))
+        context_logger.warn('Deleting failed encrypted and manifest print files', file_paths=list(map(str, file_paths)))
+        delete_local_files(file_paths)
+        raise ex
 
     # TODO upload encrypted print file and manifest to GCS
 
+    context_logger.info('Successfully sent print files to SFTP', file_paths=list(map(str, file_paths)))
     file_paths.append(print_file)
-    logger.info('Deleting local files', file_paths=list(map(str, file_paths)))
+    context_logger.info('Deleting local files', file_paths=list(map(str, file_paths)))
     delete_local_files(file_paths)
 
     # Wait for a second so there is no chance of reusing the same file name
@@ -71,7 +81,7 @@ def check_partial_files(partial_files_dir: Path):
                 logger.warn('Quarantining print file with duplicates', partial_file_name=print_file.name)
                 quarantine_partial_file(print_file)
                 return
-            process_complete_file(print_file, pack_code)
+            process_complete_file(print_file, pack_code, batch_id, batch_quantity)
 
 
 def get_metadata_from_partial_file_name(partial_file_name: str):

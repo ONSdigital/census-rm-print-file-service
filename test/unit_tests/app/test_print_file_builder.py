@@ -8,7 +8,6 @@ from app.print_file_builder import generate_print_row
 
 def test_generate_print_row_valid_ICL1E(cleanup_test_files):
     # Given
-    partial_files_directory = cleanup_test_files[1]
     json_body = json.dumps({
         "actionType": "ICL1E",
         "batchId": "1",
@@ -23,17 +22,16 @@ def test_generate_print_row_valid_ICL1E(cleanup_test_files):
     })
 
     # When
-    generate_print_row(json_body, partial_files_directory)
+    generate_print_row(json_body, cleanup_test_files.partial_files)
 
     # Then
-    generated_print_file = partial_files_directory.joinpath('ICL1E.P_IC_ICL1.1.3')
+    generated_print_file = cleanup_test_files.partial_files.joinpath('ICL1E.P_IC_ICL1.1.3')
     assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
                                                 '|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
 
 def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
     # Given
-    partial_files_directory = cleanup_test_files[1]
     json_body = json.dumps({
         "actionType": "ICHHQE",
         "batchId": "1",
@@ -52,10 +50,10 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
     })
 
     # When
-    generate_print_row(json_body, partial_files_directory)
+    generate_print_row(json_body, cleanup_test_files.partial_files)
 
     # Then
-    generated_print_file = partial_files_directory.joinpath('ICHHQE.P_IC_H1.1.3')
+    generated_print_file = cleanup_test_files.partial_files.joinpath('ICHHQE.P_IC_H1.1.3')
     assert generated_print_file.read_text() == (
         'test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id|'
         '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n')
@@ -63,7 +61,6 @@ def test_generate_print_row_valid_ICHHQE(cleanup_test_files):
 
 def test_generate_print_row_invalid_action_type(cleanup_test_files):
     # Given
-    partial_files_directory = cleanup_test_files[1]
     json_body = json.dumps({
         "actionType": "NOT_A_VALID_ACTION_TYPE",
         "batchId": "1",
@@ -79,4 +76,4 @@ def test_generate_print_row_invalid_action_type(cleanup_test_files):
 
     # When/Then
     with pytest.raises(MalformedMessageError):
-        generate_print_row(json_body, partial_files_directory)
+        generate_print_row(json_body, cleanup_test_files.partial_files)
