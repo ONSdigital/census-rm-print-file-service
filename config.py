@@ -28,6 +28,8 @@ class Config:
     LOG_LEVEL_PIKA = os.getenv('LOG_LEVEL_PIKA', 'ERROR')
     LOG_LEVEL_PARAMIKO = os.getenv('LOG_LEVEL_PARAMIKO', 'ERROR')
 
+    EXCEPTION_MANAGER_URL = os.getenv('EXCEPTION_MANAGER_URL')
+
     SFTP_HOST = os.getenv('SFTP_HOST')
     SFTP_PORT = os.getenv('SFTP_PORT')
     SFTP_USERNAME = os.getenv('SFTP_USERNAME')
@@ -65,6 +67,8 @@ class DevConfig(Config):
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD', 'guest')
 
     FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
+
+    EXCEPTION_MANAGER_URL = os.getenv('EXCEPTION_MANAGER_URL', 'http://localhost:8666')
 
     SFTP_HOST = os.getenv('SFTP_HOST', 'localhost')
     SFTP_PORT = os.getenv('SFTP_PORT', '122')
