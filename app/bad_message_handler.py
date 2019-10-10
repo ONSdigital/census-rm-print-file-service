@@ -1,6 +1,6 @@
+import base64
 import hashlib
 import logging
-import traceback
 from contextlib import suppress
 
 import requests
@@ -27,13 +27,13 @@ def report_exception(message_hash, service, queue, exception_class, exception_tr
 def quarantine_message(message_hash, body, service, queue, exception_class, routing_key, headers):
     quarantine = {
         'messageHash': message_hash,
-        'messagePayload': body.encode(),
+        'messagePayload': base64.b64encode(body),
         'service': service,
         'queue': queue,
         'exceptionClass': exception_class,
         'routingKey': routing_key,
         'contentType': 'application/json',
-        'headers': headers
+        'headers': headers,
     }
     response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/storeskippedmessage', json=quarantine)
     response.raise_for_status()
@@ -43,7 +43,7 @@ def quarantine_message(message_hash, body, service, queue, exception_class, rout
 def peek_message(message_hash, body):
     peek = {
         'messageHash': message_hash,
-        'messagePayload': body.encode()
+        'messagePayload': base64.b64encode(body),
     }
     response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/peekreply', json=peek)
     response.raise_for_status()
