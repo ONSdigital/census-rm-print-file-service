@@ -19,12 +19,10 @@ def report_exception(message_hash, service, queue, exception_class, exception_tr
         'exceptionClass': exception_class,
         'exceptionMessage': exception_trace,
     }
-    try:
-        response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/reportexception', json=exception_report)
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        logger.error('Error reporting exception', exception=e)
+
+    response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/reportexception', json=exception_report)
+    response.raise_for_status()
+    return response.json()
 
 
 def quarantine_message(message_hash, body, service, queue, exception_class, routing_key, headers):
