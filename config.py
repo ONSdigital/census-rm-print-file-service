@@ -14,6 +14,7 @@ class Config:
     RABBIT_VIRTUALHOST = os.getenv('RABBIT_VIRTUALHOST', '/')
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD')
+    RABBIT_ROUTING_KEY = os.getenv('RABBIT_ROUTING_KEY', 'Action.Printer.binding')
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))

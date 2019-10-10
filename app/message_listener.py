@@ -1,9 +1,8 @@
 import logging
-from json import JSONDecodeError
 
 from structlog import wrap_logger
 
-from app.exceptions import TemplateNotFoundError, MalformedMessageError
+from app.message_error_handler import handle_error
 from app.print_file_builder import generate_print_row
 from app.rabbit_context import RabbitContext
 from config import Config
@@ -25,9 +24,7 @@ def start_message_listener(readiness_queue):
 def print_message_callback(ch, method, properties, body, partial_files_directory=Config.PARTIAL_FILES_DIRECTORY):
     try:
         generate_print_row(body, partial_files_directory)
-    except (TemplateNotFoundError, MalformedMessageError, JSONDecodeError) as e:
-        logger.error('Error processing print message, nacking the message', message_id=properties.message_id,
-                     exception=e)
-        ch.basic_nack(delivery_tag=method.delivery_tag)
+    except Exception as e:
+        handle_error(ch, method.delivery_tag, body, e, properties.headers)
         return
     ch.basic_ack(delivery_tag=method.delivery_tag)
