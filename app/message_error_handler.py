@@ -1,7 +1,6 @@
 import base64
 import hashlib
 import logging
-from contextlib import suppress
 
 import requests
 from structlog import wrap_logger
@@ -54,13 +53,11 @@ def peek_message(message_hash, body):
 
 
 def handle_error(channel, delivery_tag, body, exception: Exception, headers):
-    message_hash = hashlib.sha256(body).hexdigest()
+    message_hash = hashlib.sha256(body.encode()).hexdigest()
     exception_class = type(exception).__name__
 
-    # Suppress exceptions here so that if any of the error advice process fails for any reasons,
-    # we exit the context and fallback to default behaviour
-    with suppress(Exception):
-        advice = report_exception(message_hash, Config.NAME, Config.RABBIT_QUEUE, exception_class, str(exception))
+    try:
+        advice = report_exception(message_hash, Config.NAME, Config.RABBIT_QUEUE, exception_class, repr(exception))
 
         if advice['skipIt']:
             logger.warn('Attempting to quarantine and ack bad message message', message_hash=message_hash,
@@ -78,6 +75,10 @@ def handle_error(channel, delivery_tag, body, exception: Exception, headers):
         if not advice['logIt']:
             channel.basic_nack(delivery_tag=delivery_tag)
             return
+    except Exception:
+        # Suppress exceptions here so that if any of the error advice process fails for any reasons,
+        # we fallback to default behaviour
+        logger.exception('Exception handling advice failed')
 
     # Default/fallback behaviour is to log the error and nack the message
     logger.error('Failure processing message', message_hash=message_hash, exception=exception)

@@ -1,3 +1,4 @@
+import hashlib
 import json
 from enum import Enum
 from queue import Queue
@@ -27,6 +28,7 @@ def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog
         "postcode": "NPXXXX",
         "packCode": "P_IC_ICL1"
     })
+    actual_hash = hashlib.sha256(json_body.encode()).hexdigest()
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()
@@ -39,8 +41,8 @@ def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
     mock_channel.basic_ack.assert_not_called()
     assert "'NOT_A_VALID_ACTION_TYPE' is not a valid ActionType" in caplog.text
-    assert 'Error processing print message, nacking the message' in caplog.text
-    assert '"message_id": "mock_message_id"' in caplog.text
+    assert 'Failure processing message' in caplog.text
+    assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'MalformedMessageError' in caplog.text
 
 
@@ -86,6 +88,7 @@ def test_start_message_listener_queues_ready(_patch_rabbit):
 def test_invalid_json_messages_are_nacked(cleanup_test_files, init_logger, caplog):
     # Given
     invalid_json_body = "not_valid_json"
+    actual_hash = hashlib.sha256(invalid_json_body.encode()).hexdigest()
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()
@@ -98,8 +101,8 @@ def test_invalid_json_messages_are_nacked(cleanup_test_files, init_logger, caplo
     # Then
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
     mock_channel.basic_ack.assert_not_called()
-    assert 'Error processing print message, nacking the message' in caplog.text
-    assert '"message_id": "mock_message_id"' in caplog.text
+    assert 'Failure processing message' in caplog.text
+    assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'JSONDecodeError' in caplog.text
 
 
@@ -123,6 +126,7 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
         "postcode": "NPXXXX",
         "packCode": "P_IC_ICL1"
     })
+    actual_hash = hashlib.sha256(json_body.encode()).hexdigest()
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()
@@ -136,8 +140,8 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
     mock_channel.basic_ack.assert_not_called()
     assert 'Template not found for action type: \\"VALID_ACTION_TYPE_NO_TEMPLATE\\"' in caplog.text
-    assert 'Error processing print message, nacking the message' in caplog.text
-    assert '"message_id": "mock_message_id"' in caplog.text
+    assert 'Failure processing message' in caplog.text
+    assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'TemplateNotFoundError' in caplog.text
 
 
