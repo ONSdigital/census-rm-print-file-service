@@ -4,11 +4,8 @@ from enum import Enum
 from queue import Queue
 from unittest.mock import Mock, patch
 
-import pytest
-
 from app.message_listener import print_message_callback, \
     start_message_listener
-from run import logger_initial_config
 
 
 def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog):
@@ -143,8 +140,3 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
     assert 'Failure processing message' in caplog.text
     assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'TemplateNotFoundError' in caplog.text
-
-
-@pytest.fixture
-def init_logger():
-    logger_initial_config()

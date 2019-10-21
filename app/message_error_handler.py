@@ -10,7 +10,7 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def report_exception(message_hash, service, queue, exception_class, exception_trace):
+def _report_exception(message_hash, service, queue, exception_class, exception_trace):
     exception_report = {
         'messageHash': message_hash,
         'service': service,
@@ -24,10 +24,10 @@ def report_exception(message_hash, service, queue, exception_class, exception_tr
     return response.json()
 
 
-def quarantine_message(message_hash, body, service, queue, exception_class, routing_key, headers):
+def _quarantine_message(message_hash, body, service, queue, exception_class, routing_key, headers):
     quarantine = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(body).decode(),
+        'messagePayload': base64.b64encode(body.encode()),
         'service': service,
         'queue': queue,
         'exceptionClass': exception_class,
@@ -41,10 +41,10 @@ def quarantine_message(message_hash, body, service, queue, exception_class, rout
     return
 
 
-def peek_message(message_hash, body):
+def _peek_message(message_hash, body):
     peek = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(body).decode(),
+        'messagePayload': base64.b64encode(body.encode()),
     }
 
     response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/peekreply', json=peek)
@@ -57,22 +57,22 @@ def handle_error(channel, delivery_tag, body, exception: Exception, headers):
     exception_class = type(exception).__name__
 
     try:
-        advice = report_exception(message_hash, Config.NAME, Config.RABBIT_QUEUE, exception_class, repr(exception))
+        advice = _report_exception(message_hash, Config.NAME, Config.RABBIT_QUEUE, exception_class, repr(exception))
 
-        if advice['skipIt']:
+        if advice.get('skipIt'):
             logger.warn('Attempting to quarantine and ack bad message message', message_hash=message_hash,
                         queue=Config.RABBIT_QUEUE, routing_key=Config.RABBIT_ROUTING_KEY)
-            quarantine_message(message_hash, body, Config.NAME, Config.RABBIT_QUEUE, exception_class,
-                               Config.RABBIT_ROUTING_KEY, headers)
+            _quarantine_message(message_hash, body, Config.NAME, Config.RABBIT_QUEUE, exception_class,
+                                Config.RABBIT_ROUTING_KEY, headers)
             channel.basic_nack(delivery_tag=delivery_tag, requeue=False)
             return
 
-        if advice['peek']:
-            peek_message(message_hash, body)
+        if advice.get('peek'):
+            _peek_message(message_hash, body)
             channel.basic_nack(delivery_tag=delivery_tag)
             return
 
-        if not advice['logIt']:
+        if not advice.get('logIt'):
             channel.basic_nack(delivery_tag=delivery_tag)
             return
     except Exception:
