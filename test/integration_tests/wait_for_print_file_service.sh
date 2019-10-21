@@ -10,7 +10,7 @@ while true; do
     fi
 
     echo "[print-file-service] not ready ([$response] is its current state)"
-    attempt=$($attempt+1)
+    attempt++
     if ((attempt >= max_attempts)); then
       echo "[print-file-service] failed to start"
       exit 1
