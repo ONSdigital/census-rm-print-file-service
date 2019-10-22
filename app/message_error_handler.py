@@ -24,10 +24,10 @@ def _report_exception(message_hash, service, queue, exception_class, exception_t
     return response.json()
 
 
-def _quarantine_message(message_hash, body, service, queue, exception_class, routing_key, headers):
+def _quarantine_message(message_hash, body: bytes, service, queue, exception_class, routing_key, headers):
     quarantine = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(body.encode()),
+        'messagePayload': base64.b64encode(body),
         'service': service,
         'queue': queue,
         'exceptionClass': exception_class,
@@ -41,10 +41,10 @@ def _quarantine_message(message_hash, body, service, queue, exception_class, rou
     return
 
 
-def _peek_message(message_hash, body):
+def _peek_message(message_hash, body: bytes):
     peek = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(body.encode()),
+        'messagePayload': base64.b64encode(body),
     }
 
     response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/peekreply', json=peek)
@@ -52,8 +52,8 @@ def _peek_message(message_hash, body):
     return
 
 
-def handle_error(channel, delivery_tag, body, exception: Exception, headers):
-    message_hash = hashlib.sha256(body.encode()).hexdigest()
+def handle_error(channel, delivery_tag, body: bytes, exception: Exception, headers):
+    message_hash = hashlib.sha256(body).hexdigest()
     exception_class = type(exception).__name__
 
     try:

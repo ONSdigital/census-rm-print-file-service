@@ -24,8 +24,8 @@ def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "P_IC_ICL1"
-    })
-    actual_hash = hashlib.sha256(json_body.encode()).hexdigest()
+    }).encode()
+    actual_hash = hashlib.sha256(json_body).hexdigest()
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()
@@ -59,7 +59,7 @@ def test_valid_action_type_is_acked(cleanup_test_files):
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "P_IC_ICL1"
-    })
+    }).encode()
 
     # When
     mock_channel = Mock()
@@ -84,8 +84,8 @@ def test_start_message_listener_queues_ready(_patch_rabbit):
 
 def test_invalid_json_messages_are_nacked(cleanup_test_files, init_logger, caplog):
     # Given
-    invalid_json_body = "not_valid_json"
-    actual_hash = hashlib.sha256(invalid_json_body.encode()).hexdigest()
+    invalid_json_body = b"not_valid_json"
+    actual_hash = hashlib.sha256(invalid_json_body).hexdigest()
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()
@@ -122,8 +122,8 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "P_IC_ICL1"
-    })
-    actual_hash = hashlib.sha256(json_body.encode()).hexdigest()
+    }).encode()
+    actual_hash = hashlib.sha256(json_body).hexdigest()
     mock_channel = Mock()
     mock_method = Mock()
     mock_properties = Mock()

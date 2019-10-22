@@ -14,8 +14,8 @@ def test_handle_error_reports_exception(init_logger, caplog):
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
-    message = 'Iamamessage'
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
+    message = b'Iamamessage'
+    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
 
     expected_exception_report = {
@@ -41,8 +41,8 @@ def test_handle_error_falls_back_on_logging(init_logger, caplog):
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
-    message = 'Iamamessage'
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
+    message = b'Iamamessage'
+    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
 
     # When
@@ -61,8 +61,8 @@ def test_handle_error_log_it(init_logger, caplog):
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
-    message = 'Iamamessage'
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
+    message = b'Iamamessage'
+    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'logIt': True}
 
@@ -83,8 +83,8 @@ def test_handle_error_no_log(init_logger, caplog):
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
-    message = 'Iamamessage'
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
+    message = b'Iamamessage'
+    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'logIt': False}
 
@@ -104,13 +104,13 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
-    message = 'Iamamessage'
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
+    message = b'Iamamessage'
+    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'skipIt': True}
     expected_quarantine_message = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(message.encode()),
+        'messagePayload': base64.b64encode(message),
         'service': TestConfig.NAME,
         'queue': TestConfig.RABBIT_QUEUE,
         'exceptionClass': type(processing_exception).__name__,
@@ -142,13 +142,13 @@ def test_handle_error_peek_message(init_logger, caplog):
     mock_method = Mock()
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
-    message = 'Iamamessage'
-    message_hash = hashlib.sha256(message.encode()).hexdigest()
+    message = b'Iamamessage'
+    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'peek': True}
     expected_peek_message = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(message.encode()),
+        'messagePayload': base64.b64encode(message),
     }
 
     # When
