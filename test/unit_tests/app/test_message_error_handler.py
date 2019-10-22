@@ -110,7 +110,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     mock_advice = {'skipIt': True}
     expected_quarantine_message = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(message),
+        'messagePayload': base64.b64encode(message).decode(),
         'service': TestConfig.NAME,
         'queue': TestConfig.RABBIT_QUEUE,
         'exceptionClass': type(processing_exception).__name__,
@@ -148,7 +148,7 @@ def test_handle_error_peek_message(init_logger, caplog):
     mock_advice = {'peek': True}
     expected_peek_message = {
         'messageHash': message_hash,
-        'messagePayload': base64.b64encode(message),
+        'messagePayload': base64.b64encode(message).decode(),
     }
 
     # When
