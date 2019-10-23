@@ -108,7 +108,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'skipIt': True}
-    expected_headers = {'origin': {
+    expected_headers = {'quarantineOrigin': {
         'exchange': TestConfig.RABBIT_EXCHANGE,
         'queue': TestConfig.RABBIT_QUEUE,
         'routing-keys': [TestConfig.RABBIT_ROUTING_KEY]

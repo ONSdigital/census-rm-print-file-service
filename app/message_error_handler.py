@@ -27,15 +27,14 @@ def _report_exception_for_advice(message_hash, service, queue, exception_class, 
 
 
 def _quarantine_message(body: bytes, message_hash, exception_class, headers):
-    if not headers:
-        headers = {}
-    headers['origin'] = {
+    quarantine_headers = headers or {}
+    quarantine_headers['quarantineOrigin'] = {
         'exchange': Config.RABBIT_EXCHANGE,
         'queue': Config.RABBIT_QUEUE,
         'routing-keys': [Config.RABBIT_ROUTING_KEY]
     }
-    _quarantine_message_in_exception_manager(body, message_hash, exception_class, headers)
-    _quarantine_message_in_rabbit(body, headers)
+    _quarantine_message_in_exception_manager(body, message_hash, exception_class, quarantine_headers)
+    _quarantine_message_in_rabbit(body, quarantine_headers)
 
 
 def _quarantine_message_in_exception_manager(body: bytes, message_hash, exception_class, headers):
