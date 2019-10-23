@@ -2,7 +2,7 @@ import logging
 
 from structlog import wrap_logger
 
-from app.message_error_handler import handle_error
+from app.message_error_handler import handle_message_error
 from app.print_file_builder import generate_print_row
 from app.rabbit_context import RabbitContext
 from config import Config
@@ -25,6 +25,6 @@ def print_message_callback(ch, method, properties, body, partial_files_directory
     try:
         generate_print_row(body, partial_files_directory)
     except Exception as e:
-        handle_error(ch, method.delivery_tag, body, e, properties.headers)
+        handle_message_error(body, e, ch, method.delivery_tag, properties.headers)
         return
     ch.basic_ack(delivery_tag=method.delivery_tag)

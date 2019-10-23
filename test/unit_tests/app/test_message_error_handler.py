@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pika
 
-from app.message_error_handler import handle_error
+from app.message_error_handler import handle_message_error
 from config import TestConfig
 
 
@@ -28,8 +28,7 @@ def test_handle_error_reports_exception(init_logger, caplog):
 
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
-        patched_post.side_effect = mock_reporting_failure
-        handle_error(mock_channel, mock_method.delivery_tag, message, processing_exception, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     # Then
     assert patched_post.called_once_with(TestConfig.EXCEPTION_MANAGER_URL, expected_exception_report)
@@ -48,7 +47,7 @@ def test_handle_error_falls_back_on_logging(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.side_effect = mock_reporting_failure
-        handle_error(mock_channel, mock_method.delivery_tag, message, processing_exception, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     # Then
     assert 'Failure processing message' in caplog.text
@@ -69,7 +68,7 @@ def test_handle_error_log_it(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_error(mock_channel, mock_method.delivery_tag, message, processing_exception, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     # Then
     assert 'Failure processing message' in caplog.text
@@ -91,7 +90,7 @@ def test_handle_error_no_log(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_error(mock_channel, mock_method.delivery_tag, message, processing_exception, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     assert 'Failure processing message' not in caplog.text
     assert message_hash not in caplog.text
@@ -122,7 +121,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_error(mock_channel, mock_method.delivery_tag, message, processing_exception, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     post_calls = patched_post.call_args_list
 
@@ -154,7 +153,7 @@ def test_handle_error_peek_message(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_error(mock_channel, mock_method.delivery_tag, message, processing_exception, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     post_calls = patched_post.call_args_list
 
