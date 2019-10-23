@@ -93,7 +93,7 @@ def handle_message_error(message_body: bytes, exception: Exception, channel, del
             channel.basic_nack(delivery_tag=delivery_tag)
             return
 
-        elif not advice.get('logIt'):
+        elif not advice.get('logIt', True):
             channel.basic_nack(delivery_tag=delivery_tag)
             return
 
