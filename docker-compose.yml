@@ -45,5 +45,5 @@ services:
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
-      interval: 10s
-      retries: 10
+      interval: 2s
+      retries: 20

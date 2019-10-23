@@ -38,7 +38,7 @@ def test_invalid_action_types_are_nacked(cleanup_test_files, init_logger, caplog
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
     mock_channel.basic_ack.assert_not_called()
     assert "'NOT_A_VALID_ACTION_TYPE' is not a valid ActionType" in caplog.text
-    assert 'Failure processing message' in caplog.text
+    assert 'Could not process message' in caplog.text
     assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'MalformedMessageError' in caplog.text
 
@@ -98,7 +98,7 @@ def test_invalid_json_messages_are_nacked(cleanup_test_files, init_logger, caplo
     # Then
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
     mock_channel.basic_ack.assert_not_called()
-    assert 'Failure processing message' in caplog.text
+    assert 'Could not process message' in caplog.text
     assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'JSONDecodeError' in caplog.text
 
@@ -137,6 +137,6 @@ def test_template_not_found_messages_are_nacked(cleanup_test_files, init_logger,
     mock_channel.basic_nack.assert_called_with(delivery_tag=mock_method.delivery_tag)
     mock_channel.basic_ack.assert_not_called()
     assert 'Template not found for action type: \\"VALID_ACTION_TYPE_NO_TEMPLATE\\"' in caplog.text
-    assert 'Failure processing message' in caplog.text
+    assert 'Could not process message' in caplog.text
     assert f'"message_hash": "{actual_hash}"' in caplog.text
     assert 'TemplateNotFoundError' in caplog.text

@@ -3,6 +3,7 @@ import hashlib
 from unittest.mock import Mock, patch
 
 import pika
+from pika import BasicProperties
 
 from app.message_error_handler import handle_message_error
 from config import TestConfig
@@ -50,7 +51,7 @@ def test_handle_error_falls_back_on_logging(init_logger, caplog):
         handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     # Then
-    assert 'Failure processing message' in caplog.text
+    assert 'Could not process message' in caplog.text
     assert 'An exception during message processing' in caplog.text
     assert message_hash in caplog.text
 
@@ -71,7 +72,7 @@ def test_handle_error_log_it(init_logger, caplog):
         handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
     # Then
-    assert 'Failure processing message' in caplog.text
+    assert 'Could not process message' in caplog.text
     assert 'An exception during message processing' in caplog.text
     assert message_hash in caplog.text
 
@@ -92,7 +93,7 @@ def test_handle_error_no_log(init_logger, caplog):
         patched_post.return_value.json.return_value = mock_advice
         handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
-    assert 'Failure processing message' not in caplog.text
+    assert 'Could not process message' not in caplog.text
     assert message_hash not in caplog.text
     assert 'An exception during message processing' not in caplog.text
 
@@ -107,6 +108,11 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'skipIt': True}
+    expected_headers = {'origin': {
+        'exchange': TestConfig.RABBIT_EXCHANGE,
+        'queue': TestConfig.RABBIT_QUEUE,
+        'routing-keys': [TestConfig.RABBIT_ROUTING_KEY]
+    }}
     expected_quarantine_message = {
         'messageHash': message_hash,
         'messagePayload': base64.b64encode(message).decode(),
@@ -115,11 +121,12 @@ def test_handle_error_quarantine_message(init_logger, caplog):
         'exceptionClass': type(processing_exception).__name__,
         'routingKey': TestConfig.RABBIT_ROUTING_KEY,
         'contentType': 'application/json',
-        'headers': None,
+        'headers': expected_headers,
     }
 
     # When
-    with patch('app.message_error_handler.requests.post') as patched_post:
+    with patch('app.message_error_handler.requests.post') as patched_post, patch(
+            'app.message_error_handler.RabbitContext') as patched_rabbit:
         patched_post.return_value.json.return_value = mock_advice
         handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
@@ -129,7 +136,16 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     assert post_calls[1][0][0] == f'{TestConfig.EXCEPTION_MANAGER_URL}/storeskippedmessage'
     assert post_calls[1][1]['json'] == expected_quarantine_message
 
-    assert 'Failure processing message' not in caplog.text
+    patched_rabbit_channel = patched_rabbit.return_value.__enter__.channel
+    assert patched_rabbit_channel.basic_publish.called_once_with(TestConfig.RABBIT_QUARANTINE_EXCHANGE,
+                                                                 TestConfig.RABBIT_QUEUE,
+                                                                 message,
+                                                                 properties=BasicProperties(
+                                                                     content_type='application/json',
+                                                                     headers=expected_headers),
+                                                                 mandatory=True)
+
+    assert 'Could not process message' not in caplog.text
     assert '"event": "Attempting to quarantine and ack bad message message"' in caplog.text
     assert message_hash in caplog.text
     assert 'An exception during message processing' not in caplog.text
@@ -161,7 +177,7 @@ def test_handle_error_peek_message(init_logger, caplog):
     assert post_calls[1][0][0] == f'{TestConfig.EXCEPTION_MANAGER_URL}/peekreply'
     assert post_calls[1][1]['json'] == expected_peek_message
 
-    assert 'Failure processing message' not in caplog.text
+    assert 'Could not process message' not in caplog.text
     assert message_hash not in caplog.text
     assert 'An exception during message processing' not in caplog.text
 

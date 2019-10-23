@@ -27,6 +27,13 @@ def _report_exception_for_advice(message_hash, service, queue, exception_class, 
 
 
 def _quarantine_message(body: bytes, message_hash, exception_class, headers):
+    if not headers:
+        headers = {}
+    headers['origin'] = {
+        'exchange': Config.RABBIT_EXCHANGE,
+        'queue': Config.RABBIT_QUEUE,
+        'routing-keys': [Config.RABBIT_ROUTING_KEY]
+    }
     _quarantine_message_in_exception_manager(body, message_hash, exception_class, headers)
     _quarantine_message_in_rabbit(body, headers)
 
@@ -53,7 +60,8 @@ def _quarantine_message_in_rabbit(body: bytes, headers):
         rabbit.channel.basic_publish(Config.RABBIT_QUARANTINE_EXCHANGE,
                                      rabbit.queue_name,
                                      body,
-                                     properties=properties)
+                                     properties=properties,
+                                     mandatory=True)
 
 
 def _peek_message(message_hash, body: bytes):
@@ -96,6 +104,5 @@ def handle_message_error(message_body: bytes, exception: Exception, channel, del
         logger.error('Exception handling advice failed', error_message=repr(e))
 
     # Default/fallback behaviour is to log the error and nack the message
-    logger.error('Failure processing message', message_hash=message_hash, exception=exception)
+    logger.error('Could not process message', message_hash=message_hash, exception=exception)
     channel.basic_nack(delivery_tag=delivery_tag)
-    return

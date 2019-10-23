@@ -9,14 +9,15 @@ class MissingConfigError(Exception):
 
 class Config:
     RABBIT_QUEUE = os.getenv('RABBIT_QUEUE', 'Action.Printer')
+    RABBIT_EXCHANGE = os.getenv('RABBIT_EXCHANGE', 'action-outbound-exchange')
     RABBIT_HOST = os.getenv('RABBIT_HOST')
     RABBIT_PORT = os.getenv('RABBIT_PORT', 5672)
     RABBIT_VIRTUALHOST = os.getenv('RABBIT_VIRTUALHOST', '/')
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD')
     RABBIT_ROUTING_KEY = os.getenv('RABBIT_ROUTING_KEY', 'Action.Printer.binding')
-    RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE')
-    RABBIT_QUARANTINE_EXCHANGE = os.getenv('RABBIT_QUARANTINE_QUEUE')
+    RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineQueue')
+    RABBIT_QUARANTINE_EXCHANGE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineExchange')
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))
@@ -70,8 +71,6 @@ class DevConfig(Config):
     RABBIT_PORT = os.getenv('RABBIT_PORT', '6672')
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME', 'guest')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD', 'guest')
-    RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineQueue')
-    RABBIT_QUARANTINE_EXCHANGE = os.getenv('RABBIT_QUARANTINE_QUEUE', '/')
 
     FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
 
@@ -104,6 +103,7 @@ class TestConfig(DevConfig):
     PARTIAL_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('partial_files/')
     ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
     QUARANTINED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('quarantined_files/')
+    EXCEPTION_MANAGER_URL = 'http://test'
 
 
 # Use dev or test defaults depending on environment
