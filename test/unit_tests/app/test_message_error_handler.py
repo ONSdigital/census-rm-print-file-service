@@ -53,7 +53,7 @@ def test_handle_error_falls_back_on_logging(init_logger, caplog):
     # Then
     assert 'Could not process message' in caplog.text
     assert 'An exception during message processing' in caplog.text
-    assert message_hash in caplog.text
+    assert f'"message_hash": "{message_hash}"' in caplog.text
 
 
 def test_handle_error_log_it(init_logger, caplog):
@@ -74,7 +74,7 @@ def test_handle_error_log_it(init_logger, caplog):
     # Then
     assert 'Could not process message' in caplog.text
     assert 'An exception during message processing' in caplog.text
-    assert message_hash in caplog.text
+    assert f'"message_hash": "{message_hash}"' in caplog.text
 
 
 def test_handle_error_no_log(init_logger, caplog):
@@ -84,7 +84,6 @@ def test_handle_error_no_log(init_logger, caplog):
     mock_properties = Mock()
     mock_properties.message_id = 'mock_message_id'
     message = b'Iamamessage'
-    message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'logIt': False}
 
@@ -93,9 +92,7 @@ def test_handle_error_no_log(init_logger, caplog):
         patched_post.return_value.json.return_value = mock_advice
         handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
 
-    assert 'Could not process message' not in caplog.text
-    assert message_hash not in caplog.text
-    assert 'An exception during message processing' not in caplog.text
+    assert not caplog.text
 
 
 def test_handle_error_quarantine_message(init_logger, caplog):
@@ -108,11 +105,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'skipIt': True}
-    expected_headers = {'quarantineOrigin': {
-        'exchange': TestConfig.RABBIT_EXCHANGE,
-        'queue': TestConfig.RABBIT_QUEUE,
-        'routing-keys': [TestConfig.RABBIT_ROUTING_KEY]
-    }}
+
     expected_quarantine_message = {
         'messageHash': message_hash,
         'messagePayload': base64.b64encode(message).decode(),
@@ -121,14 +114,14 @@ def test_handle_error_quarantine_message(init_logger, caplog):
         'exceptionClass': type(processing_exception).__name__,
         'routingKey': TestConfig.RABBIT_ROUTING_KEY,
         'contentType': 'application/json',
-        'headers': expected_headers,
+        'headers': None,
     }
-
+    properties = BasicProperties(content_type='application/json')
     # When
     with patch('app.message_error_handler.requests.post') as patched_post, patch(
             'app.message_error_handler.RabbitContext') as patched_rabbit:
         patched_post.return_value.json.return_value = mock_advice
-        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, properties)
 
     post_calls = patched_post.call_args_list
 
@@ -140,15 +133,14 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     assert patched_rabbit_channel.basic_publish.called_once_with(TestConfig.RABBIT_QUARANTINE_EXCHANGE,
                                                                  TestConfig.RABBIT_QUEUE,
                                                                  message,
-                                                                 properties=BasicProperties(
-                                                                     content_type='application/json',
-                                                                     headers=expected_headers),
+                                                                 properties=properties,
                                                                  mandatory=True)
 
-    assert 'Could not process message' not in caplog.text
-    assert '"event": "Attempting to quarantine and ack bad message message"' in caplog.text
-    assert message_hash in caplog.text
-    assert 'An exception during message processing' not in caplog.text
+    assert "Attempting to quarantine and skip bad message" in caplog.text
+    assert "Successfully quarantined and skipped bad message" in caplog.text
+    assert f'"queue": "{TestConfig.RABBIT_QUEUE}"' in caplog.text
+    assert f'"message_hash": "{message_hash}"' in caplog.text
+    assert "Could not process message" not in caplog.text
 
 
 def test_handle_error_peek_message(init_logger, caplog):
@@ -177,9 +169,7 @@ def test_handle_error_peek_message(init_logger, caplog):
     assert post_calls[1][0][0] == f'{TestConfig.EXCEPTION_MANAGER_URL}/peekreply'
     assert post_calls[1][1]['json'] == expected_peek_message
 
-    assert 'Could not process message' not in caplog.text
-    assert message_hash not in caplog.text
-    assert 'An exception during message processing' not in caplog.text
+    assert not caplog.text
 
 
 def mock_reporting_failure():

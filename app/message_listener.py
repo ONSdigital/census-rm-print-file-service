@@ -25,6 +25,6 @@ def print_message_callback(ch, method, properties, body, partial_files_directory
     try:
         generate_print_row(body, partial_files_directory)
     except Exception as e:
-        handle_message_error(body, e, ch, method.delivery_tag, properties.headers)
+        handle_message_error(body, e, ch, method.delivery_tag, properties)
         return
     ch.basic_ack(delivery_tag=method.delivery_tag)

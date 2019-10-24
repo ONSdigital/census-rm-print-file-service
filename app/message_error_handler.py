@@ -3,7 +3,6 @@ import hashlib
 import logging
 
 import requests
-from pika import BasicProperties
 from structlog import wrap_logger
 
 from app.rabbit_context import RabbitContext
@@ -26,15 +25,9 @@ def _report_exception_for_advice(message_hash, service, queue, exception_class, 
     return response.json()
 
 
-def _quarantine_message(body: bytes, message_hash, exception_class, headers):
-    quarantine_headers = headers or {}
-    quarantine_headers['quarantineOrigin'] = {
-        'exchange': Config.RABBIT_EXCHANGE,
-        'queue': Config.RABBIT_QUEUE,
-        'routing-keys': [Config.RABBIT_ROUTING_KEY]
-    }
-    _quarantine_message_in_exception_manager(body, message_hash, exception_class, quarantine_headers)
-    _quarantine_message_in_rabbit(body, quarantine_headers)
+def _quarantine_message(body: bytes, message_hash, exception_class, properties):
+    _quarantine_message_in_exception_manager(body, message_hash, exception_class, properties.headers)
+    _quarantine_message_in_rabbit(body, properties)
 
 
 def _quarantine_message_in_exception_manager(body: bytes, message_hash, exception_class, headers):
@@ -53,8 +46,7 @@ def _quarantine_message_in_exception_manager(body: bytes, message_hash, exceptio
     response.raise_for_status()
 
 
-def _quarantine_message_in_rabbit(body: bytes, headers):
-    properties = BasicProperties(content_type='application/json', headers=headers)
+def _quarantine_message_in_rabbit(body: bytes, properties):
     with RabbitContext(queue_name=Config.RABBIT_QUARANTINE_QUEUE) as rabbit:
         rabbit.channel.basic_publish(Config.RABBIT_QUARANTINE_EXCHANGE,
                                      rabbit.queue_name,
@@ -73,7 +65,7 @@ def _peek_message(message_hash, body: bytes):
     response.raise_for_status()
 
 
-def handle_message_error(message_body: bytes, exception: Exception, channel, delivery_tag, headers):
+def handle_message_error(message_body: bytes, exception: Exception, channel, delivery_tag, properties):
     message_hash = hashlib.sha256(message_body).hexdigest()
     exception_class = type(exception).__name__
 
@@ -82,10 +74,12 @@ def handle_message_error(message_body: bytes, exception: Exception, channel, del
                                               repr(exception))
 
         if advice.get('skipIt'):
-            logger.warn('Attempting to quarantine and ack bad message message', message_hash=message_hash,
+            logger.warn('Attempting to quarantine and skip bad message', message_hash=message_hash,
                         queue=Config.RABBIT_QUEUE, routing_key=Config.RABBIT_ROUTING_KEY)
-            _quarantine_message(message_body, message_hash, exception_class, headers)
+            _quarantine_message(message_body, message_hash, exception_class, properties)
             channel.basic_nack(delivery_tag=delivery_tag, requeue=False)
+            logger.warn('Successfully quarantined and skipped bad message', message_hash=message_hash,
+                        queue=Config.RABBIT_QUEUE, routing_key=Config.RABBIT_ROUTING_KEY)
             return
 
         elif advice.get('peek'):
