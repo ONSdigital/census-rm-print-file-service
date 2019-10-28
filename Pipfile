@@ -15,6 +15,7 @@ structlog = "*"
 pgpy = "*"
 paramiko = "*"
 retrying = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

@@ -9,11 +9,15 @@ class MissingConfigError(Exception):
 
 class Config:
     RABBIT_QUEUE = os.getenv('RABBIT_QUEUE', 'Action.Printer')
+    RABBIT_EXCHANGE = os.getenv('RABBIT_EXCHANGE', 'action-outbound-exchange')
     RABBIT_HOST = os.getenv('RABBIT_HOST')
     RABBIT_PORT = os.getenv('RABBIT_PORT', 5672)
     RABBIT_VIRTUALHOST = os.getenv('RABBIT_VIRTUALHOST', '/')
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD')
+    RABBIT_ROUTING_KEY = os.getenv('RABBIT_ROUTING_KEY', 'Action.Printer.binding')
+    RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineQueue')
+    RABBIT_QUARANTINE_EXCHANGE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineExchange')
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))
@@ -27,6 +31,10 @@ class Config:
     LOG_DATE_FORMAT = os.getenv('LOG_DATE_FORMAT', '%Y-%m-%dT%H:%M%s')
     LOG_LEVEL_PIKA = os.getenv('LOG_LEVEL_PIKA', 'ERROR')
     LOG_LEVEL_PARAMIKO = os.getenv('LOG_LEVEL_PARAMIKO', 'ERROR')
+
+    EXCEPTIONMANAGER_CONNECTION_HOST = os.getenv('EXCEPTIONMANAGER_CONNECTION_HOST')
+    EXCEPTIONMANAGER_CONNECTION_PORT = os.getenv('EXCEPTIONMANAGER_CONNECTION_PORT')
+    EXCEPTION_MANAGER_URL = f'http://{EXCEPTIONMANAGER_CONNECTION_HOST}:{EXCEPTIONMANAGER_CONNECTION_PORT}'
 
     SFTP_HOST = os.getenv('SFTP_HOST')
     SFTP_PORT = os.getenv('SFTP_PORT')
@@ -66,6 +74,10 @@ class DevConfig(Config):
 
     FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
 
+    EXCEPTIONMANAGER_CONNECTION_HOST = os.getenv('EXCEPTIONMANAGER_CONNECTION_HOST', 'localhost')
+    EXCEPTIONMANAGER_CONNECTION_PORT = os.getenv('EXCEPTIONMANAGER_CONNECTION_PORT', '8666')
+    EXCEPTION_MANAGER_URL = f'http://{EXCEPTIONMANAGER_CONNECTION_HOST}:{EXCEPTIONMANAGER_CONNECTION_PORT}'
+
     SFTP_HOST = os.getenv('SFTP_HOST', 'localhost')
     SFTP_PORT = os.getenv('SFTP_PORT', '122')
     SFTP_USERNAME = os.getenv('SFTP_USERNAME', 'centos')
@@ -91,6 +103,7 @@ class TestConfig(DevConfig):
     PARTIAL_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('partial_files/')
     ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
     QUARANTINED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('quarantined_files/')
+    EXCEPTION_MANAGER_URL = 'http://test'
 
 
 # Use dev or test defaults depending on environment
