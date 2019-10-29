@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 
 import pika
 from pika import BasicProperties
+from pika.spec import PERSISTENT_DELIVERY_MODE
 
 from app.message_error_handler import handle_message_error
 from config import TestConfig
@@ -29,7 +30,7 @@ def test_handle_error_reports_exception(init_logger, caplog):
 
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
-        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, mock_properties)
 
     # Then
     assert patched_post.called_once_with(TestConfig.EXCEPTION_MANAGER_URL, expected_exception_report)
@@ -48,7 +49,7 @@ def test_handle_error_falls_back_on_logging(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.side_effect = mock_reporting_failure
-        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, mock_properties)
 
     # Then
     assert 'Could not process message' in caplog.text
@@ -69,7 +70,7 @@ def test_handle_error_log_it(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, mock_properties)
 
     # Then
     assert 'Could not process message' in caplog.text
@@ -90,7 +91,7 @@ def test_handle_error_no_log(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, mock_properties)
 
     assert not caplog.text
 
@@ -99,8 +100,6 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     # Given
     mock_channel = Mock(pika.adapters.blocking_connection.BlockingChannel)
     mock_method = Mock()
-    mock_properties = Mock()
-    mock_properties.message_id = 'mock_message_id'
     message = b'Iamamessage'
     message_hash = hashlib.sha256(message).hexdigest()
     processing_exception = Exception('An exception during message processing')
@@ -136,6 +135,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
                                                                  properties=properties,
                                                                  mandatory=True)
 
+    assert properties.delivery_mode == PERSISTENT_DELIVERY_MODE
     assert "Attempting to quarantine and skip bad message" in caplog.text
     assert "Successfully quarantined and skipped bad message" in caplog.text
     assert f'"queue": "{TestConfig.RABBIT_QUEUE}"' in caplog.text
@@ -161,7 +161,7 @@ def test_handle_error_peek_message(init_logger, caplog):
     # When
     with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
-        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, None)
+        handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, mock_properties)
 
     post_calls = patched_post.call_args_list
 
