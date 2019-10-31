@@ -3,6 +3,7 @@ import hashlib
 import logging
 
 import requests
+from pika.spec import PERSISTENT_DELIVERY_MODE
 from structlog import wrap_logger
 
 from app.rabbit_context import RabbitContext
@@ -47,6 +48,7 @@ def _quarantine_message_in_exception_manager(body: bytes, message_hash, exceptio
 
 
 def _quarantine_message_in_rabbit(body: bytes, properties):
+    properties.delivery_mode = PERSISTENT_DELIVERY_MODE
     with RabbitContext(queue_name=Config.RABBIT_QUARANTINE_QUEUE) as rabbit:
         rabbit.channel.basic_publish(Config.RABBIT_QUARANTINE_EXCHANGE,
                                      rabbit.queue_name,
