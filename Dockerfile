@@ -2,8 +2,13 @@ FROM python:3.7-slim
 
 RUN pip install pipenv
 
-WORKDIR /app
+RUN groupadd --gid 1000 printfile && \
+    useradd --create-home --system --uid 1000 --gid printfile printfile
+WORKDIR /home/printfile
 CMD ["python3", "run.py"]
 
-COPY . /app
-RUN pipenv install --system --deploy
+COPY Pipfile* /home/printfile/
+RUN pipenv install --deploy --system
+USER printfile
+
+COPY --chown=printfile . /home/printfile
