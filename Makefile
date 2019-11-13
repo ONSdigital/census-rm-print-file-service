@@ -32,3 +32,10 @@ down:
 
 clean_working_files:
 	rm -rf working_files
+
+build_and_integration_tests_no_clean: install unit_tests docker_build integration_tests_no_clean
+
+
+integration_tests_no_clean: down up
+	pipenv run pytest test/integration_tests
+	docker-compose down

@@ -19,7 +19,7 @@ script:
   - ls -la
   - mkdir working_files
   - mkdir working_files/partial_files && mkdir working_files/encrypted_files && mkdir working_files/quarantined_files
-  - make build_and_test
+  - make build_and_integration_tests_no_clean
 
 after_success:
   - pipenv run codecov
