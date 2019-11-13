@@ -37,11 +37,11 @@ services:
       - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
       - SFTP_PASSPHRASE=secret
       - ENVIRONMENT=DEV
-      - QUARANTINED_FILES_DIRECTORY=/working_files/quarantined_files
-      - PARTIAL_FILES_DIRECTORY=/working_files/partial_files
-      - ENCRYPTED_FILES_DIRECTORY=/working_files/encrypted_files
+      - QUARANTINED_FILES_DIRECTORY=/home/printfile/working_files/quarantined_files
+      - PARTIAL_FILES_DIRECTORY=/home/printfile/working_files/partial_files
+      - ENCRYPTED_FILES_DIRECTORY=/home/printfile/working_files/encrypted_files
     volumes:
-      - ./working_files:/working_files
+      - ./working_files:/home/printfile/working_files
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
