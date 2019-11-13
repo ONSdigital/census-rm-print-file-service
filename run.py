@@ -7,6 +7,7 @@ from app.run_daemons import run_daemons
 from config import Config
 import os
 
+
 def run():
     Config.check_config()
     logger_initial_config()
