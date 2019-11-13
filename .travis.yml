@@ -18,7 +18,7 @@ script:
   - pwd
   - ls -la
   - mkdir working_files
-  - chown printfile ./working_files/
+  - chown 1000 ./working_files/
   - make build_and_test
 
 after_success:
