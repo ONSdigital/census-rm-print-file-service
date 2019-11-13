@@ -16,7 +16,8 @@ install:
 
 script:
   - pwd
-  - chmod 1000 /home/printfile/working_files/
+  - ls -la
+  - chmod 1000 ./working_files/
   - make build_and_test
 
 after_success:
