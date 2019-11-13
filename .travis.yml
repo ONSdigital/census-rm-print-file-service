@@ -15,7 +15,8 @@ install:
   - pipenv install --dev --deploy
 
 script:
-  - chmod 1000 /home/printfile/working_files
+  - pwd
+  - chmod 1000 /home/printfile/working_files/
   - make build_and_test
 
 after_success:
