@@ -40,7 +40,6 @@ services:
       - QUARANTINED_FILES_DIRECTORY=/home/printfile/working_files/quarantined_files
       - PARTIAL_FILES_DIRECTORY=/home/printfile/working_files/partial_files
       - ENCRYPTED_FILES_DIRECTORY=/home/printfile/working_files/encrypted_files
-    user: '1000'
     volumes:
       - ./working_files:/home/printfile/working_files
     restart: always

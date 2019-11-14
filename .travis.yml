@@ -23,8 +23,6 @@ script:
 after_success:
   - pipenv run codecov
 
-after_failure:
-  - docker logs dev-print-file-service
 env:
   global:
     - PIPENV_IGNORE_VIRTUALENVS=1

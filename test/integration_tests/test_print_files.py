@@ -820,7 +820,6 @@ def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_atte
                                if fnmatch.fnmatch(filename, f'{pack_code}_*.csv.gpg')]
         matched_manifest_files = [filename for filename in sftp.listdir(remote_directory)
                                   if fnmatch.fnmatch(filename, f'{pack_code}_*.manifest')]
-        print(sftp.listdir(remote_directory))
         if len(matched_print_files) and len(matched_manifest_files):
             break
         sleep(1)

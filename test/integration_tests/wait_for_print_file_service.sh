@@ -9,7 +9,7 @@ while true; do
     fi
 
     echo "[print-file-service] not ready ([$response] is its current state)"
-    ((attempt++)) && ((attempt == 30)) && echo "[print-file-service] failed to start" && echo $(docker logs dev-print-file-service)  && exit 1
+    ((attempt++)) && ((attempt == 30)) && echo "[print-file-service] failed to start" && exit 1
     sleep 2s
 
 done
