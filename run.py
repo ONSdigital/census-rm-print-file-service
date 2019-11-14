@@ -5,7 +5,6 @@ from structlog import wrap_logger
 from app.logger import logger_initial_config
 from app.run_daemons import run_daemons
 from config import Config
-import os
 
 
 def run():
@@ -14,10 +13,6 @@ def run():
     logger = wrap_logger(logging.getLogger(__name__))
     logger.info('Starting print file service', app_log_level=Config.LOG_LEVEL, pika_log_level=Config.LOG_LEVEL_PIKA,
                 paramiko_log_level=Config.LOG_LEVEL_PARAMIKO, environment=Config.ENVIRONMENT)
-    for dir in os.listdir('/home/printfile/'):
-        print(f'{dir}----------------')
-        print(os.stat(f'/home/printfile/{dir}'))
-        print(f'----------------')
     initialise_directories()
     run_daemons()
 

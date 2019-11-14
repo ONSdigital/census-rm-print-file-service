@@ -15,8 +15,6 @@ install:
   - pipenv install --dev --deploy
 
 script:
-  - pwd
-  - ls -la
   - mkdir working_files
   - mkdir working_files/partial_files && mkdir working_files/encrypted_files && mkdir working_files/quarantined_files
   - sudo chmod -R 777 working_files/
