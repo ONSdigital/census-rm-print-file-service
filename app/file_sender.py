@@ -18,12 +18,17 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(print_file: Path, pack_code: PackCode, batch_id, batch_quantity):
+def process_complete_file(complete_partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
+                          batch_quantity):
+    if is_file_over_size(complete_partial_file):
+        split_partial_file(complete_partial_file, action_type, pack_code, batch_id, int(batch_quantity))
+        return
+
     context_logger = logger.bind(pack_code=pack_code.value, batch_id=batch_id, batch_quantity=batch_quantity)
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
     context_logger.info('Encrypting print file')
-    encrypted_print_file, filename = encrypt_print_file(print_file, pack_code, supplier)
+    encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
 
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
     context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
@@ -44,12 +49,41 @@ def process_complete_file(print_file: Path, pack_code: PackCode, batch_id, batch
     # TODO upload encrypted print file and manifest to GCS
 
     context_logger.info('Successfully sent print files to SFTP', file_paths=list(map(str, file_paths)))
-    file_paths.append(print_file)
+    file_paths.append(complete_partial_file)
     context_logger.info('Deleting local files', file_paths=list(map(str, file_paths)))
     delete_local_files(file_paths)
 
     # Wait for a second so there is no chance of reusing the same file name
     sleep(1)
+
+
+def is_file_over_size(print_file: Path):
+    return print_file.lstat().st_size > Config.SFTP_MAX_FILE_SIZE_BYTES / 1.5
+
+
+def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
+                       batch_quantity: int):
+    if batch_quantity < 2:
+        raise RuntimeError('Tried to split file with less than 2 rows')
+
+    first_chunk_quantity = batch_quantity // 2
+
+    first_chunk_name = f'{action_type}.{pack_code}.{batch_id}_1.{first_chunk_quantity}'
+    second_chunk_name = f'{action_type}.{pack_code}.{batch_id}_2.{batch_quantity - first_chunk_quantity}'
+
+    # TODO read the file in more memory efficiently
+    print_file_text = partial_file.read_text()
+
+    first_chunk_path = Config.PARTIAL_FILES_DIRECTORY.joinpath(first_chunk_name)
+    with open(first_chunk_path, 'w') as first_chunk_write:
+        first_chunk_write.write(print_file_text[:first_chunk_quantity])
+
+    second_chunk_path = Config.PARTIAL_FILES_DIRECTORY.joinpath(second_chunk_name)
+    with open(second_chunk_path, 'w') as second_chunk_write:
+        second_chunk_write.write(print_file_text[first_chunk_quantity:])
+    del print_file_text
+
+    partial_file.unlink()
 
 
 def encrypt_print_file(print_file, pack_code: PackCode, supplier):
@@ -81,7 +115,7 @@ def check_partial_files(partial_files_dir: Path):
                 logger.warn('Quarantining print file with duplicates', partial_file_name=print_file.name)
                 quarantine_partial_file(print_file)
                 return
-            process_complete_file(print_file, pack_code, batch_id, batch_quantity)
+            process_complete_file(print_file, action_type, pack_code, batch_id, batch_quantity)
 
 
 def get_metadata_from_partial_file_name(partial_file_name: str):

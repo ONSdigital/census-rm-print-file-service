@@ -11,7 +11,8 @@ import pytest
 
 from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
-    check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files
+    check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
+    get_metadata_from_partial_file_name
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 
@@ -187,3 +188,17 @@ def test_check_partial_files_processes_complete_file(cleanup_test_files):
 
     # Then
     client.assert_called_once()
+
+
+def test_split_partial_file(cleanup_test_files):
+    # Given
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.8'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.8')))
+    action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(complete_file_path.name)
+
+    # When
+    split_partial_file(complete_file_path, action_type, pack_code, batch_id, int(batch_quantity))
+
+    # Then
+    pass
+
