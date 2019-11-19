@@ -58,7 +58,7 @@ def process_complete_file(complete_partial_file: Path, action_type: ActionType, 
 
 
 def is_file_over_size(print_file: Path):
-    return print_file.lstat().st_size > Config.SFTP_MAX_FILE_SIZE_BYTES / 1.5
+    return print_file.lstat().st_size > Config.MAX_FILE_SIZE_BYTES / Config.MAX_FILE_SIZE_SAFETY_FACTOR
 
 
 def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
@@ -71,7 +71,7 @@ def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: P
     first_chunk_name = f'{action_type}.{pack_code}.{batch_id}_1.{first_chunk_quantity}'
     second_chunk_name = f'{action_type}.{pack_code}.{batch_id}_2.{batch_quantity - first_chunk_quantity}'
 
-    # TODO read the file in more memory efficiently
+    # TODO use more memory efficient method to read partial file
     print_file_text = partial_file.read_text()
 
     first_chunk_path = Config.PARTIAL_FILES_DIRECTORY.joinpath(first_chunk_name)
