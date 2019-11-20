@@ -71,7 +71,7 @@ def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: P
     first_chunk_name = f'{action_type}.{pack_code}.{batch_id}_1.{first_chunk_quantity}'
     second_chunk_name = f'{action_type}.{pack_code}.{batch_id}_2.{batch_quantity - first_chunk_quantity}'
 
-    # TODO use more memory efficient method to read partial file
+    # TODO use more memory efficient method to read/write partial file
     print_file_text = partial_file.read_text()
 
     first_chunk_path = Config.PARTIAL_FILES_DIRECTORY.joinpath(first_chunk_name)
