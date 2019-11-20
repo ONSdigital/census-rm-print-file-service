@@ -45,7 +45,6 @@ class Config:
     SFTP_QM_DIRECTORY = os.getenv('SFTP_QM_DIRECTORY')
 
     MAX_FILE_SIZE_BYTES = int(os.getenv('MAX_FILE_SIZE_BYTES', 10 ** 9))
-    MAX_FILE_SIZE_SAFETY_FACTOR = float(os.getenv('MAX_FILE_SIZE_SAFETY_FACTOR', 1.5))
 
     OUR_PUBLIC_KEY_PATH = Path(os.getenv('OUR_PUBLIC_KEY_PATH')) if os.getenv('OUR_PUBLIC_KEY_PATH') else None
     QM_SUPPLIER_PUBLIC_KEY_PATH = Path(os.getenv('QM_SUPPLIER_PUBLIC_KEY_PATH')) if os.getenv(

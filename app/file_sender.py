@@ -20,46 +20,48 @@ logger = wrap_logger(logging.getLogger(__name__))
 
 def process_complete_file(complete_partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
                           batch_quantity, context_logger):
-
-    if is_file_over_size(complete_partial_file):
-        context_logger.info('File too large, splitting it into two')
-        split_partial_file(complete_partial_file, action_type, pack_code, batch_id, int(batch_quantity))
-        context_logger.info('File successfully split')
-        return
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
     context_logger.info('Encrypting print file')
     encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
 
+    if is_file_over_size(encrypted_print_file):
+        context_logger.info('Encrypted file too large, splitting it into two',
+                            file_size_bytes=encrypted_print_file.stat().st_size)
+        split_partial_file(complete_partial_file, action_type, pack_code, batch_id, int(batch_quantity))
+        context_logger.info('File successfully split')
+        return
+
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
     context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
     generate_manifest_file(manifest_file, encrypted_print_file, pack_code)
-    file_paths = [encrypted_print_file, manifest_file]
+    temporary_files_paths = [encrypted_print_file, manifest_file]
 
-    context_logger.info('Sending files to SFTP', file_paths=list(map(str, file_paths)))
+    context_logger.info('Sending files to SFTP', file_paths=list(map(str, temporary_files_paths)))
 
     try:
-        copy_files_to_sftp(file_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
+        copy_files_to_sftp(temporary_files_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
 
     except Exception as ex:
-        context_logger.error('Failed to send files to SFTP', file_paths=list(map(str, file_paths)))
-        context_logger.warn('Deleting failed encrypted and manifest print files', file_paths=list(map(str, file_paths)))
-        delete_local_files(file_paths)
+        context_logger.error('Failed to send files to SFTP', file_paths=list(map(str, temporary_files_paths)))
+        context_logger.warn('Deleting failed encrypted and manifest print files',
+                            file_paths=list(map(str, temporary_files_paths)))
+        delete_local_files(temporary_files_paths)
         raise ex
 
     # TODO upload encrypted print file and manifest to GCS
 
-    context_logger.info('Successfully sent print files to SFTP', file_paths=list(map(str, file_paths)))
-    file_paths.append(complete_partial_file)
-    context_logger.info('Deleting local files', file_paths=list(map(str, file_paths)))
-    delete_local_files(file_paths)
+    context_logger.info('Successfully sent print files to SFTP', file_paths=list(map(str, temporary_files_paths)))
+    temporary_files_paths.append(complete_partial_file)
+    context_logger.info('Deleting local files', file_paths=list(map(str, temporary_files_paths)))
+    delete_local_files(temporary_files_paths)
 
     # Wait for a second so there is no chance of reusing the same file name
     sleep(1)
 
 
-def is_file_over_size(print_file: Path):
-    return print_file.lstat().st_size > Config.MAX_FILE_SIZE_BYTES / Config.MAX_FILE_SIZE_SAFETY_FACTOR
+def is_file_over_size(_file: Path):
+    return _file.lstat().st_size > Config.MAX_FILE_SIZE_BYTES
 
 
 def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
@@ -116,7 +118,7 @@ def check_partial_files(partial_files_dir: Path):
                                          pack_code=pack_code.value,
                                          batch_id=batch_id,
                                          batch_quantity=batch_quantity)
-            
+
             context_logger.info('Checking complete file for duplicates')
             if not check_partial_has_no_duplicates(print_file, pack_code):
                 context_logger.warn('Quarantining print file with duplicates')
