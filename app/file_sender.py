@@ -116,13 +116,13 @@ def check_partial_files(partial_files_dir: Path):
                                          pack_code=pack_code.value,
                                          batch_id=batch_id,
                                          batch_quantity=batch_quantity)
-
-            context_logger.info('Processing complete file')
-
+            
+            context_logger.info('Checking complete file for duplicates')
             if not check_partial_has_no_duplicates(print_file, pack_code):
                 context_logger.warn('Quarantining print file with duplicates')
                 quarantine_partial_file(print_file)
                 return
+            context_logger.info('File has no duplicates, beginning processing')
             process_complete_file(print_file, action_type, pack_code, batch_id, batch_quantity, context_logger)
 
 
