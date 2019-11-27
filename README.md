@@ -13,6 +13,12 @@ The service is configured with environment variables, see [config.py](config.py)
 
 Development defaults can be used by setting `ENVIRONMENT=DEV`.
 
+When running the application in your IDE, you may get a log warnings similar to:
+```commandline
+objc[5506]: +[NSValue initialize] may have been in progress in another thread when fork() was called.
+objc[5506]: +[NSValue initialize] may have been in progress in another thread when fork() was called. We cannot safely call it or ignore it in the fork() child process. Crashing instead. Set a breakpoint on objc_initializeAfterForkError to debug.
+``` 
+To remove the warnings, add `OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES` to your run configuration
 ### Logging config
 The general log level is set with `LOG_LEVEL`.
 There is a separate setting for pika (rabbit client library) and paramiko (sftp client library) logging, `LOG_LEVEL_PIKA` and `LOG_LEVEL_PARAMIKO` respectively which may be useful for diagnosing specific issues.
