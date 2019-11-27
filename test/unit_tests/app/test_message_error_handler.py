@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import json
 from unittest.mock import Mock, patch
 
 import pika
@@ -105,7 +106,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'skipIt': True}
 
-    expected_quarantine_message = {
+    expected_quarantine_message_dict = {
         'messageHash': message_hash,
         'messagePayload': base64.b64encode(message).decode(),
         'service': TestConfig.NAME,
@@ -115,6 +116,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
         'contentType': 'application/json',
         'headers': None,
     }
+    expected_quarantine_message = json.dumps(expected_quarantine_message_dict)
     properties = BasicProperties(content_type='application/json')
     # When
     with patch('app.message_error_handler.requests.post') as patched_post, patch(
@@ -126,7 +128,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
 
     assert len(post_calls) == 2
     assert post_calls[1][0][0] == f'{TestConfig.EXCEPTION_MANAGER_URL}/storeskippedmessage'
-    assert post_calls[1][1]['json'] == expected_quarantine_message
+    assert post_calls[1][1]['data'] == expected_quarantine_message
 
     patched_rabbit_channel = patched_rabbit.return_value.__enter__.channel
     assert patched_rabbit_channel.basic_publish.called_once_with(TestConfig.RABBIT_QUARANTINE_EXCHANGE,
