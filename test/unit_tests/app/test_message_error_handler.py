@@ -1,4 +1,5 @@
 import base64
+import datetime
 import hashlib
 import json
 from unittest.mock import Mock, patch
@@ -106,7 +107,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     processing_exception = Exception('An exception during message processing')
     mock_advice = {'skipIt': True}
 
-    expected_quarantine_message_dict = {
+    expected_quarantine_message = json.dumps({
         'messageHash': message_hash,
         'messagePayload': base64.b64encode(message).decode(),
         'service': TestConfig.NAME,
@@ -114,10 +115,10 @@ def test_handle_error_quarantine_message(init_logger, caplog):
         'exceptionClass': type(processing_exception).__name__,
         'routingKey': TestConfig.RABBIT_ROUTING_KEY,
         'contentType': 'application/json',
-        'headers': None,
-    }
-    expected_quarantine_message = json.dumps(expected_quarantine_message_dict)
-    properties = BasicProperties(content_type='application/json')
+        'headers': {"time": "2019-11-18T10:59:42Z"},
+    })
+    properties = BasicProperties(content_type='application/json',
+                                 headers={'time': datetime.datetime(2019, 11, 18, 10, 59, 42)})
     # When
     with patch('app.message_error_handler.requests.post') as patched_post, patch(
             'app.message_error_handler.RabbitContext') as patched_rabbit:
