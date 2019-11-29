@@ -67,7 +67,7 @@ def is_file_over_size(_file: Path):
 def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
                        batch_quantity: int):
     if batch_quantity < 2:
-        raise RuntimeError('Tried to split file with less than 2 rows')
+        raise ValueError('Cannot split file with less than 2 rows')
 
     first_chunk_quantity = batch_quantity // 2
 
