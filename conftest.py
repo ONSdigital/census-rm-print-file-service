@@ -30,5 +30,12 @@ def cleanup_test_files():
 
 
 @pytest.fixture
+def set_max_bytes():
+    TestConfig.MAX_FILE_SIZE_BYTES = int(10 ** 3)
+    yield
+    TestConfig.MAX_FILE_SIZE_BYTES = int(10 ** 9)
+
+
+@pytest.fixture
 def init_logger():
     logger_initial_config()

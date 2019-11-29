@@ -60,20 +60,20 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'
 
 
-def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_files):
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.50000'),
-                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.50000')))
+def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_files, set_max_bytes):
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.10'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.10')))
     context_logger = Mock()
     with patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '50000', context_logger)
+        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '10', context_logger)
 
-    for dir_files in os.walk(Path(TestConfig.PARTIAL_FILES_DIRECTORY)):
-        files = dir_files
-    assert len(files[2]) == 2
-    assert files[2][0] == 'ICL1E.P_IC_ICL1.1_1.25000'
-    assert files[2][1] == 'ICL1E.P_IC_ICL1.1_2.25000'
+    split_partial_files = list(Path(TestConfig.PARTIAL_FILES_DIRECTORY).iterdir())
+
+    assert len(split_partial_files) == 2
+    assert split_partial_files[1].name == 'ICL1E.P_IC_ICL1.1_1.5'
+    assert split_partial_files[0].name == 'ICL1E.P_IC_ICL1.1_2.5'
 
 
 def test_local_files_are_deleted_after_upload(cleanup_test_files):
