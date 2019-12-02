@@ -106,7 +106,6 @@ class TestConfig(DevConfig):
     ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
     QUARANTINED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('quarantined_files/')
     EXCEPTION_MANAGER_URL = 'http://test'
-    MAX_FILE_SIZE_BYTES = int(os.getenv('MAX_FILE_SIZE_BYTES', 10 ** 5))
 
 
 # Use dev or test defaults depending on environment
