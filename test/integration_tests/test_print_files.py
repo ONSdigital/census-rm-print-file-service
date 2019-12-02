@@ -45,15 +45,14 @@ def test_ICL1E_split_files(sftp_client):
     send_action_messages(icl1e_messages)
 
     # When
-    matched_manifest_files, matched_print_files = get_multiple_print_and_manifest_filenames(sftp_client,
-                                                                                          TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                       'P_IC_ICL1')
+    matched_manifest_files, matched_print_files = get_multiple_print_and_manifest_filenames(
+        sftp_client, TestConfig.SFTP_PPO_DIRECTORY, 'P_IC_ICL1')
 
     # Then
     get_and_check_multiple_manifest_files(sftp=sftp_client, remote_manifest_directory=TestConfig.SFTP_PPO_DIRECTORY,
                                           manifest_files=matched_manifest_files,
                                           expected_values={'description': 'Initial contact letter households - England',
-                                                       'dataset': 'PPD1.1'})
+                                                           'dataset': 'PPD1.1'})
 
     get_and_check_multiple_print_files(
         sftp=sftp_client,

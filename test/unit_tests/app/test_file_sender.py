@@ -222,10 +222,10 @@ def test_split_partial_file(cleanup_test_files):
 
     assert len(split_partial_files) == 2
 
-    for file in split_partial_files:
-        with open(file, 'r') as split_file:
-            split_file1 = split_file.readlines()
-            assert len(split_file1) == 4
+    for partial_file in split_partial_files:
+        with open(partial_file, 'r') as split_file:
+            split_file_lines = split_file.readlines()
+            assert len(split_file_lines) == 4
 
 
 def test_split_file_too_small(cleanup_test_files):
