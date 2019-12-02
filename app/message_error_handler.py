@@ -1,11 +1,13 @@
 import base64
 import hashlib
+import json
 import logging
 
 import requests
 from pika.spec import PERSISTENT_DELIVERY_MODE
 from structlog import wrap_logger
 
+from app.json_helper import CustomJSONEncoder
 from app.rabbit_context import RabbitContext
 from config import Config
 
@@ -43,7 +45,8 @@ def _quarantine_message_in_exception_manager(body: bytes, message_hash, exceptio
         'headers': headers,
     }
 
-    response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/storeskippedmessage', json=quarantine_payload)
+    response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/storeskippedmessage', data=json.dumps(
+        quarantine_payload, cls=CustomJSONEncoder), headers={'Content-Type': 'application/json'})
     response.raise_for_status()
 
 
@@ -79,18 +82,18 @@ def handle_message_error(message_body: bytes, exception: Exception, channel, del
             logger.warn('Attempting to quarantine and skip bad message', message_hash=message_hash,
                         queue=Config.RABBIT_QUEUE, routing_key=Config.RABBIT_ROUTING_KEY)
             _quarantine_message(message_body, message_hash, exception_class, properties)
-            channel.basic_nack(delivery_tag=delivery_tag, requeue=False)
+            channel.basic_ack(delivery_tag=delivery_tag)
             logger.warn('Successfully quarantined and skipped bad message', message_hash=message_hash,
                         queue=Config.RABBIT_QUEUE, routing_key=Config.RABBIT_ROUTING_KEY)
             return
 
         elif advice.get('peek'):
             _peek_message(message_hash, message_body)
-            channel.basic_nack(delivery_tag=delivery_tag)
+            channel.basic_nack(delivery_tag=delivery_tag, requeue=False)
             return
 
         elif not advice.get('logIt', True):
-            channel.basic_nack(delivery_tag=delivery_tag)
+            channel.basic_nack(delivery_tag=delivery_tag, requeue=False)
             return
 
     except Exception as e:
@@ -100,4 +103,4 @@ def handle_message_error(message_body: bytes, exception: Exception, channel, del
 
     # Default/fallback behaviour is to log the error and nack the message
     logger.error('Could not process message', message_hash=message_hash, exception=exception)
-    channel.basic_nack(delivery_tag=delivery_tag)
+    channel.basic_nack(delivery_tag=delivery_tag, requeue=False)

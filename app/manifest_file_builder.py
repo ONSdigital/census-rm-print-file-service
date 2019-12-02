@@ -18,14 +18,14 @@ def create_manifest(print_file_path: Path, pack_code: PackCode) -> dict:
         'description': PACK_CODE_TO_DESCRIPTION[pack_code],
         'dataset': PACK_CODE_TO_DATASET[pack_code].value,
         'version': '1',
-        'manifestCreated': datetime.utcnow().isoformat(),
+        'manifestCreated': datetime.utcnow().isoformat(timespec='milliseconds') + 'Z',
         'sourceName': 'ONS_RM',
         'files': [
             {
                 'name': print_file_path.name,
                 'relativePath': './',
                 'sizeBytes': str(print_file_path.stat().st_size),
-                'md5Sum': hashlib.md5(print_file_path.read_text().encode()).hexdigest()
+                'md5sum': hashlib.md5(print_file_path.read_text().encode()).hexdigest()
             }
         ]
     }
