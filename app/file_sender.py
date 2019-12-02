@@ -29,7 +29,8 @@ def process_complete_file(complete_partial_file: Path, action_type: ActionType, 
         context_logger.info('Encrypted file too large, splitting it into two',
                             file_size_bytes=encrypted_print_file.stat().st_size)
         split_partial_file(complete_partial_file, action_type, pack_code, batch_id, int(batch_quantity))
-        context_logger.info('File successfully split')
+        context_logger.info('File successfully split, removing encrypted file')
+        encrypted_print_file.unlink()
         return
 
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
