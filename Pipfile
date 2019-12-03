@@ -12,10 +12,10 @@ codecov = "*"
 [packages]
 pika = "*"
 structlog = "*"
-pgpy = "*"
 paramiko = "*"
 retrying = "*"
 requests = "*"
+python-gnupg = "*"
 
 [requires]
 python_version = "3.7"

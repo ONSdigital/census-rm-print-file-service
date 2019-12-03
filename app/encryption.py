@@ -1,29 +1,34 @@
-import pgpy
+from pathlib import Path
 
-from app.exceptions import EncryptionFailedException
+from gnupg import GPG
+
 from app.mappings import SUPPLIER_TO_KEY_PATH
 from config import Config
 
 
-def pgp_encrypt_message(message, supplier):
-    # A key can be loaded from a file, like so:
-    our_key, _ = pgpy.PGPKey.from_file(Config.OUR_PUBLIC_KEY_PATH)
-    supplier_key, _ = pgpy.PGPKey.from_file(SUPPLIER_TO_KEY_PATH[supplier])
+class PrintFileEncrypter:
 
-    # this creates a standard message from text
-    # it will also be compressed, by default with ZIP DEFLATE, unless otherwise specified
-    text_message = pgpy.PGPMessage.new(message)
+    def __init__(self):
+        self.gpg = GPG(gnupghome=Config.GNUPG_HOME)
+        self.supplier_to_fingerprint = {}
+        self._import_supplier_keys()
+        self.our_key_fingerprint = self._import_our_key()
 
-    cipher = pgpy.constants.SymmetricKeyAlgorithm.AES256
-    sessionkey = cipher.gen_key()
+    def _import_supplier_keys(self):
+        for supplier, supplier_key_path in SUPPLIER_TO_KEY_PATH.items():
+            with open(supplier_key_path, 'rb') as key:
+                import_result = self.gpg.import_keys(key.read())
+            self.supplier_to_fingerprint[supplier] = import_result.fingerprints[0]
 
-    # encrypt the message to multiple recipients
-    encrypted_message_v1 = our_key.encrypt(text_message, cipher=cipher, sessionkey=sessionkey)
-    encrypted_message_v2 = supplier_key.encrypt(encrypted_message_v1, cipher=cipher, sessionkey=sessionkey)
+    def _import_our_key(self):
+        with open(Config.OUR_PUBLIC_KEY_PATH, 'rb') as our_key:
+            import_result = self.gpg.import_keys(our_key.read())
+        return import_result.fingerprints[0]
 
-    # do at least this as soon as possible after encrypting to the final recipient
-    del sessionkey
-
-    if encrypted_message_v2.is_encrypted:
-        return str(encrypted_message_v2)
-    raise EncryptionFailedException
+    def encrypt_print_file(self, print_file_path: Path, output_path: Path, supplier):
+        print(f'ENCRYPTER:', output_path, str(output_path.absolute()))
+        with open(print_file_path, 'rb') as print_file:
+            self.gpg.encrypt_file(print_file,
+                                  [self.our_key_fingerprint, self.supplier_to_fingerprint[supplier]],
+                                  output=str(output_path.absolute()),
+                                  symmetric='AES256')

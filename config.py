@@ -52,6 +52,8 @@ class Config:
     PPO_SUPPLIER_PUBLIC_KEY_PATH = Path(os.getenv('PPO_SUPPLIER_PUBLIC_KEY_PATH')) if os.getenv(
         'PPO_SUPPLIER_PUBLIC_KEY_PATH') else None
 
+    GNUPG_HOME = os.getenv('GNUPG_HOME')
+
     ENVIRONMENT = os.getenv('ENVIRONMENT', 'PROD')
 
     @classmethod
@@ -96,6 +98,8 @@ class DevConfig(Config):
     PPO_SUPPLIER_PUBLIC_KEY_PATH = Path(
         os.getenv('PPO_SUPPLIER_PUBLIC_KEY_PATH') or Path(__file__).parent.joinpath('dummy_keys')
         .joinpath('dummy_ppo_supplier_public_key.asc'))
+
+    GNUPG_HOME = os.getenv('GNUPG_HOME', str(Path('~/.gnupg').absolute()))
 
 
 class TestConfig(DevConfig):

@@ -9,13 +9,14 @@ from structlog import wrap_logger
 
 import app.sftp as sftp
 from app.constants import PackCode, ActionType
-from app.encryption import pgp_encrypt_message
+from app.encryption import PrintFileEncrypter
 from app.manifest_file_builder import generate_manifest_file
 from app.mappings import PACK_CODE_TO_DATASET, \
     SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, SUPPLIER_TO_PRINT_TEMPLATE
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
+print_file_encrypter = PrintFileEncrypter()
 
 
 def process_complete_file(complete_partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
@@ -90,13 +91,12 @@ def split_partial_file(partial_file: Path, action_type: ActionType, pack_code: P
     partial_file.unlink()
 
 
-def encrypt_print_file(print_file, pack_code: PackCode, supplier):
-    encrypted_message = pgp_encrypt_message(print_file.read_text(), supplier)
+def encrypt_print_file(print_file_path, pack_code: PackCode, supplier):
     filename = f'{pack_code.value}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
-    encrypted_print_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv.gpg')
-    logger.info('Writing encrypted file', file_name=encrypted_print_file.name)
-    encrypted_print_file.write_text(encrypted_message)
-    return encrypted_print_file, filename
+    encrypted_print_file_path = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.csv.gpg')
+    print_file_encrypter.encrypt_print_file(print_file_path, encrypted_print_file_path, supplier)
+
+    return encrypted_print_file_path, filename
 
 
 def delete_local_files(file_paths: Iterable[Path]):
