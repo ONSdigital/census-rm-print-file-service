@@ -26,7 +26,7 @@ def process_complete_file(complete_partial_file: Path, action_type: ActionType, 
     encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
 
     if is_file_over_size(encrypted_print_file):
-        context_logger.info('Encrypted file too large, splitting it into two',
+        context_logger.info('Encrypted file too large, splitting partial file',
                             file_size_bytes=encrypted_print_file.stat().st_size)
         split_partial_file(complete_partial_file, action_type, pack_code, batch_id, int(batch_quantity))
         context_logger.info('File successfully split, removing encrypted file')

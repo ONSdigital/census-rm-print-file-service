@@ -6,10 +6,11 @@ import pytest
 
 # Set the ENVIRONMENT to TEST before the first time config is imported so the app uses TestConfig
 os.environ['ENVIRONMENT'] = 'TEST'
-from config import TestConfig                 # noqa: E402, out of order by necessity
+from config import TestConfig, Config  # noqa: E402, out of order by necessity
 from app.logger import logger_initial_config  # noqa: E402, out of order by necessity
 
 TestDirectories = namedtuple('TestDirectories', ['test_files', 'partial_files', 'encrypted_files', 'quarantined_files'])
+MAX_FILE_SIZE_BYTES_PRESET = Config.MAX_FILE_SIZE_BYTES
 
 
 @pytest.fixture
@@ -33,7 +34,7 @@ def cleanup_test_files():
 def set_max_bytes():
     TestConfig.MAX_FILE_SIZE_BYTES = int(10 ** 3)
     yield
-    TestConfig.MAX_FILE_SIZE_BYTES = int(10 ** 9)
+    TestConfig.MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_BYTES_PRESET
 
 
 @pytest.fixture
