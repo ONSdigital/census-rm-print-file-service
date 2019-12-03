@@ -39,6 +39,51 @@ def test_ICL1E(sftp_client):
         expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
 
 
+def test_ICL1E_split_files(sftp_client):
+    # Given
+    icl1e_messages, _ = build_test_messages(ICL_message_template, 20, 'ICL1E', 'P_IC_ICL1')
+    send_action_messages(icl1e_messages)
+
+    # When
+    matched_manifest_files, matched_print_files = get_multiple_print_and_manifest_filenames(
+        sftp_client, TestConfig.SFTP_PPO_DIRECTORY, 'P_IC_ICL1')
+
+    # Then
+    get_and_check_multiple_manifest_files(sftp=sftp_client, remote_manifest_directory=TestConfig.SFTP_PPO_DIRECTORY,
+                                          manifest_files=matched_manifest_files,
+                                          expected_values={'description': 'Initial contact letter households - England',
+                                                           'dataset': 'PPD1.1'})
+
+    get_and_check_multiple_print_files(
+        sftp=sftp_client,
+        remote_print_file_directory=TestConfig.SFTP_PPO_DIRECTORY,
+        print_files=matched_print_files,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected=('0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '1|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '2|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '3|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '4|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '5|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '6|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '7|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '8|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '9|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '10|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '11|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '12|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '13|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '14|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '15|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '16|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '17|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '18|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '19|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
+                  '20|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'))
+
+
 def test_ICL2W(sftp_client):
     # Given
     icl2w_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL2W', 'P_IC_ICL2B')
@@ -830,6 +875,22 @@ def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_atte
     return matched_manifest_files[0], matched_print_files[0]
 
 
+def get_multiple_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_attempts=10):
+    for _attempt in range(max_attempts):
+        matched_print_files = [filename for filename in sftp.listdir(remote_directory)
+                               if fnmatch.fnmatch(filename, f'{pack_code}_*.csv.gpg')]
+        matched_manifest_files = [filename for filename in sftp.listdir(remote_directory)
+                                  if fnmatch.fnmatch(filename, f'{pack_code}_*.manifest')]
+        if len(matched_print_files) == 2 and len(matched_manifest_files) == 2:
+            break
+        sleep(5)
+    else:
+        pytest.fail('Reached max attempts before files were created')
+    assert len(matched_manifest_files) == 2
+    assert len(matched_print_files) == 2
+    return matched_manifest_files, matched_print_files
+
+
 def get_and_check_manifest_file(sftp, remote_manifest_path, expected_values):
     with sftp.open(remote_manifest_path) as actual_manifest_file:
         manifest_json = json.loads(actual_manifest_file.read())
@@ -842,12 +903,38 @@ def get_and_check_manifest_file(sftp, remote_manifest_path, expected_values):
     assert manifest_json['version'] == '1'
 
 
+def get_and_check_multiple_manifest_files(sftp, remote_manifest_directory, manifest_files, expected_values):
+    remote_paths = [f'{remote_manifest_directory}{man_files}' for man_files in manifest_files]
+    for remote_manifest_path in remote_paths:
+        with sftp.open(remote_manifest_path) as actual_manifest_file:
+            manifest_json = json.loads(actual_manifest_file.read())
+        for key, value in expected_values.items():
+            assert manifest_json[key] == value
+
+        assert manifest_json['files'][0]['relativePath'] == './'
+        assert manifest_json['sourceName'] == 'ONS_RM'
+        assert manifest_json['schemaVersion'] == '1'
+        assert manifest_json['version'] == '1'
+
+
 def get_and_check_print_file(sftp, remote_print_file_path, decryption_key_path, decryption_key_passphrase, expected):
     with sftp.open(remote_print_file_path) as actual_print_file:
         decrypted_print_file = decrypt_message(actual_print_file.read(),
                                                decryption_key_path,
                                                decryption_key_passphrase)
     assert decrypted_print_file == expected
+
+
+def get_and_check_multiple_print_files(sftp, remote_print_file_directory, print_files, decryption_key_path,
+                                       decryption_key_passphrase, expected):
+    print_file_paths = [f'{remote_print_file_directory}{print_file}' for print_file in print_files]
+    for path in print_file_paths:
+        with sftp.open(path) as actual_print_file:
+            decrypted_print_file = decrypt_message(actual_print_file.read(),
+                                                   decryption_key_path,
+                                                   decryption_key_passphrase)
+        assert decrypted_print_file in expected
+        assert len(decrypted_print_file.splitlines()) == 10
 
 
 def decrypt_message(message, key_file_path, key_passphrase):

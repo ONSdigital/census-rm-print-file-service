@@ -9,9 +9,10 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 
-from app.constants import PackCode
+from app.constants import PackCode, ActionType
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
-    check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files
+    check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
+    get_metadata_from_partial_file_name
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 
@@ -40,10 +41,11 @@ def test_copy_files_to_sftp():
 def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+    context_logger = Mock()
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
+        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '1', context_logger)
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -58,11 +60,28 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'
 
 
+def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_files, set_max_bytes):
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.10'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.10')))
+    context_logger = Mock()
+    with patch('app.file_sender.datetime') as patch_datetime:
+        mock_time = datetime(2019, 1, 1, 7, 6, 5)
+        patch_datetime.utcnow.return_value = mock_time
+        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '10', context_logger)
+
+    split_partial_files = list(Path(TestConfig.PARTIAL_FILES_DIRECTORY).iterdir())
+
+    assert len(split_partial_files) == 2
+    assert split_partial_files[1].name == 'ICL1E.P_IC_ICL1.1_1.5'
+    assert split_partial_files[0].name == 'ICL1E.P_IC_ICL1.1_2.5'
+
+
 def test_local_files_are_deleted_after_upload(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+    context_logger = Mock()
     with patch('app.file_sender.sftp.SftpUtility'):
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
+        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '1', context_logger)
 
     with pytest.raises(StopIteration):
         next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
@@ -142,7 +161,7 @@ def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
     # Given
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
-
+    context_logger = Mock()
     sftp_failure_exception_message = 'Simulate SFTP transfer failure'
 
     def simulate_sftp_failure(*_args, **_kwargs):
@@ -153,7 +172,7 @@ def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
         client.return_value.open_sftp.side_effect = simulate_sftp_failure
 
         # When
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, '1', '1')
+        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '1', context_logger)
 
     # Then
     # Check encrypted_files_directory is empty
@@ -187,3 +206,36 @@ def test_check_partial_files_processes_complete_file(cleanup_test_files):
 
     # Then
     client.assert_called_once()
+
+
+def test_split_partial_file(cleanup_test_files):
+    # Given
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.8'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.8')))
+    action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(complete_file_path.name)
+
+    # When
+    split_partial_file(complete_file_path, action_type, pack_code, batch_id, int(batch_quantity))
+
+    # Then
+    split_partial_files = list(Path(TestConfig.PARTIAL_FILES_DIRECTORY).iterdir())
+
+    assert len(split_partial_files) == 2
+
+    for partial_file in split_partial_files:
+        with open(partial_file, 'r') as split_file:
+            split_file_lines = split_file.readlines()
+            assert len(split_file_lines) == 4
+
+
+def test_split_file_too_small(cleanup_test_files):
+    # Given
+    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+    action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(complete_file_path.name)
+
+    # When
+    with pytest.raises(ValueError) as e:
+        split_partial_file(complete_file_path, action_type, pack_code, batch_id, int(batch_quantity))
+
+    assert str(e.value) == 'Cannot split file with less than 2 rows'
