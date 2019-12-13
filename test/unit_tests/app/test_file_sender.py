@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 
-from app.constants import PackCode, ActionType
+from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
     get_metadata_from_partial_file_name
@@ -45,7 +45,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '1', context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -60,14 +60,14 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     assert put_sftp_call_kwargs[1]['filename'] == f'P_IC_ICL1_{iso_mocked}.manifest'
 
 
-def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_files, set_max_bytes):
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.10'),
-                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.10')))
-    context_logger = Mock()
+def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_files, reduce_max_partial_file_size):
+    # This file is roughly 800B and we've reduced the max file size limit to 500B
+    shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.10'),
+                    TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.10'))
     with patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '10', context_logger)
+        check_partial_files(TestConfig.PARTIAL_FILES_DIRECTORY)
 
     split_partial_files = list(Path(TestConfig.PARTIAL_FILES_DIRECTORY).iterdir())
 
@@ -81,7 +81,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
     with patch('app.file_sender.sftp.SftpUtility'):
-        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '1', context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
 
     with pytest.raises(StopIteration):
         next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
@@ -115,19 +115,17 @@ def test_generating_manifest_file_qm(cleanup_test_files):
     assert manifest_json['dataset'] == 'QM3.2'
 
 
-def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files, caplog):
+def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files):
     # Given
     partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac')
+    mock_logger = Mock()
 
     # When
-    with caplog.at_level(logging.ERROR):
-        result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1)
+    result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1, mock_logger)
 
     # Then
     assert not result, 'Check should return False for file with duplicates'
-    assert 'Duplicate uac found in print file' in caplog.text
-    assert 'line_number=2' in caplog.text
-    assert f'partial_file_name={partial_duplicate_path.name}' in caplog.text
+    mock_logger.error.assert_called_once_with('Duplicate uac found in print file', line_number=2)
 
 
 def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
@@ -135,7 +133,7 @@ def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
     partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2')
 
     # When
-    result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1)
+    result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1, Mock())
 
     # Then
     assert result
@@ -172,7 +170,7 @@ def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
         client.return_value.open_sftp.side_effect = simulate_sftp_failure
 
         # When
-        process_complete_file(complete_file_path, ActionType.ICL1E, PackCode.P_IC_ICL1, '1', '1', context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
 
     # Then
     # Check encrypted_files_directory is empty

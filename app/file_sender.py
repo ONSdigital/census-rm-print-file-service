@@ -1,6 +1,5 @@
 import csv
 import logging
-import sys
 from datetime import datetime
 from pathlib import Path
 from time import sleep
@@ -19,8 +18,7 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(complete_partial_file: Path, action_type: ActionType, pack_code: PackCode, batch_id,
-                          batch_quantity, context_logger):
+def process_complete_file(complete_partial_file: Path, pack_code: PackCode, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
     context_logger.info('Encrypting print file')
@@ -126,7 +124,7 @@ def check_partial_files(partial_files_dir: Path):
             if split_overs_sized_partial_file(partial_file, action_type, pack_code, batch_id, batch_quantity,
                                               context_logger):
                 return
-            process_complete_file(partial_file, action_type, pack_code, batch_id, batch_quantity, context_logger)
+            process_complete_file(partial_file, pack_code, context_logger)
 
 
 def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code, batch_id, batch_quantity,
@@ -181,5 +179,5 @@ def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode
                 return False
             for uac_column in uac_columns:
                 uacs.add(row[uac_column])
-    context_logger.info('Finished checking for duplicates', uac_set_memory=sys.getsizeof(uacs))
+    context_logger.info('Finished checking for duplicates')
     return True
