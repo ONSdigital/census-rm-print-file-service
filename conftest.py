@@ -31,8 +31,8 @@ def cleanup_test_files():
 
 
 @pytest.fixture
-def set_max_bytes():
-    TestConfig.MAX_FILE_SIZE_BYTES = int(10 ** 3)
+def reduce_max_partial_file_size():
+    TestConfig.MAX_FILE_SIZE_BYTES = int(5 * 10 ** 2)
     yield
     TestConfig.MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_BYTES_PRESET
 
