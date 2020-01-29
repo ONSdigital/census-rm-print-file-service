@@ -16,6 +16,7 @@ pgpy = "*"
 paramiko = "*"
 retrying = "*"
 requests = "*"
+google-cloud-storage = "*"
 
 [requires]
 python_version = "3.7"

@@ -5,6 +5,7 @@ from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
+from google.cloud import storage
 from structlog import wrap_logger
 
 import app.sftp as sftp
@@ -158,11 +159,25 @@ def start_file_sender(readiness_queue):
 
 def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
     with sftp.SftpUtility(remote_directory) as sftp_client:
-        logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
+        logger.info('Copying files to SFTP remote and then GCP Bucket', sftp_directory=sftp_client.sftp_directory)
         for file_path in file_paths:
             sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
-        logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
+            write_file_to_bucket(file_path)
+
+        logger.info(f'All {len(file_paths)} files successfully written to SFTP remote and gcp bucket',
                     sftp_directory=sftp_client.sftp_directory)
+
+
+def write_file_to_bucket(file_path):
+    if len(Config.SENT_PRINT_FILE_BUCKET) == 0:
+        logger.warn(f'SENT_PRINT_FILE_BUCKET set to empty')
+        return
+
+    logger.info(f'Writing file to gcp bucket {Config.SENT_PRINT_FILE_BUCKET}')
+
+    client = storage.Client()
+    bucket = client.get_bucket(f'{client.project}-sent-print-files')
+    bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):
