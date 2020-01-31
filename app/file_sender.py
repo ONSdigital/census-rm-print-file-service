@@ -170,7 +170,7 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
 
 
 def write_file_to_bucket(file_path):
-    if len(Config.SENT_PRINT_FILE_BUCKET) == 0:
+    if not Config.SENT_PRINT_FILE_BUCKET:
         logger.warn(f'SENT_PRINT_FILE_BUCKET set to empty')
         return
 
