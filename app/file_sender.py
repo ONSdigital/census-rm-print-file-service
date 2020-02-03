@@ -175,7 +175,6 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
 def upload_files_to_bucket(file_paths: Collection[Path]):
     if not Config.SENT_PRINT_FILE_BUCKET:
         logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
-        return
 
     logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET)
 
