@@ -11,9 +11,10 @@ import pytest
 from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
-    get_metadata_from_partial_file_name
+    get_metadata_from_partial_file_name, write_file_to_bucket
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
+from google.cloud import exceptions
 
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
 
@@ -236,3 +237,17 @@ def test_split_file_too_small(cleanup_test_files):
         split_partial_file(complete_file_path, action_type, pack_code, batch_id, int(batch_quantity))
 
     assert str(e.value) == 'Cannot split file with less than 2 rows'
+
+
+def test_failing_write_to_gcp_bucket_is_handled():
+    # When
+    with patch('app.file_sender.storage.Client') as bucket_client:
+        bucket_client.side_effect = exceptions.GoogleCloudError("bucket doesn't exist")
+
+        try:
+            write_file_to_bucket(None)
+        except Exception:
+            assert False, "Exception msgs from writing to GCP bucket should be handled"
+
+    # exception has been handled and not derailed app
+    assert True, "True isn't true, this shouldn't happen"

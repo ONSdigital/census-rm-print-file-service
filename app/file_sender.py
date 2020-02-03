@@ -5,7 +5,7 @@ from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
-from google.cloud import storage
+from google.cloud import storage, exceptions
 from structlog import wrap_logger
 
 import app.sftp as sftp
@@ -34,7 +34,6 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
 
     try:
         copy_files_to_sftp(temporary_files_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
-
     except Exception as ex:
         context_logger.error('Failed to send files to SFTP', file_paths=list(map(str, temporary_files_paths)))
         context_logger.warn('Deleting failed encrypted and manifest print files',
@@ -42,10 +41,13 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
         delete_local_files(temporary_files_paths)
         raise ex
 
-    # TODO upload encrypted print file and manifest to GCS
-
     context_logger.info('Successfully sent print files to SFTP', file_paths=list(map(str, temporary_files_paths)))
-    temporary_files_paths.append(complete_partial_file)
+
+    context_logger.info('Deleting partial files', file_paths=list(map(str, temporary_files_paths)))
+    delete_local_files([complete_partial_file])
+
+    upload_files_to_bucket(temporary_files_paths)
+
     context_logger.info('Deleting local files', file_paths=list(map(str, temporary_files_paths)))
     delete_local_files(temporary_files_paths)
 
@@ -152,6 +154,9 @@ def start_file_sender(readiness_queue):
         logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
     readiness_queue.put(True)
     logger.info('Started file sender')
+
+    # check gcp bucket exists
+
     while True:
         check_partial_files(Config.PARTIAL_FILES_DIRECTORY)
         sleep(Config.FILE_POLLING_DELAY_SECONDS)
@@ -159,24 +164,33 @@ def start_file_sender(readiness_queue):
 
 def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
     with sftp.SftpUtility(remote_directory) as sftp_client:
-        logger.info('Copying files to SFTP remote and then GCP Bucket',
-                    sftp_directory=sftp_client.sftp_directory, gcp_bucket=Config.SENT_PRINT_FILE_BUCKET)
+        logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
         for file_path in file_paths:
             sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
-            write_file_to_bucket(file_path)
 
-        logger.info(f'All {len(file_paths)} files successfully written to SFTP remote and gcp bucket',
-                    sftp_directory=sftp_client.sftp_directory, gcp_bucket=Config.SENT_PRINT_FILE_BUCKET)
+        logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
+                    sftp_directory=sftp_client.sftp_directory)
+
+
+def upload_files_to_bucket(file_paths: Collection[Path]):
+    if not Config.SENT_PRINT_FILE_BUCKET:
+        logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
+        return
+
+    logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET)
+
+    for file_path in file_paths:
+        write_file_to_bucket(file_path)
 
 
 def write_file_to_bucket(file_path):
-    if len(Config.SENT_PRINT_FILE_BUCKET) == 0:
-        logger.warn(f'SENT_PRINT_FILE_BUCKET set to empty')
-        return
-
-    client = storage.Client()
-    bucket = client.get_bucket(f'{client.project}-sent-print-files')
-    bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
+    try:
+        client = storage.Client()
+        bucket = client.get_bucket(f'{client.project}-sent-print-files')
+        bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
+    except exceptions.GoogleCloudError as exception:
+        message = 'File upload to GCS failed: {0!s}'.format(exception)
+        logger.error(message)
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):
