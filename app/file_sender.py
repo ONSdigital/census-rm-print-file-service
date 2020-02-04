@@ -46,7 +46,7 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
     context_logger.info('Deleting partial files', file_paths=list(map(str, temporary_files_paths)))
     delete_local_files([complete_partial_file])
 
-    # upload_files_to_bucket(temporary_files_paths)
+    upload_files_to_bucket(temporary_files_paths)
 
     context_logger.info('Deleting local files', file_paths=list(map(str, temporary_files_paths)))
     delete_local_files(temporary_files_paths)
@@ -184,7 +184,7 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
 
 
 def upload_files_to_bucket(file_paths: Collection[Path]):
-    if not Config.SENT_PRINT_FILE_BUCKET:
+    if not Config.SENT_PRINT_FILE_BUCKET or len(Config.SENT_PRINT_FILE_BUCKET) == 0:
         logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
 
     logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET)
