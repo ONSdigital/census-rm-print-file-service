@@ -11,7 +11,7 @@ import pytest
 from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
-    get_metadata_from_partial_file_name, write_file_to_bucket
+    get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 from google.cloud import exceptions
@@ -251,3 +251,32 @@ def test_failing_write_to_gcp_bucket_is_handled():
 
     # exception has been handled and not derailed app
     assert True, "True isn't true, this shouldn't happen"
+
+
+def test_write_to_gcp_bucket():
+    # Given
+    test_files = [Path('test1'), Path('test2'), Path('test3')]
+    os.environ['SENT_PRINT_FILE_BUCKET'] = 'test_path'
+    mock_storage_client = Mock()
+    mock_bucket = Mock()
+
+    # When
+    with patch('app.file_sender.storage.Client') as client:
+        client.return_value.storage.return_value = mock_storage_client  # mock the cloud client
+        mock_storage_client.get_bucket.return_value = mock_bucket
+
+        upload_files_to_bucket(test_files)
+
+    mock_write_file = mock_bucket.blob
+
+    # Then
+
+    print(f'CLIENT CALLS: {client.get_bucket.call_args_list}')
+    print(f'MOCK CLIENT STORAGE: {mock_write_file.call_args_list}')
+    print(f"BUCKET CALLS {mock_bucket.get_bucket.call_args_list}")
+
+    mock_storage_client.assert_has_calls(
+        [call(str(file_path), file_path.name) for file_path in test_files])
+
+    mock_write_file.assert_has_calls(
+        [call(str(file_path), file_path.name) for file_path in test_files])
