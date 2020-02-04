@@ -154,6 +154,8 @@ def start_file_sender(readiness_queue):
         logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
     readiness_queue.put(True)
 
+    check_gcp_bucket_ready()
+
     logger.info('Started file sender')
     while True:
         check_partial_files(Config.PARTIAL_FILES_DIRECTORY)
@@ -167,7 +169,7 @@ def check_gcp_bucket_ready():
 
     try:
         client = storage.Client()
-        client.get_bucket(f'{client.project}-sent-print-files')
+        client.get_bucket(Config.SENT_PRINT_FILE_BUCKET)
     except exceptions.GoogleCloudError as exception:
         logger.error('File upload to GCS failed: {0!s} not fatal, but must be fixed'.format(exception))
         return
