@@ -13,7 +13,7 @@ from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
     get_metadata_from_partial_file_name, write_file_to_bucket
 from app.manifest_file_builder import generate_manifest_file
-from config import TestConfig, Config
+from config import TestConfig
 from google.cloud import exceptions
 
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
@@ -39,7 +39,6 @@ def test_copy_files_to_sftp():
 
 
 def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
-    Config.SENT_PRINT_FILE_BUCKET = None
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
