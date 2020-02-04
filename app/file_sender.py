@@ -197,7 +197,7 @@ def upload_files_to_bucket(file_paths: Collection[Path]):
 def write_file_to_bucket(file_path):
     try:
         client = storage.Client()
-        bucket = client.get_bucket(f'{client.project}-sent-print-files')
+        bucket = client.get_bucket(Config.SENT_PRINT_FILE_BUCKET)
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
     except exceptions.GoogleCloudError as exception:
         logger.error('File upload to GCS failed: {0!s}'.format(exception))
