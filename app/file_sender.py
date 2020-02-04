@@ -153,13 +153,24 @@ def start_file_sender(readiness_queue):
     with sftp.SftpUtility(Config.SFTP_PPO_DIRECTORY):
         logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
     readiness_queue.put(True)
+
     logger.info('Started file sender')
-
-    # check gcp bucket exists
-
     while True:
         check_partial_files(Config.PARTIAL_FILES_DIRECTORY)
         sleep(Config.FILE_POLLING_DELAY_SECONDS)
+
+
+def check_gcp_bucket_ready():
+    if not Config.SENT_PRINT_FILE_BUCKET:
+        logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
+        return
+
+    try:
+        client = storage.Client()
+        client.get_bucket(f'{client.project}-sent-print-files')
+    except exceptions.GoogleCloudError as exception:
+        logger.error('File upload to GCS failed: {0!s} not fatal, but must be fixed'.format(exception))
+        return
 
 
 def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
@@ -188,8 +199,7 @@ def write_file_to_bucket(file_path):
         bucket = client.get_bucket(f'{client.project}-sent-print-files')
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
     except exceptions.GoogleCloudError as exception:
-        message = 'File upload to GCS failed: {0!s}'.format(exception)
-        logger.error(message)
+        logger.error('File upload to GCS failed: {0!s}'.format(exception))
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):
