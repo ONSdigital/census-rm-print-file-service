@@ -169,8 +169,8 @@ def check_gcp_bucket_ready():
 
     try:
         storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
-    except exceptions.GoogleCloudError as exception:
-        logger.error('File upload to GCS failed: {0!s} not fatal, but must be fixed'.format(exception))
+    except exceptions.GoogleCloudError:
+        logger.exception(f'Print file upload bucket not found {Config.SENT_PRINT_FILE_BUCKET}')
         return
 
 
