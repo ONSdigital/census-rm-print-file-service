@@ -42,13 +42,12 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
         raise ex
 
     context_logger.info('Successfully sent print files to SFTP', file_paths=list(map(str, temporary_files_paths)))
-
-    context_logger.info('Deleting partial files', file_paths=list(map(str, temporary_files_paths)))
+    context_logger.info('Deleting partial files', file_paths=list(map(str, [complete_partial_file])))
     delete_local_files([complete_partial_file])
 
-    upload_files_to_bucket(temporary_files_paths)
+    upload_files_to_bucket(manifest_file, encrypted_print_file)
 
-    context_logger.info('Deleting local files', file_paths=list(map(str, temporary_files_paths)))
+    context_logger.info('Deleting temporary files', file_paths=list(map(str, temporary_files_paths)))
     delete_local_files(temporary_files_paths)
 
     # Wait for a second so there is no chance of reusing the same file name
@@ -152,9 +151,10 @@ def start_file_sender(readiness_queue):
         logger.info('Successfully connected to SFTP QM directory', sftp_directory=Config.SFTP_QM_DIRECTORY)
     with sftp.SftpUtility(Config.SFTP_PPO_DIRECTORY):
         logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
-    readiness_queue.put(True)
 
     check_gcp_bucket_ready()
+
+    readiness_queue.put(True)
 
     logger.info('Started file sender')
     while True:
@@ -168,8 +168,7 @@ def check_gcp_bucket_ready():
         return
 
     try:
-        client = storage.Client()
-        client.get_bucket(Config.SENT_PRINT_FILE_BUCKET)
+        storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
     except exceptions.GoogleCloudError as exception:
         logger.error('File upload to GCS failed: {0!s} not fatal, but must be fixed'.format(exception))
         return
@@ -185,21 +184,20 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
                     sftp_directory=sftp_client.sftp_directory)
 
 
-def upload_files_to_bucket(file_paths: Collection[Path]):
+def upload_files_to_bucket(manifest_file, encrypted_print_file):
     if not Config.SENT_PRINT_FILE_BUCKET:
         logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
         return
 
     logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET)
 
-    for file_path in file_paths:
-        write_file_to_bucket(file_path)
+    write_file_to_bucket(manifest_file)
+    write_file_to_bucket(encrypted_print_file)
 
 
 def write_file_to_bucket(file_path):
     try:
-        client = storage.Client()
-        bucket = client.get_bucket(Config.SENT_PRINT_FILE_BUCKET)
+        bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
     except exceptions.GoogleCloudError as exception:
         logger.error('File upload to GCS failed: {0!s}'.format(exception))

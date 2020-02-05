@@ -249,13 +249,11 @@ def test_failing_write_to_gcp_bucket_is_handled():
         except Exception:
             assert False, "Exception msgs from writing to GCP bucket should be handled"
 
-    # exception has been handled and not derailed app
-    assert True, "True isn't true, this shouldn't happen"
-
 
 def test_write_to_gcp_bucket():
     # Given
-    test_files = [Path('test1'), Path('test2')]
+    test_printfile = Path('test1')
+    test_manifest_file = Path('test2')
     mock_storage_client = Mock()
     mock_bucket = Mock()
 
@@ -266,7 +264,7 @@ def test_write_to_gcp_bucket():
         google_storage.Client.return_value = mock_storage_client  # mock the cloud client
         mock_storage_client.get_bucket.return_value = mock_bucket
 
-        upload_files_to_bucket(test_files)
+        upload_files_to_bucket(test_printfile, test_manifest_file)
 
     mock_write_file = mock_bucket.blob
 
