@@ -53,6 +53,7 @@ class Config:
         'PPO_SUPPLIER_PUBLIC_KEY_PATH') else None
 
     ENVIRONMENT = os.getenv('ENVIRONMENT', 'PROD')
+    SENT_PRINT_FILE_BUCKET = os.getenv('SENT_PRINT_FILE_BUCKET', '')
 
     @classmethod
     def check_config(cls):

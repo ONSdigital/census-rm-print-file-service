@@ -11,9 +11,10 @@ import pytest
 from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
-    get_metadata_from_partial_file_name
+    get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket, check_gcp_bucket_ready
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
+from google.cloud import exceptions
 
 resource_file_path = Path(__file__).parents[2].joinpath('resources')
 
@@ -236,3 +237,71 @@ def test_split_file_too_small(cleanup_test_files):
         split_partial_file(complete_file_path, action_type, pack_code, batch_id, int(batch_quantity))
 
     assert str(e.value) == 'Cannot split file with less than 2 rows'
+
+
+def test_failing_write_to_gcp_bucket_is_handled():
+    # When
+    with patch('app.file_sender.storage.Client') as bucket_client:
+        bucket_client.side_effect = exceptions.GoogleCloudError("bucket doesn't exist")
+
+        try:
+            write_file_to_bucket(None)
+        except Exception:
+            assert False, "Exception msgs from writing to GCP bucket should be handled"
+
+
+def test_write_to_gcp_bucket():
+    # Given
+    test_printfile = Path('test1')
+    test_manifest_file = Path('test2')
+    mock_storage_client = Mock()
+    mock_bucket = Mock()
+
+    # When
+    with patch('app.file_sender.storage') as google_storage, \
+            patch('app.file_sender.Config') as config:
+        config.SENT_PRINT_FILE_BUCKET = 'test'
+        google_storage.Client.return_value = mock_storage_client  # mock the cloud client
+        mock_storage_client.get_bucket.return_value = mock_bucket
+
+        upload_files_to_bucket(test_printfile, test_manifest_file)
+
+    mock_write_file = mock_bucket.blob
+
+    # Then
+    mock_write_file.assert_has_calls(
+        [call('test1'), call().upload_from_filename(filename='test1'), call('test2'),
+         call().upload_from_filename(filename='test2')])
+
+
+def test_gcp_bucket_ready_value_not_set():
+
+    with patch('app.file_sender.storage') as google_storage:
+        check_gcp_bucket_ready()
+
+    google_storage.assert_not_called()
+
+
+def test_gcp_bucket_ready_successful():
+    mock_storage_client = Mock()
+    mock_bucket = Mock()
+
+    with patch('app.file_sender.storage') as google_storage, \
+            patch('app.file_sender.Config') as config:
+        config.SENT_PRINT_FILE_BUCKET = 'test'
+        google_storage.Client.return_value = mock_storage_client  # mock the cloud client
+        mock_storage_client.get_bucket.return_value = mock_bucket
+        check_gcp_bucket_ready()
+
+    mock_storage_client.get_bucket.assert_called_once()
+
+
+def test_failing_check_of_gcp_bucket_is_handled():
+    # When
+    with patch('app.file_sender.storage.Client') as bucket_client:
+        bucket_client.side_effect = exceptions.GoogleCloudError("bucket doesn't exist")
+
+        try:
+            check_gcp_bucket_ready()
+        except Exception:
+            assert False, "Exception msgs from writing to GCP bucket should be handled"
