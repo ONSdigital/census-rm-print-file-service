@@ -170,7 +170,7 @@ def check_gcp_bucket_ready():
     try:
         storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
     except exceptions.GoogleCloudError:
-        logger.exception(f'Print file upload bucket not found {Config.SENT_PRINT_FILE_BUCKET}')
+        logger.exception(f'Print file upload bucket cannot be accessed {Config.SENT_PRINT_FILE_BUCKET}')
         return
 
 
@@ -199,8 +199,8 @@ def write_file_to_bucket(file_path):
     try:
         bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
-    except exceptions.GoogleCloudError as exception:
-        logger.error('File upload to GCS failed: {0!s}'.format(exception))
+    except exceptions.GoogleCloudError:
+        logger.exception(f'File upload to GCS bucket failed {Config.SENT_PRINT_FILE_BUCKET}')
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):
