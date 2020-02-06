@@ -5,7 +5,7 @@ from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
-from google.cloud import storage, exceptions
+from google.cloud import storage
 from structlog import wrap_logger
 
 import app.sftp as sftp
@@ -169,7 +169,7 @@ def check_gcp_bucket_ready():
 
     try:
         storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
-    except exceptions.GoogleCloudError:
+    except Exception:
         logger.exception(f'Print file upload bucket cannot be accessed {Config.SENT_PRINT_FILE_BUCKET}')
         return
 
@@ -199,7 +199,7 @@ def write_file_to_bucket(file_path):
     try:
         bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
-    except exceptions.GoogleCloudError:
+    except Exception:
         logger.exception(f'File upload to GCS bucket failed {Config.SENT_PRINT_FILE_BUCKET}')
 
 
