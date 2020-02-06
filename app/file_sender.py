@@ -152,7 +152,7 @@ def start_file_sender(readiness_queue):
     with sftp.SftpUtility(Config.SFTP_PPO_DIRECTORY):
         logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
 
-    check_gcp_bucket_ready()
+    # check_gcp_bucket_ready()
 
     readiness_queue.put(True)
 
