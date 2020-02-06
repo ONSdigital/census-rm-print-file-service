@@ -36,9 +36,9 @@ def run_daemons():
             sleep(1)
 
 
-def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.Process:
+def run_in_daemon(target, name, process_manager, timeout=20) -> multiprocessing.Process:
     readiness_queue = process_manager.Queue()
-    daemon = multiprocessing.Process(target=target, args=[readiness_queue], daemon=True, name=name)
+    daemon = multiprocessing.Process(target=target, args=(readiness_queue,), daemon=True, name=name)
     daemon.start()
     try:
         if readiness_queue.get(block=True, timeout=timeout):
@@ -48,5 +48,5 @@ def run_in_daemon(target, name, process_manager, timeout=3) -> multiprocessing.P
 
 
 @retry(wait_exponential_multiplier=1000, wait_exponential_max=10000)
-def retry_run_daemon(target, name, process_manager, timeout=3) -> multiprocessing.Process:
+def retry_run_daemon(target, name, process_manager, timeout=20) -> multiprocessing.Process:
     return run_in_daemon(target, name, process_manager, timeout=timeout)
