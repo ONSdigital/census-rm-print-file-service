@@ -152,7 +152,7 @@ def start_file_sender(readiness_queue):
     with sftp.SftpUtility(Config.SFTP_PPO_DIRECTORY):
         logger.info('Successfully connected to SFTP PPD directory', sftp_directory=Config.SFTP_PPO_DIRECTORY)
 
-    # check_gcp_bucket_ready()
+    check_gcp_bucket_ready()
 
     readiness_queue.put(True)
 
@@ -167,11 +167,13 @@ def check_gcp_bucket_ready():
         logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
         return
 
+    logger.info('Testing connection to print file bucket', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
     try:
         storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
     except Exception:
-        logger.exception(f'Print file upload bucket cannot be accessed {Config.SENT_PRINT_FILE_BUCKET}')
+        logger.exception(f'Print file upload bucket cannot be accessed', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
         return
+    logger.info('Successfully got print file bucket', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
 
 
 def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):

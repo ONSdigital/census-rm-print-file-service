@@ -24,6 +24,10 @@ def logger_initial_config():
             # The stdlib has an alias
             method_name = "warning"
 
+        if method_name == "exception":
+            # exception level is not as universal
+            method_name = "error"
+
         event_dict["severity"] = method_name
         return event_dict
 
