@@ -45,7 +45,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger, row_count=)
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]

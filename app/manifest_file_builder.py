@@ -7,12 +7,12 @@ from app.constants import PackCode
 from app.mappings import PACK_CODE_TO_DESCRIPTION, PACK_CODE_TO_DATASET
 
 
-def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, pack_code: PackCode):
-    manifest = create_manifest(print_file_path, pack_code)
+def generate_manifest_file(manifest_file_path: Path, print_file_path: Path, pack_code: PackCode, row_count):
+    manifest = create_manifest(print_file_path, pack_code, row_count)
     manifest_file_path.write_text(json.dumps(manifest))
 
 
-def create_manifest(print_file_path: Path, pack_code: PackCode) -> dict:
+def create_manifest(print_file_path: Path, pack_code: PackCode, row_count) -> dict:
     return {
         'schemaVersion': '1',
         'description': PACK_CODE_TO_DESCRIPTION[pack_code],
@@ -25,7 +25,8 @@ def create_manifest(print_file_path: Path, pack_code: PackCode) -> dict:
                 'name': print_file_path.name,
                 'relativePath': './',
                 'sizeBytes': str(print_file_path.stat().st_size),
-                'md5sum': hashlib.md5(print_file_path.read_text().encode()).hexdigest()
+                'md5sum': hashlib.md5(print_file_path.read_text().encode()).hexdigest(),
+                'rows': row_count
             }
         ]
     }
