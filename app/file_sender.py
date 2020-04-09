@@ -19,7 +19,7 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(complete_partial_file: Path, pack_code: PackCode, context_logger, row_count):
+def process_complete_file(complete_partial_file: Path, pack_code: PackCode, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
     context_logger.info('Encrypting print file')
@@ -27,6 +27,7 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
 
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
     context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
+    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
     generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
     temporary_files_paths = [encrypted_print_file, manifest_file]
 
@@ -105,11 +106,11 @@ def is_split_file_batch_id(batch_id):
     return batch_id.endswith('_1') or batch_id.endswith('_2')
 
 
-def check_partial_files(partial_files_dir: Path, row_count):
+def check_partial_files(partial_files_dir: Path):
     for partial_file in partial_files_dir.iterdir():
         action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(partial_file.name)
         actual_number_of_lines = sum(1 for _ in partial_file.open())
-        if int(batch_quantity) == actual_number_of_lines:
+        if batch_quantity == actual_number_of_lines:
             context_logger = logger.bind(action_type=action_type.value,
                                          pack_code=pack_code.value,
                                          batch_id=batch_id,
@@ -126,7 +127,7 @@ def check_partial_files(partial_files_dir: Path, row_count):
             if split_overs_sized_partial_file(partial_file, action_type, pack_code, batch_id, batch_quantity,
                                               context_logger):
                 return
-            process_complete_file(partial_file, pack_code, context_logger, row_count)
+            process_complete_file(partial_file, pack_code, context_logger)
 
 
 def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code, batch_id, batch_quantity,
@@ -142,7 +143,7 @@ def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code
 
 def get_metadata_from_partial_file_name(partial_file_name: str):
     action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
-    return ActionType(action_type), PackCode(pack_code), batch_id, batch_quantity
+    return ActionType(action_type), PackCode(pack_code), batch_id, int(batch_quantity)
 
 
 def start_file_sender(readiness_queue):
