@@ -898,7 +898,7 @@ def get_and_check_manifest_file(sftp, remote_manifest_path, expected_values, dec
         assert manifest_json[key] == value
     actual_row_count = len(decrypted_print_file.splitlines())
 
-    assert actual_row_count == manifest_json['files'][0]['row_count']
+    assert actual_row_count == manifest_json['files'][0]['rows']
     assert manifest_json['files'][0]['relativePath'] == './'
     assert manifest_json['sourceName'] == 'ONS_RM'
     assert manifest_json['schemaVersion'] == '1'
