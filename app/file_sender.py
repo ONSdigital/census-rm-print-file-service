@@ -27,7 +27,8 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
 
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
     context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
-    generate_manifest_file(manifest_file, encrypted_print_file, pack_code)
+    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
+    generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
     temporary_files_paths = [encrypted_print_file, manifest_file]
 
     context_logger.info('Sending files to SFTP', file_paths=list(map(str, temporary_files_paths)))
@@ -109,7 +110,7 @@ def check_partial_files(partial_files_dir: Path):
     for partial_file in partial_files_dir.iterdir():
         action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(partial_file.name)
         actual_number_of_lines = sum(1 for _ in partial_file.open())
-        if int(batch_quantity) == actual_number_of_lines:
+        if batch_quantity == actual_number_of_lines:
             context_logger = logger.bind(action_type=action_type.value,
                                          pack_code=pack_code.value,
                                          batch_id=batch_id,
@@ -142,7 +143,7 @@ def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code
 
 def get_metadata_from_partial_file_name(partial_file_name: str):
     action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
-    return ActionType(action_type), PackCode(pack_code), batch_id, batch_quantity
+    return ActionType(action_type), PackCode(pack_code), batch_id, int(batch_quantity)
 
 
 def start_file_sender(readiness_queue):
