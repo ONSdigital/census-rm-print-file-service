@@ -9,7 +9,7 @@ class ActionType(Enum):
 
     # Initial contact letter CE/SPG
     CE1_IC01 = 'CE1_IC01'
-    D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
+    CE1_IC02 = 'CE1_IC02'
 
     # Initial contact household questionnaires
     ICHHQE = 'ICHHQE'
@@ -58,7 +58,7 @@ class PackCode(Enum):
     P_IC_ICL4 = 'P_IC_ICL4'
 
     # Initial contact letter CE/SPG
-    CE1_IC01 = 'CE1_IC01'
+    D_CE1A_ICLCR1 = 'D_CE1A_ICLCR1'
     D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
 
     # Initial contact questionnaires
