@@ -18,7 +18,11 @@ def test_generate_print_row_valid_ICL1E(cleanup_test_files):
         "addressLine2": "Duffryn",
         "townName": "Newport",
         "postcode": "NPXXXX",
-        "packCode": "P_IC_ICL1"
+        "packCode": "P_IC_ICL1",
+        "questionnaireId": "01000000000093",
+        "organizationName": "ONS",
+        "coordinatorId": "123456789",
+        "officerId": "012345678"
     })
 
     # When
@@ -27,7 +31,8 @@ def test_generate_print_row_valid_ICL1E(cleanup_test_files):
     # Then
     generated_print_file = cleanup_test_files.partial_files.joinpath('ICL1E.P_IC_ICL1.1.3')
     assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
-                                                '|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+                                                '|Duffryn||Newport|NPXXXX|P_IC_ICL1|01000000000093'
+                                                '|ONS|123456789|012345678\n')
 
 
 def test_generate_print_row_valid_ICHHQE(cleanup_test_files):

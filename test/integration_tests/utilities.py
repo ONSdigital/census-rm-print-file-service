@@ -14,7 +14,11 @@ ICL_message_template = {
     "addressLine2": "Duffryn",
     "townName": "Newport",
     "postcode": "NPXXXX",
-    "packCode": None
+    "packCode": None,
+    "questionnaireId": None,
+    "organizationName": None,
+    "coordinatorId": None,
+    "officerId": None
 }
 
 reminder_message_template = {
@@ -27,7 +31,6 @@ reminder_message_template = {
     "packCode": None
 }
 
-
 PPD1_3_message_template = {
     "uac": None,
     "caseRef": "test_caseref",
@@ -38,7 +41,11 @@ PPD1_3_message_template = {
     "addressLine2": "Duffryn",
     "townName": "Newport",
     "postcode": "NPXXXX",
-    "packCode": None
+    "packCode": None,
+    "questionnaireId": None,
+    "organizationName": None,
+    "coordinatorId": None,
+    "officerId": None
 }
 
 print_questionnaire_message_template = {
