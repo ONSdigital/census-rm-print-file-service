@@ -11,7 +11,8 @@ import pytest
 from app.constants import PackCode
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
-    get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket, check_gcp_bucket_ready
+    get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket, check_gcp_bucket_ready, \
+    sort_print_file
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 from google.cloud import exceptions
@@ -92,7 +93,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
 def test_generating_manifest_file_ppd(cleanup_test_files):
     manifest_file = cleanup_test_files.encrypted_files.joinpath('P_IC_ICL1_2019-07-05T08-15-41.manifest')
     print_file = resource_file_path.joinpath('P_IC_ICL1_2019-07-05T08-15-41.csv.gpg')
-    generate_manifest_file(manifest_file, print_file, PackCode.P_IC_ICL1, row_count=10)
+    generate_manifest_file(manifest_file, print_file, PackCode.P_IC_ICL1)
 
     manifest_json = json.loads(manifest_file.read_text())
 
@@ -100,13 +101,12 @@ def test_generating_manifest_file_ppd(cleanup_test_files):
     assert manifest_json['description'] == 'Initial contact letter households - England'
     assert manifest_json['sourceName'] == 'ONS_RM'
     assert manifest_json['dataset'] == 'PPD1.1'
-    assert manifest_json['files'][0]['rows'] == 10
 
 
 def test_generating_manifest_file_qm(cleanup_test_files):
     manifest_file = cleanup_test_files.encrypted_files.joinpath('P_IC_H1_2019-07-08T11-57-11.manifest')
     print_file = resource_file_path.joinpath('P_IC_H1_2019-07-08T11-57-11.csv.gpg')
-    generate_manifest_file(manifest_file, print_file, PackCode.P_IC_H1, row_count=10)
+    generate_manifest_file(manifest_file, print_file, PackCode.P_IC_H1)
 
     manifest_json = json.loads(manifest_file.read_text())
 
@@ -114,7 +114,6 @@ def test_generating_manifest_file_qm(cleanup_test_files):
     assert manifest_json['description'] == 'Initial contact questionnaire households - England'
     assert manifest_json['sourceName'] == 'ONS_RM'
     assert manifest_json['dataset'] == 'QM3.2'
-    assert manifest_json['files'][0]['rows'] == 10
 
 
 def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files):

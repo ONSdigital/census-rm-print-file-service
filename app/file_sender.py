@@ -1,10 +1,15 @@
 import csv
+import json
 import logging
+import operator
+import shutil
 from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
+import pandas as pd
+from csvsort import csvsort
 from google.cloud import storage
 from structlog import wrap_logger
 
@@ -18,8 +23,109 @@ from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
 
+ADDRESS1 = ['', 'Flat', 'Cell', 'Room', 'Alley', 'Villa', 'Palace']
+ORGNAME = ['Smiths', 'AnOrg', 'TheOrg', 'Prison', 'BowlingClub', 'OldFolks', 'Anything', 'IdeasLacking']
+
+
+def csvsort_lib(file_to_sort):
+    logger.info('Sorting print file')
+    # This can take headers/true false, and column names instead or index.
+    # https://bitbucket.org/richardpenman/csvsort/src/default/__init__.py
+
+    # Max size is mb to load at once, not rows! interesting to tweak and see on 1Gb files
+    csvsort(file_to_sort, ["CordOfficerId", "FieldOfficerId", "OrgName", "AddressLine1"], delimiter='|',
+            has_header=True, max_size=500)
+
+
+def sort_file_in_memory_by_column_name(file_to_sort, out_file):
+    with open(file_to_sort, 'r', newline='') as f_input:
+        csv_input = csv.DictReader(f_input, delimiter='|')
+        data = sorted(csv_input, key=lambda row: (row['CordOfficerId'], row['FieldOfficerId'],
+                                                  row["OrgName"], row["AddressLine1"]))
+
+    with open(out_file, 'w', newline='') as f_output:
+        csv_output = csv.DictWriter(f_output, fieldnames=csv_input.fieldnames, delimiter='|')
+        csv_output.writeheader()
+        csv_output.writerows(data)
+
+
+def panda_it(file_to_sort, out_file):
+    data = pd.read_csv(file_to_sort, delimiter='|')
+
+    # CordOfficerId|FieldOfficerId|OrgName|AddressLine1
+    sorted_data = data.sort_values(["CordOfficerId", "FieldOfficerId", "OrgName", "AddressLine1"],
+                                   ascending=(True, True, True, True))
+
+    sorted_data.to_csv(out_file, index=False)
+
+
+# Only works with 1 index anyway
+def sort_file_in_memory_by_index(file_to_sort):
+    logger.info('Sorting file in memory')
+
+    data = csv.reader(open(file_to_sort), delimiter='|')
+
+    sorted_list = data.sort_values(by=['Sort1', 'Sort2'])
+
+    # sortedlist = sorted(data, key=lambda row: row[0], reverse=False)
+    # sortedlist = sorted(data, key=operator.itemgetter(0))  # 0 specifies according to first column we want to sort
+    # sortedlist = sorted(data, key=[operator.itemgetter(0), operator.itemgetter(4)])
+
+    w = csv.writer(open("/Users/lozel/projects/census-rm-print-file-service/sorted.csv", "w"), delimiter='|')
+    for d in sorted_list:
+        w.writerow(d)
+
+    #
+    # with open(file_to_sort, newline='') as csvfile:
+    #     spamreader = csv.DictReader(csvfile, delimiter="|")
+    #     sortedlist = sorted(spamreader, key=lambda row: (row['Sort1'], row['Sort2']), reverse=False)
+    #
+    # print('sorted file, now writing it')
+    #
+    # with open('/Users/lozel/projects/census-rm-print-file-service/sorted.csv', 'w') as f:
+    #     csvwriter = csv.writer(csvfile)
+    #     csvwriter.writerows(sortedlist)
+    # json.dump(sortedlist, f)
+    # # for listitem in sortedlist:
+    # #     f.write('%s\n' % listitem)
+
+
+def panda_sort(file_to_sort, sorting_key, context_logger):
+    context_logger.info("In panda sort")
+    # This outputs the file so that it's easy view, instead of unencypting etc
+    out_file = "./sorted.csv"
+
+    start = datetime.utcnow()
+
+    data = pd.read_csv(file_to_sort, delimiter='|', header=None)
+
+    context_logger.info("Read data about to sort")
+    sort_key = ["CordOfficerId", "FieldOfficerId", "OrgName", "AddressLine1"]
+
+    # sorted_data = data.sort_values(sort_key)
+    # so would get 'sort_key(s)' and derive column indexes from Template list via names?
+    sorted_data = data.sort_values([data.columns[1], data.columns[2], data.columns[3], data.columns[4]])
+
+    context_logger.info("Sorted data in memory about to write")
+    sorted_data.to_csv(file_to_sort, index=False, header=None, sep='|')
+
+    end = datetime.utcnow()
+
+    context_logger.info(f'Print file sorting took: {(end - start).total_seconds()}')
+
+    sorted_data.to_csv(out_file, index=False, header=None, sep='|')
+    context_logger.info("written sorted data to file")
+
 
 def process_complete_file(complete_partial_file: Path, pack_code: PackCode, context_logger):
+    sort_key = ["CordOfficerId", "FieldOfficerId", "OrgName", "AddressLine1"]
+
+    # In the real world would want a copy maybe of the file incase something went wrong during the sort??
+    # God alone knows how we would recover? I suppose give it an incomplete name and it would recover
+
+    context_logger.info(f'About to sort partial file {complete_partial_file}')
+    panda_sort(complete_partial_file, sort_key, context_logger)
+
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
     context_logger.info('Encrypting print file')
@@ -27,8 +133,7 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
 
     manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
     context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
-    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
-    generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
+    generate_manifest_file(manifest_file, encrypted_print_file, pack_code)
     temporary_files_paths = [encrypted_print_file, manifest_file]
 
     context_logger.info('Sending files to SFTP', file_paths=list(map(str, temporary_files_paths)))
@@ -110,7 +215,7 @@ def check_partial_files(partial_files_dir: Path):
     for partial_file in partial_files_dir.iterdir():
         action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(partial_file.name)
         actual_number_of_lines = sum(1 for _ in partial_file.open())
-        if batch_quantity == actual_number_of_lines:
+        if int(batch_quantity) == actual_number_of_lines:
             context_logger = logger.bind(action_type=action_type.value,
                                          pack_code=pack_code.value,
                                          batch_id=batch_id,
@@ -143,7 +248,7 @@ def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code
 
 def get_metadata_from_partial_file_name(partial_file_name: str):
     action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
-    return ActionType(action_type), PackCode(pack_code), batch_id, int(batch_quantity)
+    return ActionType(action_type), PackCode(pack_code), batch_id, batch_quantity
 
 
 def start_file_sender(readiness_queue):
