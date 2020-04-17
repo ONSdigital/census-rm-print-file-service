@@ -130,6 +130,7 @@ def panda_sort(file_to_sort, out_file, sorting_key):
     data = pd.read_csv(file_to_sort, delimiter='|', header=None)
     # sort_key = ["CordOfficerId", "FieldOfficerId", "OrgName", "AddressLine1"]
 
+    # If key supplied as names, we would get data columns by indexing from the Template
     sorted_data = data.sort_values([data.columns[0], data.columns[1], data.columns[2], data.columns[3]])
 
     sorted_data.to_csv(file_to_sort, index=False, header=None, sep='|')

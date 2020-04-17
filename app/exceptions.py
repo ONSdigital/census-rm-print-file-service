@@ -12,3 +12,7 @@ class EncryptionFailedException(Exception):
 
 class DaemonStartupError(Exception):
     pass
+
+
+class RabbitConnectionClosedError(Exception):
+    pass

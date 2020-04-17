@@ -1,5 +1,7 @@
 import pika
+from pika.spec import PERSISTENT_DELIVERY_MODE
 
+from app.exceptions import RabbitConnectionClosedError
 from config import Config
 
 
@@ -12,6 +14,7 @@ class RabbitContext:
         self._user = kwargs.get('user') or Config.RABBIT_USERNAME
         self._password = kwargs.get('password') or Config.RABBIT_PASSWORD
         self.queue_name = kwargs.get('queue_name') or Config.RABBIT_QUEUE
+        self._exchange = Config.RABBIT_EXCHANGE
 
     def __enter__(self):
         self.open_connection()
@@ -39,3 +42,12 @@ class RabbitContext:
         self._connection.close()
         del self._channel
         del self._connection
+
+    def publish_message(self, message: str, content_type: str):
+        if not self._connection.is_open:
+            raise RabbitConnectionClosedError
+
+        self._channel.basic_publish(exchange='action-outbound-exchange',
+                                    routing_key='Action.Printer.binding',
+                                    body=message,
+                                    properties=pika.BasicProperties(content_type=content_type))
