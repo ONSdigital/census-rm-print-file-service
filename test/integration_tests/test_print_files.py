@@ -839,6 +839,58 @@ def test_P_RD_2RL2B_3(sftp_client):
                                     'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
 
 
+def test_CE_IC03_1(sftp_client):
+    # Given
+    ce_ic03_1_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC03_1', 'D_ICA_ICLR1')
+    send_action_messages(ce_ic03_1_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'D_ICA_ICLR1')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_ICA_ICLR1\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Individual ICL with UAC for England (Hand Delivery) Addressed',
+                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_CE_IC04_1(sftp_client):
+    # Given
+    ce_ic04_1_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC04_1', 'D_ICA_ICLR2B')
+    send_action_messages(ce_ic04_1_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'D_ICA_ICLR2B')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_ICA_ICLR2B\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
+                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+
+
 def test_our_decryption_key(sftp_client):
     # Given
     icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')

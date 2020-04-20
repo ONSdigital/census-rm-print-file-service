@@ -12,6 +12,10 @@ class ActionType(Enum):
     ICHHQW = 'ICHHQW'
     ICHHQN = 'ICHHQN'
 
+    # Individual addressed initial contact letters for CE Units
+    CE_IC03_1 = 'CE_IC03_1'
+    CE_IC04_1 = 'CE_IC04_1'
+
     # On request questionnaire fulfilments
     P_OR_HX = 'P_OR_HX'
 
@@ -57,6 +61,10 @@ class PackCode(Enum):
     P_IC_H1 = 'P_IC_H1'
     P_IC_H2 = 'P_IC_H2'
     P_IC_H4 = 'P_IC_H4'
+
+    # Individual addressed initial contact letters for CE Units
+    D_ICA_ICLR1 = 'D_ICA_ICLR1'
+    D_ICA_ICLR2B = 'D_ICA_ICLR2B'
 
     # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
