@@ -165,10 +165,10 @@ class PrintTemplate:
                            'townName',
                            'postcode',
                            'packCode',
-                           'questionnaireId',
+                           'qid',
                            'organizationName',
-                           'coordinatorId',
-                           'officerId')
+                           'fieldCoordinatorId',
+                           'fieldOfficerId')
 
     QM_QUESTIONNAIRE_TEMPLATE = ('uac',
                                  'qid',
