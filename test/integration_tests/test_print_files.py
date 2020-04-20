@@ -841,7 +841,7 @@ def test_P_RD_2RL2B_3(sftp_client):
 
 def test_CE1_IC01(sftp_client):
     # Given
-    ce1_ic01_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC01', 'D_CE1A_ICLCR1')
+    ce1_ic01_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC01', 'D_CE1A_ICLCR1', ce=True)
     send_action_messages(ce1_ic01_messages)
 
     # When
@@ -856,7 +856,8 @@ def test_CE1_IC01(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR1||||\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR1|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -867,7 +868,7 @@ def test_CE1_IC01(sftp_client):
 
 def test_CE1_IC02(sftp_client):
     # Given
-    ce1_ic02_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC02', 'D_CE1A_ICLCR2B')
+    ce1_ic02_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC02', 'D_CE1A_ICLCR2B', ce=True)
     send_action_messages(ce1_ic02_messages)
 
     # When
@@ -882,7 +883,8 @@ def test_CE1_IC02(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR2B||||\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR2B|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,

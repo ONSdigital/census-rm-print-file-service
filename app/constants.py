@@ -166,7 +166,7 @@ class PrintTemplate:
                            'postcode',
                            'packCode',
                            'qid',
-                           'organizationName',
+                           'organisationName',
                            'fieldCoordinatorId',
                            'fieldOfficerId')
 
