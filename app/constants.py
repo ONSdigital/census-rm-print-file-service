@@ -7,6 +7,10 @@ class ActionType(Enum):
     ICL2W = 'ICL2W'
     ICL4N = 'ICL4N'
 
+    # Initial contact letter CE/SPG
+    CE1_IC01 = 'CE1_IC01'
+    CE1_IC02 = 'CE1_IC02'
+
     # Initial contact household questionnaires
     ICHHQE = 'ICHHQE'
     ICHHQW = 'ICHHQW'
@@ -52,6 +56,10 @@ class PackCode(Enum):
     P_IC_ICL1 = 'P_IC_ICL1'
     P_IC_ICL2B = 'P_IC_ICL2B'
     P_IC_ICL4 = 'P_IC_ICL4'
+
+    # Initial contact letter CE/SPG
+    D_CE1A_ICLCR1 = 'D_CE1A_ICLCR1'
+    D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
 
     # Initial contact questionnaires
     P_IC_H1 = 'P_IC_H1'
@@ -156,7 +164,11 @@ class PrintTemplate:
                            'addressLine3',
                            'townName',
                            'postcode',
-                           'packCode')
+                           'packCode',
+                           'qid',
+                           'organisationName',
+                           'fieldCoordinatorId',
+                           'fieldOfficerId')
 
     QM_QUESTIONNAIRE_TEMPLATE = ('uac',
                                  'qid',
