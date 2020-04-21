@@ -16,7 +16,7 @@ ICL_message_template = {
     "postcode": "NPXXXX",
     "packCode": None,
     "questionnaireId": None,
-    "organizationName": None,
+    "organisationName": None,
     "coordinatorId": None,
     "officerId": None
 }
@@ -124,7 +124,6 @@ def build_ce_messages(message_template, action_type, quantity, pack_code, batch_
             message['uacWales'] = str(test_uac)
             test_uac += 1
     return messages, batch_id
-    pass
 
 
 def build_test_messages(message_template, quantity, action_type, pack_code, uac=True, ce=False):
