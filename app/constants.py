@@ -65,7 +65,7 @@ class PackCode(Enum):
     D_CE1A_ICLCR1 = 'D_CE1A_ICLCR1'
     D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
 
-    # Individual addressed initial contact letters for CE Units
+    # Individual addressed initial contact letters for CE Estabs and Units
     D_ICA_ICLR1 = 'D_ICA_ICLR1'
     D_ICA_ICLR2B = 'D_ICA_ICLR2B'
 
