@@ -11,6 +11,10 @@ class ActionType(Enum):
     CE1_IC01 = 'CE1_IC01'
     CE1_IC02 = 'CE1_IC02'
 
+    # Individual addressed initial contact letters for CE Estabs
+    CE_IC03 = 'CE_IC03'
+    CE_IC04 = 'CE_IC04'
+
     # Individual addressed initial contact letters for CE Units
     CE_IC03_1 = 'CE_IC03_1'
     CE_IC04_1 = 'CE_IC04_1'
@@ -65,7 +69,7 @@ class PackCode(Enum):
     D_CE1A_ICLCR1 = 'D_CE1A_ICLCR1'
     D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
 
-    # Individual addressed initial contact letters for CE Units
+    # Individual addressed initial contact letters for CE Estabs and Units
     D_ICA_ICLR1 = 'D_ICA_ICLR1'
     D_ICA_ICLR2B = 'D_ICA_ICLR2B'
 
