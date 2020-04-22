@@ -11,6 +11,10 @@ class ActionType(Enum):
     CE1_IC01 = 'CE1_IC01'
     CE1_IC02 = 'CE1_IC02'
 
+    # Individual addressed initial contact letters for CE Units
+    CE_IC03_1 = 'CE_IC03_1'
+    CE_IC04_1 = 'CE_IC04_1'
+
     # Initial contact household questionnaires
     ICHHQE = 'ICHHQE'
     ICHHQW = 'ICHHQW'
@@ -60,6 +64,10 @@ class PackCode(Enum):
     # Initial contact letter CE/SPG
     D_CE1A_ICLCR1 = 'D_CE1A_ICLCR1'
     D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
+
+    # Individual addressed initial contact letters for CE Estabs and Units
+    D_ICA_ICLR1 = 'D_ICA_ICLR1'
+    D_ICA_ICLR2B = 'D_ICA_ICLR2B'
 
     # Initial contact questionnaires
     P_IC_H1 = 'P_IC_H1'

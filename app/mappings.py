@@ -66,7 +66,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RD_2RL1_3: 'Response driven reminder group 3 English',
     PackCode.P_RD_2RL2B_3: 'Response driven reminder group 3 Welsh',
     PackCode.D_CE1A_ICLCR1: 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
-    PackCode.D_CE1A_ICLCR2B: 'CE1 ICL with UAC for Wales (Hand Delivery) Addressed'
+    PackCode.D_CE1A_ICLCR2B: 'CE1 ICL with UAC for Wales (Hand Delivery) Addressed',
+    PackCode.D_ICA_ICLR1: 'Individual ICL with UAC for England (Hand Delivery) Addressed',
+    PackCode.D_ICA_ICLR2B: 'Individual ICL with UAC for Wales (Hand Delivery) Addressed'
 }
 
 PACK_CODE_TO_DATASET = {
@@ -133,7 +135,9 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RD_2RL1_3: Dataset.PPD1_2,
     PackCode.P_RD_2RL2B_3: Dataset.PPD1_2,
     PackCode.D_CE1A_ICLCR1: Dataset.PPD1_1,
-    PackCode.D_CE1A_ICLCR2B: Dataset.PPD1_1
+    PackCode.D_CE1A_ICLCR2B: Dataset.PPD1_1,
+    PackCode.D_ICA_ICLR1: Dataset.PPD1_1,
+    PackCode.D_ICA_ICLR2B: Dataset.PPD1_1
 }
 
 DATASET_TO_SUPPLIER = {
@@ -183,7 +187,9 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RD_2RL1_3: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RD_2RL2B_3: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE1_IC01: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.CE1_IC02: PrintTemplate.PPO_LETTER_TEMPLATE
+    ActionType.CE1_IC02: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.CE_IC03_1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.CE_IC04_1: PrintTemplate.PPO_LETTER_TEMPLATE
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
