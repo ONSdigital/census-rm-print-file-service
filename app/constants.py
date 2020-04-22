@@ -7,14 +7,18 @@ class ActionType(Enum):
     ICL2W = 'ICL2W'
     ICL4N = 'ICL4N'
 
-    # Initial contact household questionnaires
-    ICHHQE = 'ICHHQE'
-    ICHHQW = 'ICHHQW'
-    ICHHQN = 'ICHHQN'
+    # Initial contact letter CE/SPG
+    CE1_IC01 = 'CE1_IC01'
+    CE1_IC02 = 'CE1_IC02'
 
     # Individual addressed initial contact letters for CE Units
     CE_IC03_1 = 'CE_IC03_1'
     CE_IC04_1 = 'CE_IC04_1'
+
+    # Initial contact household questionnaires
+    ICHHQE = 'ICHHQE'
+    ICHHQW = 'ICHHQW'
+    ICHHQN = 'ICHHQN'
 
     # On request questionnaire fulfilments
     P_OR_HX = 'P_OR_HX'
@@ -57,14 +61,18 @@ class PackCode(Enum):
     P_IC_ICL2B = 'P_IC_ICL2B'
     P_IC_ICL4 = 'P_IC_ICL4'
 
-    # Initial contact questionnaires
-    P_IC_H1 = 'P_IC_H1'
-    P_IC_H2 = 'P_IC_H2'
-    P_IC_H4 = 'P_IC_H4'
+    # Initial contact letter CE/SPG
+    D_CE1A_ICLCR1 = 'D_CE1A_ICLCR1'
+    D_CE1A_ICLCR2B = 'D_CE1A_ICLCR2B'
 
     # Individual addressed initial contact letters for CE Units
     D_ICA_ICLR1 = 'D_ICA_ICLR1'
     D_ICA_ICLR2B = 'D_ICA_ICLR2B'
+
+    # Initial contact questionnaires
+    P_IC_H1 = 'P_IC_H1'
+    P_IC_H2 = 'P_IC_H2'
+    P_IC_H4 = 'P_IC_H4'
 
     # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
@@ -164,7 +172,11 @@ class PrintTemplate:
                            'addressLine3',
                            'townName',
                            'postcode',
-                           'packCode')
+                           'packCode',
+                           'qid',
+                           'organisationName',
+                           'fieldCoordinatorId',
+                           'fieldOfficerId')
 
     QM_QUESTIONNAIRE_TEMPLATE = ('uac',
                                  'qid',

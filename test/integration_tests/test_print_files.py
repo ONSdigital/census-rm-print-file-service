@@ -30,7 +30,7 @@ def test_ICL1E(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -61,27 +61,27 @@ def test_ICL1E_split_files(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected=('0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '1|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '2|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '3|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '4|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '5|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '6|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '7|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '8|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '9|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '10|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '11|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '12|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '13|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '14|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '15|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '16|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '17|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '18|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '19|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-                  '20|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'))
+        expected=('0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '1|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '2|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '3|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '4|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '5|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '6|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '7|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '8|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '9|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '10|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '11|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '12|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '13|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '14|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '15|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '16|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '17|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '18|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '19|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+                  '20|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'))
 
 
 def test_ICL2W(sftp_client):
@@ -101,7 +101,7 @@ def test_ICL2W(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2B\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2B||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -127,7 +127,7 @@ def test_ICL4N(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -481,7 +481,7 @@ def test_P_RL_1RL1_1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1_1\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1_1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -507,7 +507,7 @@ def test_P_LP_HL1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_LP_HL1\n')
+        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_LP_HL1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -533,7 +533,7 @@ def test_P_TB_TBPOL1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_TB_TBPOL1\n')
+        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_TB_TBPOL1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -700,7 +700,7 @@ def test_P_RD_2RL1_1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_1\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -726,7 +726,7 @@ def test_P_RD_2RL2B_1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_1\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -752,7 +752,7 @@ def test_P_RD_2RL1_2(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_2\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_2||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -778,7 +778,7 @@ def test_P_RD_2RL2B_2(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_2\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_2||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -804,7 +804,7 @@ def test_P_RD_2RL1_3(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_3\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_3||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -830,7 +830,7 @@ def test_P_RD_2RL2B_3(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_3\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_3||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
@@ -839,15 +839,15 @@ def test_P_RD_2RL2B_3(sftp_client):
                                     'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_CE_IC03_1(sftp_client):
+def test_CE1_IC01(sftp_client):
     # Given
-    ce_ic03_1_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC03_1', 'D_ICA_ICLR1')
-    send_action_messages(ce_ic03_1_messages)
+    ce1_ic01_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC01', 'D_CE1A_ICLCR1', ce=True)
+    send_action_messages(ce1_ic01_messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_ICA_ICLR1')
+                                                                                 'D_CE1A_ICLCR1')
 
     # Then
     decrypted_print_file = get_and_check_print_file(
@@ -856,24 +856,25 @@ def test_CE_IC03_1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_ICA_ICLR1\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR1|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Individual ICL with UAC for England (Hand Delivery) Addressed',
+                                    'description': 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
                                     'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_CE_IC04_1(sftp_client):
+def test_CE1_IC02(sftp_client):
     # Given
-    ce_ic04_1_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC04_1', 'D_ICA_ICLR2B')
-    send_action_messages(ce_ic04_1_messages)
+    ce1_ic02_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC02', 'D_CE1A_ICLCR2B', ce=True)
+    send_action_messages(ce1_ic02_messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_ICA_ICLR2B')
+                                                                                 'D_CE1A_ICLCR2B')
 
     # Then
     decrypted_print_file = get_and_check_print_file(
@@ -882,12 +883,13 @@ def test_CE_IC04_1(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_ICA_ICLR2B\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR2B|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
+                                    'description': 'CE1 ICL with UAC for Wales (Hand Delivery) Addressed',
                                     'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -908,7 +910,7 @@ def test_our_decryption_key(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'our_dummy_private.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n')
 
 
 def get_print_and_manifest_filenames(sftp, remote_directory, pack_code, max_attempts=10):

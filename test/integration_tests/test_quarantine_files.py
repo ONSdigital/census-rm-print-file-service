@@ -23,9 +23,9 @@ def test_icl1e_with_duplicate_uacs_is_quarantined():
 
     # Then
     assert expected_quarantined_file.read_text() == (
-        'test_duplicate|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-        '1|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n'
-        'test_duplicate|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1\n')
+        'test_duplicate|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+        '1|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'
+        'test_duplicate|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n')
 
 
 def test_ichhqw_with_duplicate_uacs_is_quarantined():
