@@ -188,7 +188,9 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RD_2RL2B_3: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE1_IC01: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE1_IC02: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.CE_IC03: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE_IC03_1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.CE_IC04: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE_IC04_1: PrintTemplate.PPO_LETTER_TEMPLATE
 }
 
