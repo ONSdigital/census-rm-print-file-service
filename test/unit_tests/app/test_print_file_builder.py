@@ -105,7 +105,7 @@ def test_generate_print_row_valid_CE_IC03_1(cleanup_test_files):
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "D_ICA_ICLR1",
-        "qid": "31000000001234",
+        "qid": "21000000001234",
         "organisationName": "ONS",
         "fieldCoordinatorId": "123456789",
         "fieldOfficerId": "012345678"
@@ -117,7 +117,7 @@ def test_generate_print_row_valid_CE_IC03_1(cleanup_test_files):
     # Then
     generated_print_file = cleanup_test_files.partial_files.joinpath('CE_IC03_1.D_ICA_ICLR1.1.3')
     assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
-                                                '|Duffryn||Newport|NPXXXX|D_ICA_ICLR1|31000000001234'
+                                                '|Duffryn||Newport|NPXXXX|D_ICA_ICLR1|21000000001234'
                                                 '|ONS|123456789|012345678\n')
 
 
