@@ -11,6 +11,10 @@ class ActionType(Enum):
     CE1_IC01 = 'CE1_IC01'
     CE1_IC02 = 'CE1_IC02'
 
+    # Individual addressed initial contact letters for CE Estabs
+    CE_IC03 = 'CE_IC03'
+    CE_IC04 = 'CE_IC04'
+
     # Individual addressed initial contact letters for CE Units
     CE_IC03_1 = 'CE_IC03_1'
     CE_IC04_1 = 'CE_IC04_1'
