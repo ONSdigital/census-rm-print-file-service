@@ -70,7 +70,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.D_ICA_ICLR1: 'Individual ICL with UAC for England (Hand Delivery) Addressed',
     PackCode.D_ICA_ICLR2B: 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
     PackCode.P_ICCE_ICL1: 'Household ICL with UAC for England (Post Out) Addressed',
-    PackCode.P_ICCE_ICL2B: 'Household ICL with UAC for Wales (Post Out) Addressed'
+    PackCode.P_ICCE_ICL2B: 'Household ICL with UAC for Wales (Post Out) Addressed',
+    PackCode.D_FDCE_I1: 'Individual Questionnaire for England (Hand delivery) Addressed',
+    PackCode.D_FDCE_I2: 'Individual Questionnaire for Wales (Hand delivery) Addressed',
 }
 
 PACK_CODE_TO_DATASET = {
@@ -141,7 +143,9 @@ PACK_CODE_TO_DATASET = {
     PackCode.D_ICA_ICLR1: Dataset.PPD1_1,
     PackCode.D_ICA_ICLR2B: Dataset.PPD1_1,
     PackCode.P_ICCE_ICL1: Dataset.PPD1_1,
-    PackCode.P_ICCE_ICL2B: Dataset.PPD1_1
+    PackCode.P_ICCE_ICL2B: Dataset.PPD1_1,
+    PackCode.D_FDCE_I1: Dataset.QM3_2,
+    PackCode.D_FDCE_I2: Dataset.QM3_2,
 }
 
 DATASET_TO_SUPPLIER = {
@@ -197,7 +201,9 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.CE_IC04: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE_IC04_1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.SPG_IC11: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.SPG_IC12: PrintTemplate.PPO_LETTER_TEMPLATE
+    ActionType.SPG_IC12: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.CE_IC09: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.CE_IC10: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {

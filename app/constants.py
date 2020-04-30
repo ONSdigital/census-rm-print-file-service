@@ -23,6 +23,10 @@ class ActionType(Enum):
     SPG_IC11 = 'SPG_IC11'
     SPG_IC12 = 'SPG_IC12'
 
+    # Initial contact individual CE questionnaire
+    CE_IC09 = 'CE_IC09'
+    CE_IC10 = 'CE_IC10'
+
     # Initial contact household questionnaires
     ICHHQE = 'ICHHQE'
     ICHHQW = 'ICHHQW'
@@ -80,6 +84,10 @@ class PackCode(Enum):
     # Individual addressed initial contact letters for SPGs
     P_ICCE_ICL1 = 'P_ICCE_ICL1'
     P_ICCE_ICL2B = 'P_ICCE_ICL2B'
+
+    # Initial contact individual questionnaires
+    D_FDCE_I1 = 'D_FDCE_I1'
+    D_FDCE_I2 = 'D_FDCE_I2'
 
     # Initial contact questionnaires
     P_IC_H1 = 'P_IC_H1'
@@ -203,4 +211,6 @@ class PrintTemplate:
                                  'addressLine3',
                                  'townName',
                                  'postcode',
-                                 'packCode')
+                                 'packCode',
+                                 'organisationName',
+                                 'fieldOfficerId')
