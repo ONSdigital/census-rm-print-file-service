@@ -121,6 +121,64 @@ def test_generate_print_row_valid_CE_IC03_1(cleanup_test_files):
                                                 '|ONS|123456789|012345678\n')
 
 
+def test_generate_print_row_valid_SPG_IC11(cleanup_test_files):
+    # Given
+    json_body = json.dumps({
+        "actionType": "SPG_IC11",
+        "batchId": "1",
+        "batchQuantity": 3,
+        "uac": "test_uac",
+        "caseRef": "test_caseref",
+        "addressLine1": "123 Fake Street",
+        "addressLine2": "Duffryn",
+        "townName": "Newport",
+        "postcode": "NPXXXX",
+        "packCode": "P_ICCE_ICL1",
+        "qid": "21000000005678",
+        "organisationName": "ONS",
+        "fieldCoordinatorId": "123456789",
+        "fieldOfficerId": "012345678"
+    })
+
+    # When
+    generate_print_row(json_body, cleanup_test_files.partial_files)
+
+    # Then
+    generated_print_file = cleanup_test_files.partial_files.joinpath('SPG_IC11.P_ICCE_ICL1.1.3')
+    assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
+                                                '|Duffryn||Newport|NPXXXX|P_ICCE_ICL1|21000000005678'
+                                                '|ONS|123456789|012345678\n')
+
+
+def test_generate_print_row_valid_SPG_IC12(cleanup_test_files):
+    # Given
+    json_body = json.dumps({
+        "actionType": "SPG_IC12",
+        "batchId": "1",
+        "batchQuantity": 3,
+        "uac": "test_uac",
+        "caseRef": "test_caseref",
+        "addressLine1": "123 Fake Street",
+        "addressLine2": "Duffryn",
+        "townName": "Newport",
+        "postcode": "NPXXXX",
+        "packCode": "P_ICCE_ICL2B",
+        "qid": "21000000005555",
+        "organisationName": "ONS",
+        "fieldCoordinatorId": "123456789",
+        "fieldOfficerId": "012345678"
+    })
+
+    # When
+    generate_print_row(json_body, cleanup_test_files.partial_files)
+
+    # Then
+    generated_print_file = cleanup_test_files.partial_files.joinpath('SPG_IC12.P_ICCE_ICL2B.1.3')
+    assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
+                                                '|Duffryn||Newport|NPXXXX|P_ICCE_ICL2B|21000000005555'
+                                                '|ONS|123456789|012345678\n')
+
+
 def test_generate_print_row_invalid_action_type(cleanup_test_files):
     # Given
     json_body = json.dumps({
