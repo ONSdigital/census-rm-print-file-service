@@ -155,11 +155,11 @@ def test_ICHHQE(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1||\n'
             '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1||\n'
             '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -187,11 +187,11 @@ def test_ICHHQW(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2||\n'
             '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2||\n'
             '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -219,11 +219,11 @@ def test_ICHHQN(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4||\n'
             '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4||\n'
             '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -250,9 +250,9 @@ def test_P_OR_H1(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -279,9 +279,9 @@ def test_P_OR_H2(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -308,9 +308,9 @@ def test_P_OR_H2W(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -337,9 +337,9 @@ def test_P_OR_H4(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -366,9 +366,9 @@ def test_P_OR_HC1(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -395,9 +395,9 @@ def test_P_OR_HC2(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -424,9 +424,9 @@ def test_P_OR_HC2W(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -453,9 +453,9 @@ def test_P_OR_HC4(sftp_client):
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
         expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4\n'))
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -560,7 +560,7 @@ def test_P_OR_I1(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I1\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I1||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -587,7 +587,7 @@ def test_P_OR_I2(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I2\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I2||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -614,7 +614,7 @@ def test_P_OR_I2W(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I2W\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I2W||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -641,7 +641,7 @@ def test_P_OR_I4(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I4\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I4||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -670,11 +670,11 @@ def test_P_QU_H2(sftp_client):
         decryption_key_passphrase='supplier',
         expected=(
             '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2||\n'
             '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2\n'
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2||\n'
             '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2\n'))
+            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_QU_H2||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
@@ -945,6 +945,87 @@ def test_CE_IC04_1(sftp_client):
                                 expected_values={
                                     'description': 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
                                     'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_CE_IC05(sftp_client):
+    # Given
+    ce_ic05_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC05', 'D_CE4A_ICLR4', ce=True)
+    send_action_messages(ce_ic05_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'D_CE4A_ICLR4')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE4A_ICLR4|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'CE resident letter',
+                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_CE_IC06(sftp_client):
+    # Given
+    ce_ic06_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC06', 'D_CE4A_ICLS4', ce=True)
+    send_action_messages(ce_ic06_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'D_CE4A_ICLS4')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE4A_ICLS4|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'CE student letter',
+                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_CE_IC08(sftp_client):
+    # Given
+    ce_ic08_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'CE_IC08', 'D_FDCE_I4', ce=True)
+    send_action_messages(ce_ic08_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'D_FDCE_I4')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected='0|english_qid|1|welsh_qid|ppo_field_coordinator_id||||123 Fake Street|Duffryn||Newport|NPXXXX'
+                 '|D_FDCE_I4|ONS|dummy_field_officer_id\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Individual Questionnaire for NI (Hand delivery) Addressed',
+                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_SPG_IC11(sftp_client):
