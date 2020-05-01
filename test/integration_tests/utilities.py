@@ -62,7 +62,9 @@ print_questionnaire_message_template = {
     "addressLine2": "Duffryn",
     "townName": "Newport",
     "postcode": "NPXXXX",
-    "packCode": None
+    "packCode": None,
+    "organisationName": None,
+    "fieldOfficerId": None
 }
 
 P_OR_message_template = {
@@ -79,7 +81,9 @@ P_OR_message_template = {
     "addressLine2": "Duffryn",
     "townName": "Newport",
     "postcode": "NPXXXX",
-    "packCode": None
+    "packCode": None,
+    "organisationName": None,
+    "fieldOfficerId": None
 }
 
 

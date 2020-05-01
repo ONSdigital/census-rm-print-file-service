@@ -42,11 +42,11 @@ def test_ichhqw_with_duplicate_uacs_is_quarantined():
     # Then
     assert expected_quarantined_file.read_text() == (
         'test_duplicate|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2||\n'
         '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n'
+        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2||\n'
         '4|english_qid|test_duplicate|welsh_qid|test_qm_coordinator_id|'
-        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2\n')
+        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H2||\n')
 
 
 def wait_for_quarantined_file(expected_quarantined_file, max_attempts=10):
