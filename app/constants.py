@@ -25,8 +25,6 @@ class ActionType(Enum):
 
     # Initial contact individual CE questionnaire
     CE_IC08 = 'CE_IC08'
-
-    # Initial contact individual CE questionnaire
     CE_IC09 = 'CE_IC09'
     CE_IC10 = 'CE_IC10'
 
