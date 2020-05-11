@@ -32,7 +32,7 @@ class ActionType(Enum):
     SPG_IC11 = 'SPG_IC11'
     SPG_IC12 = 'SPG_IC12'
 
-    # Initial contact SPG questionnaire
+    # Initial contact SPG questionnaires
     SPG_IC13 = 'SPG_IC13'
     SPG_IC14 = 'SPG_IC14'
 
@@ -101,7 +101,7 @@ class PackCode(Enum):
     P_ICCE_ICL1 = 'P_ICCE_ICL1'
     P_ICCE_ICL2B = 'P_ICCE_ICL2B'
 
-    # Initial contact SPG questionnaire
+    # Initial contact SPG questionnaires
     D_FDCE_H1 = 'D_FDCE_H1'
     D_FDCE_H2 = 'D_FDCE_H2'
 

@@ -76,6 +76,8 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.D_FDCE_I4: 'Individual Questionnaire for NI (Hand delivery) Addressed',
     PackCode.D_FDCE_I1: 'Individual Questionnaire for England (Hand delivery) Addressed',
     PackCode.D_FDCE_I2: 'Individual Questionnaire for Wales (Hand delivery) Addressed',
+    PackCode.D_FDCE_H1: 'Household Questionnaire for England (Hand delivery) Addressed',
+    PackCode.D_FDCE_H2: 'Household Questionnaire for Wales (Hand Delivery) Addressed',
 }
 
 PACK_CODE_TO_DATASET = {
@@ -152,6 +154,8 @@ PACK_CODE_TO_DATASET = {
     PackCode.D_FDCE_I4: Dataset.QM3_2,
     PackCode.D_FDCE_I1: Dataset.QM3_2,
     PackCode.D_FDCE_I2: Dataset.QM3_2,
+    PackCode.D_FDCE_H1: Dataset.QM3_2,
+    PackCode.D_FDCE_H2: Dataset.QM3_2,
 }
 
 DATASET_TO_SUPPLIER = {
@@ -213,6 +217,8 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.CE_IC10: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.SPG_IC11: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.SPG_IC12: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.SPG_IC13: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.SPG_IC14: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
