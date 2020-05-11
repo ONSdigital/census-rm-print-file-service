@@ -25,6 +25,8 @@ class ActionType(Enum):
 
     # Initial contact individual CE questionnaire
     CE_IC08 = 'CE_IC08'
+    CE_IC09 = 'CE_IC09'
+    CE_IC10 = 'CE_IC10'
 
     # Individual addressed initial contact letters for SPGs
     SPG_IC11 = 'SPG_IC11'
@@ -88,6 +90,8 @@ class PackCode(Enum):
 
     # Initial contact individual questionnaires
     D_FDCE_I4 = 'D_FDCE_I4'
+    D_FDCE_I1 = 'D_FDCE_I1'
+    D_FDCE_I2 = 'D_FDCE_I2'
 
     # Individual addressed initial contact letters for SPGs
     P_ICCE_ICL1 = 'P_ICCE_ICL1'
