@@ -106,6 +106,7 @@ class TestConfig(DevConfig):
     PARTIAL_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('partial_files/')
     ENCRYPTED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('encrypted_files/')
     QUARANTINED_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('quarantined_files/')
+    SORTING_FILES_DIRECTORY = TMP_TEST_DIRECTORY.joinpath('sorting_files/')
     EXCEPTION_MANAGER_URL = 'http://test'
 
 

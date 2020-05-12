@@ -5,6 +5,7 @@ from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
+from csvsort import csvsort
 from google.cloud import storage
 from structlog import wrap_logger
 
@@ -19,16 +20,10 @@ from config import Config
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(complete_partial_file: Path, pack_code: PackCode, context_logger):
+def process_complete_file(complete_partial_file: Path, pack_code: PackCode, action_type: ActionType, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
-
-    context_logger.info('Encrypting print file')
-    encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
-
-    manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
-    context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
-    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
-    generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
+    encrypted_print_file, manifest_file = encrypt_file_and_write_manifest(complete_partial_file, pack_code,
+                                                                          context_logger, supplier)
     temporary_files_paths = [encrypted_print_file, manifest_file]
 
     context_logger.info('Sending files to SFTP', file_paths=list(map(str, temporary_files_paths)))
@@ -53,6 +48,19 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
 
     # Wait for a second so there is no chance of reusing the same file name
     sleep(1)
+
+
+def encrypt_file_and_write_manifest(complete_partial_file: Path, pack_code: PackCode, context_logger, supplier):
+    context_logger.info('Encrypting print file')
+    encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
+
+    manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
+    context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
+
+    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
+    generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
+
+    return encrypted_print_file, manifest_file
 
 
 def is_file_over_size(_file: Path):
@@ -127,7 +135,7 @@ def check_partial_files(partial_files_dir: Path):
             if split_overs_sized_partial_file(partial_file, action_type, pack_code, batch_id, batch_quantity,
                                               context_logger):
                 return
-            process_complete_file(partial_file, pack_code, context_logger)
+            process_complete_file(partial_file, pack_code, action_type, context_logger)
 
 
 def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code, batch_id, batch_quantity,
