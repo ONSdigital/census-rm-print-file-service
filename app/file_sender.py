@@ -5,7 +5,6 @@ from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
-from csvsort import csvsort
 from google.cloud import storage
 from structlog import wrap_logger
 
@@ -15,6 +14,7 @@ from app.encryption import pgp_encrypt_message
 from app.manifest_file_builder import generate_manifest_file
 from app.mappings import PACK_CODE_TO_DATASET, \
     SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, SUPPLIER_TO_PRINT_TEMPLATE
+# from app.printfile_sorting import sort_print_file_if_required
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -22,6 +22,8 @@ logger = wrap_logger(logging.getLogger(__name__))
 
 def process_complete_file(complete_partial_file: Path, pack_code: PackCode, action_type: ActionType, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
+
+    # complete_partial_file = sort_print_file_if_required(complete_partial_file, pack_code, action_type, context_logger)
     encrypted_print_file, manifest_file = encrypt_file_and_write_manifest(complete_partial_file, pack_code,
                                                                           context_logger, supplier)
     temporary_files_paths = [encrypted_print_file, manifest_file]

@@ -9,7 +9,8 @@ os.environ['ENVIRONMENT'] = 'TEST'
 from config import TestConfig, Config  # noqa: E402, out of order by necessity
 from app.logger import logger_initial_config  # noqa: E402, out of order by necessity
 
-TestDirectories = namedtuple('TestDirectories', ['test_files', 'partial_files', 'encrypted_files', 'quarantined_files'])
+TestDirectories = namedtuple('TestDirectories',
+                             ['test_files', 'partial_files', 'encrypted_files', 'quarantined_files', 'sorting_files'])
 MAX_FILE_SIZE_BYTES_PRESET = Config.MAX_FILE_SIZE_BYTES
 
 
@@ -22,11 +23,13 @@ def cleanup_test_files():
     cleanup_test_files.partial_files = TestConfig.PARTIAL_FILES_DIRECTORY
     encrypted_files_directory = TestConfig.ENCRYPTED_FILES_DIRECTORY
     quarantined_file_directory = TestConfig.QUARANTINED_FILES_DIRECTORY
+    sorting_file_directory = TestConfig.SORTING_FILES_DIRECTORY
     cleanup_test_files.partial_files.mkdir(exist_ok=True)
     encrypted_files_directory.mkdir(exist_ok=True)
     quarantined_file_directory.mkdir(exist_ok=True)
+    sorting_file_directory.mkdir(exist_ok=True)
     yield TestDirectories(test_file_path, cleanup_test_files.partial_files, encrypted_files_directory,
-                          quarantined_file_directory)
+                          quarantined_file_directory, sorting_file_directory)
     shutil.rmtree(test_file_path)
 
 

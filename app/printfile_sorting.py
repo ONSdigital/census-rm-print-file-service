@@ -2,9 +2,10 @@ import os
 import shutil
 from datetime import datetime
 from pathlib import Path
+
 from csvsort import csvsort
 
-from app.constants import PackCode, PrintTemplate, ActionType
+from app.constants import PackCode, ActionType
 from app.mappings import ACTION_TYPE_TO_PRINT_TEMPLATE
 from config import Config
 
@@ -31,6 +32,8 @@ def sort_print_file_if_required(complete_partial_file: Path, pack_code: PackCode
         print_template = ACTION_TYPE_TO_PRINT_TEMPLATE.get(action_type)
         sorting_key_indexed = get_column_indexes_by_name_from_template(print_template, SORTING_KEY)
         return sort_print_file_to_new_file(complete_partial_file, sorting_key_indexed)
+    else:
+        return complete_partial_file
 
 
 def make_dir_to_sort_file_in_and_move_file_there(complete_partial_file: Path, pack_code: PackCode, context_logger):
