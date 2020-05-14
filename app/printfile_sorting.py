@@ -27,10 +27,15 @@ PACKCODES_TO_SORT = ['D_CE1A_ICLCR1', 'D_CE1A_ICLCR2B', 'D_ICA_ICLR1', 'D_ICA_IC
 def sort_print_file_if_required(complete_partial_file: Path, pack_code: PackCode, action_type: ActionType,
                                 context_logger):
     if pack_code.value in PACKCODES_TO_SORT:
+        context_logger.info('Going to sort file')
         complete_partial_file = make_dir_to_sort_file_in_and_move_file_there(complete_partial_file, pack_code,
                                                                              context_logger)
+        context_logger.info('Have moved file to new directory')
         print_template = ACTION_TYPE_TO_PRINT_TEMPLATE.get(action_type)
+        context_logger.info('Got print_template')
         sorting_key_indexed = get_column_indexes_by_name_from_template(print_template, SORTING_KEY)
+        context_logger.info('Got sorting key')
+
         return sort_print_file_to_new_file(complete_partial_file, sorting_key_indexed)
     else:
         return complete_partial_file
@@ -39,17 +44,15 @@ def sort_print_file_if_required(complete_partial_file: Path, pack_code: PackCode
 def make_dir_to_sort_file_in_and_move_file_there(complete_partial_file: Path, pack_code: PackCode, context_logger):
     directory_to_sort = f'{Config.SORTING_FILES_DIRECTORY}/' \
                         f'{pack_code.value}_{datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")}'
-    directory_to_sort_path = Path(directory_to_sort)
-    # does this need to be checked?
     os.mkdir(directory_to_sort)
-    new_name = Path(f'{directory_to_sort}/{complete_partial_file.name}')
-    shutil.move(str(complete_partial_file), new_name)
+    file_to_sort_in_dir = Path(f'{directory_to_sort}/{complete_partial_file.name}_to_sort')
+    shutil.move(str(complete_partial_file), file_to_sort_in_dir)
 
-    return directory_to_sort_path.joinpath(complete_partial_file.name)
+    return file_to_sort_in_dir
 
 
 def sort_print_file_to_new_file(complete_partial_file: Path, sorting_column_indexes):
-    sorted_file_path = f'{complete_partial_file.parent}/{complete_partial_file.name}.sorted'
+    sorted_file_path = f'{complete_partial_file.parent}/{complete_partial_file.name.replace("_to_sort", "")}'
     csvsort(str(complete_partial_file), sorting_column_indexes, output_filename=sorted_file_path,
             max_size=500, delimiter='|', has_header=False)
     return Path(sorted_file_path)

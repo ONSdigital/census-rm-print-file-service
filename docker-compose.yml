@@ -40,6 +40,7 @@ services:
       - QUARANTINED_FILES_DIRECTORY=/home/printfile/working_files/quarantined_files
       - PARTIAL_FILES_DIRECTORY=/home/printfile/working_files/partial_files
       - ENCRYPTED_FILES_DIRECTORY=/home/printfile/working_files/encrypted_files
+      - SORTING_FILE_DIRECTORY=/home/printfile/working_files/sorting_files
       - MAX_FILE_SIZE_BYTES=1024
     volumes:
       - ./working_files:/home/printfile/working_files

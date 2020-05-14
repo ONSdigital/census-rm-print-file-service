@@ -22,6 +22,7 @@ class Config:
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))
     QUARANTINED_FILES_DIRECTORY = Path(os.getenv('QUARANTINED_FILES_DIRECTORY', 'quarantined_files/'))
+    SORTING_FILES_DIRECTORY = Path(os.getenv('SORTING_FILES', 'sorting_files/'))
     FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 10))
 
     READINESS_FILE_PATH = Path(os.getenv('READINESS_FILE_PATH', 'print-file-service-ready'))
