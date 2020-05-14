@@ -301,6 +301,66 @@ def test_generate_print_row_valid_SPG_IC12(cleanup_test_files):
                                                 '|ONS|123456789|012345678\n')
 
 
+def test_generate_print_row_valid_SPG_IC13(cleanup_test_files):
+    # Given
+    json_body = json.dumps({
+        "actionType": "SPG_IC13",
+        "batchId": "1",
+        "batchQuantity": 3,
+        "uac": "test_uac",
+        "qid": "test_qid",
+        "uacWales": "test_wales_uac",
+        "qidWales": "test_wales_qid",
+        "fieldCoordinatorId": "test_qm_coordinator_id",
+        "addressLine1": "123 Fake Street",
+        "addressLine2": "Duffryn",
+        "townName": "Newport",
+        "postcode": "NPXXXX",
+        "packCode": "D_FDCE_H1",
+        "organisationName": "ONS",
+        "fieldOfficerId": "012345678"
+    })
+
+    # When
+    generate_print_row(json_body, cleanup_test_files.partial_files)
+
+    # Then
+    generated_print_file = cleanup_test_files.partial_files.joinpath('SPG_IC13.D_FDCE_H1.1.3')
+    assert generated_print_file.read_text() == (
+        'test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id||||123 Fake Street|Duffryn||Newport'
+        '|NPXXXX|D_FDCE_H1|ONS|012345678\n')
+
+
+def test_generate_print_row_valid_SPG_IC14(cleanup_test_files):
+    # Given
+    json_body = json.dumps({
+        "actionType": "SPG_IC14",
+        "batchId": "1",
+        "batchQuantity": 3,
+        "uac": "test_uac",
+        "qid": "test_qid",
+        "uacWales": "test_wales_uac",
+        "qidWales": "test_wales_qid",
+        "fieldCoordinatorId": "test_qm_coordinator_id",
+        "addressLine1": "123 Fake Street",
+        "addressLine2": "Duffryn",
+        "townName": "Newport",
+        "postcode": "NPXXXX",
+        "packCode": "D_FDCE_H2",
+        "organisationName": "ONS",
+        "fieldOfficerId": "012345678"
+    })
+
+    # When
+    generate_print_row(json_body, cleanup_test_files.partial_files)
+
+    # Then
+    generated_print_file = cleanup_test_files.partial_files.joinpath('SPG_IC14.D_FDCE_H2.1.3')
+    assert generated_print_file.read_text() == (
+        'test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id||||123 Fake Street|Duffryn||Newport'
+        '|NPXXXX|D_FDCE_H2|ONS|012345678\n')
+
+
 def test_generate_print_row_invalid_action_type(cleanup_test_files):
     # Given
     json_body = json.dumps({

@@ -1135,6 +1135,60 @@ def test_SPG_IC12(sftp_client):
                                     'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
 
 
+def test_SPG_IC13(sftp_client):
+    # Given
+    spg_ic13_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'SPG_IC13', 'D_FDCE_H1')
+    send_action_messages(spg_ic13_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'D_FDCE_H1')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected='0|english_qid|1|welsh_qid|test_qm_coordinator_id||||123 Fake Street|Duffryn||Newport'
+                 '|NPXXXX|D_FDCE_H1||\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Household Questionnaire for England (Hand delivery) Addressed',
+                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_SPG_IC14(sftp_client):
+    # Given
+    spg_ic14_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'SPG_IC14', 'D_FDCE_H2', )
+    send_action_messages(spg_ic14_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_QM_DIRECTORY,
+                                                                                 'D_FDCE_H2')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_qm_supplier_private_key.asc'),
+        decryption_key_passphrase='supplier',
+        expected='0|english_qid|1|welsh_qid|test_qm_coordinator_id||||123 Fake Street|Duffryn||Newport'
+                 '|NPXXXX|D_FDCE_H2||\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Household Questionnaire for Wales (Hand Delivery) Addressed',
+                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
+
+
 def test_our_decryption_key(sftp_client):
     # Given
     icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')

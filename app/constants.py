@@ -28,9 +28,13 @@ class ActionType(Enum):
     CE_IC09 = 'CE_IC09'
     CE_IC10 = 'CE_IC10'
 
-    # Individual addressed initial contact letters for SPGs
+    # Initial contact letters for SPGs
     SPG_IC11 = 'SPG_IC11'
     SPG_IC12 = 'SPG_IC12'
+
+    # Initial contact SPG questionnaires
+    SPG_IC13 = 'SPG_IC13'
+    SPG_IC14 = 'SPG_IC14'
 
     # Initial contact household questionnaires
     ICHHQE = 'ICHHQE'
@@ -40,7 +44,7 @@ class ActionType(Enum):
     # On request questionnaire fulfilments
     P_OR_HX = 'P_OR_HX'
 
-    # On request individual fulfilment questionaires
+    # On request individual fulfilment questionnaires
     P_OR_IX = 'P_OR_IX'
 
     # Large print fulfilments
@@ -93,9 +97,13 @@ class PackCode(Enum):
     D_FDCE_I1 = 'D_FDCE_I1'
     D_FDCE_I2 = 'D_FDCE_I2'
 
-    # Individual addressed initial contact letters for SPGs
+    # Initial contact letters for SPGs
     P_ICCE_ICL1 = 'P_ICCE_ICL1'
     P_ICCE_ICL2B = 'P_ICCE_ICL2B'
+
+    # Initial contact SPG questionnaires
+    D_FDCE_H1 = 'D_FDCE_H1'
+    D_FDCE_H2 = 'D_FDCE_H2'
 
     # Initial contact questionnaires
     P_IC_H1 = 'P_IC_H1'
