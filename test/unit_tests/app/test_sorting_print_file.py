@@ -1,5 +1,6 @@
 import shutil
 from pathlib import Path
+from unittest.mock import Mock
 
 from app.constants import ActionType, PackCode, PrintTemplate
 from app.printfile_sorting import sort_print_file_if_required, get_column_indexes_by_name_from_template
@@ -11,8 +12,9 @@ def test_sorting_print_file(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('file_to_sort'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('tmp_file_to_sort')))
 
-    # complete_file_path = Path(shutil.copyfile(from_file, to_file))
-    sorted_print_file = sort_print_file_if_required(complete_file_path, PackCode.D_CE1A_ICLCR1, ActionType.ICHHQE, None)
+    context_logger = Mock()
+    sorted_print_file = sort_print_file_if_required(complete_file_path, PackCode.D_CE1A_ICLCR1, ActionType.ICHHQE,
+                                                    context_logger)
 
     correct_file = resource_file_path.joinpath('correctly_sorted_file')
 

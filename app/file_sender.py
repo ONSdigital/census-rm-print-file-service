@@ -23,14 +23,9 @@ logger = wrap_logger(logging.getLogger(__name__))
 def process_complete_file(complete_partial_file: Path, pack_code: PackCode, action_type: ActionType, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
-    # Leave complete_partial_file in partial_files dir
-    # Run sort on that file to a new file in sort_dir  filename_sorted
-    # Move back to partial directory
-    # delete previous complete_partial_file
-    # look at splitting code for this, is there reuable code there
-    # In sorting decisions, if endswith _sorted then don't sort
-
     complete_partial_file = sort_print_file_if_required(complete_partial_file, pack_code, action_type, context_logger)
+    context_logger.info("Going to encrypt file: ", file_name=str(complete_partial_file))
+
     encrypted_print_file, manifest_file = encrypt_file_and_write_manifest(complete_partial_file, pack_code,
                                                                           context_logger, supplier)
     temporary_files_paths = [encrypted_print_file, manifest_file]
@@ -159,7 +154,11 @@ def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code
 
 
 def get_metadata_from_partial_file_name(partial_file_name: str):
-    action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
+    if partial_file_name.endswith(".sorted"):
+        action_type, pack_code, batch_id, batch_quantity, _ = partial_file_name.split('.')
+    else:
+        action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
+
     return ActionType(action_type), PackCode(pack_code), batch_id, int(batch_quantity)
 
 
