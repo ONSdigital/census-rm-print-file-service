@@ -10,6 +10,7 @@ from app.mappings import ACTION_TYPE_TO_PRINT_TEMPLATE
 from config import Config
 
 SORTING_KEY = ['fieldOfficerId', 'organisationName']
+# make these enums
 PACKCODES_TO_SORT = ['D_CE1A_ICLCR1', 'D_CE1A_ICLCR2B', 'D_ICA_ICLR1', 'D_ICA_ICLR1', 'D_ICA_ICLR2B',
                      'D_ICA_ICLR2B', 'D_FDCE_I1', 'D_FDCE_I2', 'D_FDCE_I4', 'D_CE4A_ICLR4', 'D_CE4A_ICLS4',
                      'D_FDCE_H1', 'D_FDCE_H2']
@@ -53,6 +54,8 @@ def make_dir_to_sort_file_in_and_move_file_there(complete_partial_file: Path, pa
 
 def sort_print_file_to_new_file(complete_partial_file: Path, sorting_column_indexes):
     sorted_file_path = f'{complete_partial_file.parent}/{complete_partial_file.name.replace("_to_sort", "")}'
+    # if we leave complete_partial_file in partial_files and write to file in sorting_dir where do the file 'chunks'
+    # get written
     csvsort(str(complete_partial_file), sorting_column_indexes, output_filename=sorted_file_path,
             max_size=500, delimiter='|', has_header=False)
     return Path(sorted_file_path)

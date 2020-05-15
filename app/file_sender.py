@@ -23,6 +23,13 @@ logger = wrap_logger(logging.getLogger(__name__))
 def process_complete_file(complete_partial_file: Path, pack_code: PackCode, action_type: ActionType, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
+    # Leave complete_partial_file in partial_files dir
+    # Run sort on that file to a new file in sort_dir  filename_sorted
+    # Move back to partial directory
+    # delete previous complete_partial_file
+    # look at splitting code for this, is there reuable code there
+    # In sorting decisions, if endswith _sorted then don't sort
+
     complete_partial_file = sort_print_file_if_required(complete_partial_file, pack_code, action_type, context_logger)
     encrypted_print_file, manifest_file = encrypt_file_and_write_manifest(complete_partial_file, pack_code,
                                                                           context_logger, supplier)
