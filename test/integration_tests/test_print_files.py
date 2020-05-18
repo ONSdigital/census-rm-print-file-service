@@ -863,7 +863,7 @@ def test_CE1_IC01(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_CE1_IC02(sftp_client):
@@ -890,7 +890,7 @@ def test_CE1_IC02(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'CE1 ICL with UAC for Wales (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_CE_IC03_1(sftp_client):
@@ -917,7 +917,7 @@ def test_CE_IC03_1(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'Individual ICL with UAC for England (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_CE_IC04_1(sftp_client):
@@ -944,7 +944,7 @@ def test_CE_IC04_1(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_CE_IC05(sftp_client):
@@ -971,7 +971,7 @@ def test_CE_IC05(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'CE resident letter',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_CE_IC06(sftp_client):
@@ -998,7 +998,7 @@ def test_CE_IC06(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'CE student letter',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_CE_IC08(sftp_client):
@@ -1106,7 +1106,7 @@ def test_SPG_IC11(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'Household ICL with UAC for England (Post Out) Addressed',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_SPG_IC12(sftp_client):
@@ -1132,7 +1132,7 @@ def test_SPG_IC12(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description': 'Household ICL with UAC for Wales (Post Out) Addressed',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_SPG_IC13(sftp_client):
