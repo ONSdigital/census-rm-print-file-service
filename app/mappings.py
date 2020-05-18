@@ -143,14 +143,14 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RD_2RL2B_2: Dataset.PPD1_2,
     PackCode.P_RD_2RL1_3: Dataset.PPD1_2,
     PackCode.P_RD_2RL2B_3: Dataset.PPD1_2,
-    PackCode.D_CE1A_ICLCR1: Dataset.PPD1_1,
-    PackCode.D_CE1A_ICLCR2B: Dataset.PPD1_1,
-    PackCode.D_ICA_ICLR1: Dataset.PPD1_1,
-    PackCode.D_ICA_ICLR2B: Dataset.PPD1_1,
-    PackCode.D_CE4A_ICLR4: Dataset.PPD1_1,
-    PackCode.D_CE4A_ICLS4: Dataset.PPD1_1,
-    PackCode.P_ICCE_ICL1: Dataset.PPD1_1,
-    PackCode.P_ICCE_ICL2B: Dataset.PPD1_1,
+    PackCode.D_CE1A_ICLCR1: Dataset.PPD1_7,
+    PackCode.D_CE1A_ICLCR2B: Dataset.PPD1_7,
+    PackCode.D_ICA_ICLR1: Dataset.PPD1_7,
+    PackCode.D_ICA_ICLR2B: Dataset.PPD1_7,
+    PackCode.D_CE4A_ICLR4: Dataset.PPD1_7,
+    PackCode.D_CE4A_ICLS4: Dataset.PPD1_7,
+    PackCode.P_ICCE_ICL1: Dataset.PPD1_7,
+    PackCode.P_ICCE_ICL2B: Dataset.PPD1_7,
     PackCode.D_FDCE_I4: Dataset.QM3_2,
     PackCode.D_FDCE_I1: Dataset.QM3_2,
     PackCode.D_FDCE_I2: Dataset.QM3_2,
@@ -162,9 +162,12 @@ DATASET_TO_SUPPLIER = {
     Dataset.QM3_2: Supplier.QM,
     Dataset.QM3_3: Supplier.QM,
     Dataset.QM3_4: Supplier.QM,
-    Dataset.PPD1_1: Supplier.PPO,
-    Dataset.PPD1_2: Supplier.PPO,
-    Dataset.PPD1_3: Supplier.PPO
+    Dataset.PPD1_1: Supplier.PPO,  # Initial Contact Letter Addresses
+    Dataset.PPD1_2: Supplier.PPO,  # Reminder Letter Addresses
+    Dataset.PPD1_3: Supplier.PPO,  # Fulfilment Request for Supplementary Printed Materials
+    Dataset.PPD1_6: Supplier.PPO,  # Unaddressed Initial Contact Materials
+    Dataset.PPD1_7: Supplier.PPO,  # Initial Contact Addresses (CE/SPG)
+    Dataset.PPD1_8: Supplier.PPO  # Non Compliance Letter Addresses
 }
 
 SUPPLIER_TO_SFTP_DIRECTORY = {

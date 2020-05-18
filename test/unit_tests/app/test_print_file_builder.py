@@ -136,7 +136,7 @@ def test_generate_print_row_valid_CE_IC05(cleanup_test_files):
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "D_CE4A_ICLR4",
-        "qid": "31000000000093",
+        "qid": "24000000000093",
         "organisationName": "ONS",
         "fieldCoordinatorId": "123456789",
         "fieldOfficerId": "012345678"
@@ -148,7 +148,7 @@ def test_generate_print_row_valid_CE_IC05(cleanup_test_files):
     # Then
     generated_print_file = cleanup_test_files.partial_files.joinpath('CE_IC05.D_CE4A_ICLR4.1.3')
     assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
-                                                '|Duffryn||Newport|NPXXXX|D_CE4A_ICLR4|31000000000093'
+                                                '|Duffryn||Newport|NPXXXX|D_CE4A_ICLR4|24000000000093'
                                                 '|ONS|123456789|012345678\n')
 
 
@@ -256,7 +256,7 @@ def test_generate_print_row_valid_SPG_IC11(cleanup_test_files):
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "P_ICCE_ICL1",
-        "qid": "21000000005678",
+        "qid": "01000000005678",
         "organisationName": "ONS",
         "fieldCoordinatorId": "123456789",
         "fieldOfficerId": "012345678"
@@ -268,7 +268,7 @@ def test_generate_print_row_valid_SPG_IC11(cleanup_test_files):
     # Then
     generated_print_file = cleanup_test_files.partial_files.joinpath('SPG_IC11.P_ICCE_ICL1.1.3')
     assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
-                                                '|Duffryn||Newport|NPXXXX|P_ICCE_ICL1|21000000005678'
+                                                '|Duffryn||Newport|NPXXXX|P_ICCE_ICL1|01000000005678'
                                                 '|ONS|123456789|012345678\n')
 
 
@@ -285,7 +285,7 @@ def test_generate_print_row_valid_SPG_IC12(cleanup_test_files):
         "townName": "Newport",
         "postcode": "NPXXXX",
         "packCode": "P_ICCE_ICL2B",
-        "qid": "21000000005555",
+        "qid": "02000000005555",
         "organisationName": "ONS",
         "fieldCoordinatorId": "123456789",
         "fieldOfficerId": "012345678"
@@ -297,7 +297,7 @@ def test_generate_print_row_valid_SPG_IC12(cleanup_test_files):
     # Then
     generated_print_file = cleanup_test_files.partial_files.joinpath('SPG_IC12.P_ICCE_ICL2B.1.3')
     assert generated_print_file.read_text() == ('test_uac|test_caseref||||123 Fake Street'
-                                                '|Duffryn||Newport|NPXXXX|P_ICCE_ICL2B|21000000005555'
+                                                '|Duffryn||Newport|NPXXXX|P_ICCE_ICL2B|02000000005555'
                                                 '|ONS|123456789|012345678\n')
 
 
