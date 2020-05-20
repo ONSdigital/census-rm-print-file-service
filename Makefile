@@ -14,7 +14,8 @@ integration_tests: clean_working_files down up
 	pipenv run pytest test/integration_tests
 	docker-compose down
 
-test: unit_tests integration_tests
+test: build_and_test
+
 run:
 	ENVIRONMENT=DEV pipenv run python run.py
 

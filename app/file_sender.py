@@ -14,21 +14,20 @@ from app.encryption import pgp_encrypt_message
 from app.manifest_file_builder import generate_manifest_file
 from app.mappings import PACK_CODE_TO_DATASET, \
     SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, SUPPLIER_TO_PRINT_TEMPLATE
+from app.printfile_sorting import sort_print_file_if_required
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def process_complete_file(complete_partial_file: Path, pack_code: PackCode, context_logger):
+def process_complete_file(complete_partial_file: Path, pack_code: PackCode, action_type: ActionType, context_logger):
     supplier = DATASET_TO_SUPPLIER[PACK_CODE_TO_DATASET[pack_code]]
 
-    context_logger.info('Encrypting print file')
-    encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
+    complete_partial_file = sort_print_file_if_required(complete_partial_file, pack_code, action_type, context_logger)
+    context_logger.info("Going to encrypt file: ", file_name=str(complete_partial_file))
 
-    manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
-    context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
-    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
-    generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
+    encrypted_print_file, manifest_file = encrypt_file_and_write_manifest(complete_partial_file, pack_code,
+                                                                          context_logger, supplier)
     temporary_files_paths = [encrypted_print_file, manifest_file]
 
     context_logger.info('Sending files to SFTP', file_paths=list(map(str, temporary_files_paths)))
@@ -53,6 +52,19 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, cont
 
     # Wait for a second so there is no chance of reusing the same file name
     sleep(1)
+
+
+def encrypt_file_and_write_manifest(complete_partial_file: Path, pack_code: PackCode, context_logger, supplier):
+    context_logger.info('Encrypting print file')
+    encrypted_print_file, filename = encrypt_print_file(complete_partial_file, pack_code, supplier)
+
+    manifest_file = Config.ENCRYPTED_FILES_DIRECTORY.joinpath(f'{filename}.manifest')
+    context_logger.info('Creating manifest for print file', manifest_file=manifest_file.name)
+
+    row_count = get_metadata_from_partial_file_name(complete_partial_file.name)[3]
+    generate_manifest_file(manifest_file, encrypted_print_file, pack_code, row_count)
+
+    return encrypted_print_file, manifest_file
 
 
 def is_file_over_size(_file: Path):
@@ -127,7 +139,7 @@ def check_partial_files(partial_files_dir: Path):
             if split_overs_sized_partial_file(partial_file, action_type, pack_code, batch_id, batch_quantity,
                                               context_logger):
                 return
-            process_complete_file(partial_file, pack_code, context_logger)
+            process_complete_file(partial_file, pack_code, action_type, context_logger)
 
 
 def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code, batch_id, batch_quantity,
@@ -142,7 +154,11 @@ def split_overs_sized_partial_file(complete_partial_file, action_type, pack_code
 
 
 def get_metadata_from_partial_file_name(partial_file_name: str):
-    action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
+    if partial_file_name.endswith(".sorted"):
+        action_type, pack_code, batch_id, batch_quantity, _ = partial_file_name.split('.')
+    else:
+        action_type, pack_code, batch_id, batch_quantity = partial_file_name.split('.')
+
     return ActionType(action_type), PackCode(pack_code), batch_id, int(batch_quantity)
 
 
