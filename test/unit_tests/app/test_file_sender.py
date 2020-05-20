@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 
-from app.constants import PackCode
+from app.constants import PackCode, ActionType
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
     get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket, check_gcp_bucket_ready
@@ -45,7 +45,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
         patch_datetime.utcnow.return_value = mock_time
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, ActionType.ICL1E, context_logger)
 
     put_sftp_call_kwargs = [kwargs for _, kwargs in
                             patched_sftp.return_value.__enter__.return_value.put_file.call_args_list]
@@ -81,7 +81,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
     with patch('app.file_sender.sftp.SftpUtility'):
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, ActionType.ICL1E, context_logger)
 
     with pytest.raises(StopIteration):
         next(TestConfig.PARTIAL_FILES_DIRECTORY.iterdir())
@@ -172,7 +172,7 @@ def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
         client.return_value.open_sftp.side_effect = simulate_sftp_failure
 
         # When
-        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, context_logger)
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, ActionType.ICL1E, context_logger)
 
     # Then
     # Check encrypted_files_directory is empty
