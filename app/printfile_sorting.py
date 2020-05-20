@@ -12,7 +12,7 @@ def sort_print_file_if_required(complete_partial_file: Path, pack_code: PackCode
                                 context_logger):
     if pack_code in PrintFileSorting.PACKCODES_TO_SORT:
         file_to_sort = copy_file_to_sorting_dir_to_sort(complete_partial_file)
-        print_template = ACTION_TYPE_TO_PRINT_TEMPLATE.get(action_type)
+        print_template = ACTION_TYPE_TO_PRINT_TEMPLATE[action_type]
         sorting_key_indexed = get_column_indexes_by_name_from_template(print_template, PrintFileSorting.SORTING_KEY)
         context_logger.info("About to sort file: ", file_to_sort=file_to_sort)
 
