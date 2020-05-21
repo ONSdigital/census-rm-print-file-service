@@ -538,7 +538,7 @@ def test_P_TB_TBPOL1(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Translation Booklet for England & Wales - Polish',
+                                    'description': 'Translation Booklet for England  - Polish',
                                     'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
 
 
