@@ -138,6 +138,11 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.D_FDCE_I2: 'Individual Questionnaire for Wales (Hand delivery) Addressed',
     PackCode.D_FDCE_H1: 'Household Questionnaire for England (Hand delivery) Addressed',
     PackCode.D_FDCE_H2: 'Household Questionnaire for Wales (Hand Delivery) Addressed',
+    PackCode.P_UAC_UACHHP1: 'Household Unique Access Code for England via paper',
+    PackCode.P_UAC_UACHHP2B: 'Household Unique Access Code for Wales (English/Welsh - Bilingual) via paper',
+    PackCode.P_UAC_UACHHP4: 'Household Unique Access Code for Northern Ireland via paper',
+    PackCode.P_ER_ILER1: 'Information leaflet (Easy Read) for England',
+    PackCode.P_ER_ILER2B: 'Information leaflet (Easy Read) for Wales (English/Welsh - Bilingual)',
 }
 
 PACK_CODE_TO_DATASET = {
@@ -251,6 +256,8 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_TB_TBURD1: Dataset.PPD1_3,
     PackCode.P_TB_TBVIE1: Dataset.PPD1_3,
     PackCode.P_TB_TBYSH1: Dataset.PPD1_3,
+    PackCode.P_ER_ILER1: Dataset.PPD1_3,
+    PackCode.P_ER_ILER2B: Dataset.PPD1_3,
     PackCode.P_OR_I1: Dataset.QM3_4,
     PackCode.P_OR_I2: Dataset.QM3_4,
     PackCode.P_OR_I2W: Dataset.QM3_4,
@@ -277,6 +284,9 @@ PACK_CODE_TO_DATASET = {
     PackCode.D_FDCE_I2: Dataset.QM3_2,
     PackCode.D_FDCE_H1: Dataset.QM3_2,
     PackCode.D_FDCE_H2: Dataset.QM3_2,
+    PackCode.P_UAC_UACHHP1: Dataset.PPD1_3,
+    PackCode.P_UAC_UACHHP2B: Dataset.PPD1_3,
+    PackCode.P_UAC_UACHHP4: Dataset.PPD1_3,
 }
 
 DATASET_TO_SUPPLIER = {
@@ -343,6 +353,8 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.SPG_IC12: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.SPG_IC13: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.SPG_IC14: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_UAC_HX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_ER_IL: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
