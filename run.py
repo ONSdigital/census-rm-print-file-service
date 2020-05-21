@@ -21,6 +21,7 @@ def initialise_directories():
     Config.PARTIAL_FILES_DIRECTORY.mkdir(exist_ok=True)
     Config.ENCRYPTED_FILES_DIRECTORY.mkdir(exist_ok=True)
     Config.QUARANTINED_FILES_DIRECTORY.mkdir(exist_ok=True)
+    Config.SORTING_FILES_DIRECTORY.mkdir(exist_ok=True)
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@ paramiko = "*"
 retrying = "*"
 requests = "*"
 google-cloud-storage = "*"
+csvsort = "*"
 
 [requires]
 python_version = "3.7"
