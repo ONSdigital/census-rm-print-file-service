@@ -700,6 +700,59 @@ def test_P_UAC_UACIP1(sftp_client):
                                     'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
 
 
+def test_P_UAC_UACIP2B(sftp_client):
+    # Given
+    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_IX', 'P_UAC_UACIP2B', uac=True)
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'P_UAC_UACIP2B')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACIP2B||||\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Individual Unique Access Code for Wales (English/Welsh - Bilingual)'
+                                                   ' via paper',
+                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_P_UAC_UACIP4(sftp_client):
+    # Given
+    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_IX', 'P_UAC_UACIP4', uac=True)
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'P_UAC_UACIP4')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACIP4||||\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'Individual Unique Access Code for Northern Ireland via paper',
+                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
+
+
 def test_P_OR_I1(sftp_client):
     # Given
     messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I1')
