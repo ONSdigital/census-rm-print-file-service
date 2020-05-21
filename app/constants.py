@@ -53,6 +53,9 @@ class ActionType(Enum):
     # Translation booklet fulfilments
     P_TB_TBX = 'P_TB_TBX'
 
+    # individual UAC print fulfilments
+    P_UAC_IX = 'P_UAC_IX'
+
     # Reminder letters
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
@@ -147,6 +150,11 @@ class PackCode(Enum):
     P_OR_I2 = 'P_OR_I2'
     P_OR_I2W = 'P_OR_I2W'
     P_OR_I4 = 'P_OR_I4'
+
+    # Individual UAC print fulfilments
+    P_UAC_UACIP1 = 'P_UAC_UACIP1'
+    P_UAC_UACIP2B = 'P_UAC_UACIP2B'
+    P_UAC_UACIP4 = 'P_UAC_UACIP4'
 
     # Large print fulfilments
     P_LP_HL1 = "P_LP_HL1"

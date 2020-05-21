@@ -53,9 +53,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_TB_TBVIE1: 'Translation Booklet for England & Wales - Vietnamese',
     PackCode.P_TB_TBYSH1: 'Translation Booklet for England & Wales - Yiddish',
     PackCode.P_OR_I1: 'Individual Questionnaire for England',
-    PackCode.P_OR_I2: 'Individual Questionnaire for Wales (English)',
-    PackCode.P_OR_I2W: 'Individual Questionnaire for Wales (Welsh)',
-    PackCode.P_OR_I4: 'Individual Questionnaire for Northern Ireland (English)',
+    PackCode.P_OR_I2: 'Individual Questionnaire for Wales (in English)',
+    PackCode.P_OR_I2W: 'Individual Questionnaire for Wales (in Welsh)',
+    PackCode.P_OR_I4: 'Individual Questionnaire for Northern Ireland (in English)',
     PackCode.P_QU_H1: '3rd Reminder, Questionnaire - for England addresses',
     PackCode.P_QU_H2: '3rd Reminder, Questionnaire - for Wales addresses',
     PackCode.P_QU_H4: '2nd Reminder, Questionnaire - for Ireland addresses',
@@ -83,6 +83,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_UAC_UACHHP4: 'Household Unique Access Code for Northern Ireland via paper',
     PackCode.P_ER_ILER1: 'Information leaflet (Easy Read) for England',
     PackCode.P_ER_ILER2B: 'Information leaflet (Easy Read) for Wales (English/Welsh - Bilingual)',
+    PackCode.P_UAC_UACIP1: 'Individual Unique Access Code for England via paper',
+    PackCode.P_UAC_UACIP2B: 'Individual Unique Access Code for Wales (English/Welsh - Bilingual) via paper',
+    PackCode.P_UAC_UACIP4: 'Individual Unique Access Code for Northern Ireland via paper'
 }
 
 PACK_CODE_TO_DATASET = {
@@ -166,6 +169,9 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_UAC_UACHHP1: Dataset.PPD1_3,
     PackCode.P_UAC_UACHHP2B: Dataset.PPD1_3,
     PackCode.P_UAC_UACHHP4: Dataset.PPD1_3,
+    PackCode.P_UAC_UACIP1: Dataset.PPD1_3,
+    PackCode.P_UAC_UACIP2B: Dataset.PPD1_3,
+    PackCode.P_UAC_UACIP4: Dataset.PPD1_3,
 }
 
 DATASET_TO_SUPPLIER = {
@@ -234,6 +240,7 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.SPG_IC14: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_UAC_HX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_ER_IL: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_UAC_IX: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
