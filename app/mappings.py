@@ -81,6 +81,8 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_UAC_UACHHP1: 'Household Unique Access Code for England via paper',
     PackCode.P_UAC_UACHHP2B: 'Household Unique Access Code for Wales (English/Welsh - Bilingual) via paper',
     PackCode.P_UAC_UACHHP4: 'Household Unique Access Code for Northern Ireland via paper',
+    PackCode.P_ER_ILER1: 'Information leaflet (Easy Read) for England',
+    PackCode.P_ER_ILER2B: 'Information leaflet (Easy Read) for Wales (English/Welsh - Bilingual)',
 }
 
 PACK_CODE_TO_DATASET = {
@@ -133,6 +135,8 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_TB_TBULS4: Dataset.PPD1_3,
     PackCode.P_TB_TBVIE1: Dataset.PPD1_3,
     PackCode.P_TB_TBYSH1: Dataset.PPD1_3,
+    PackCode.P_ER_ILER1: Dataset.PPD1_3,
+    PackCode.P_ER_ILER2B: Dataset.PPD1_3,
     PackCode.P_OR_I1: Dataset.QM3_4,
     PackCode.P_OR_I2: Dataset.QM3_4,
     PackCode.P_OR_I2W: Dataset.QM3_4,
@@ -229,6 +233,7 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.SPG_IC13: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.SPG_IC14: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_UAC_HX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_ER_IL: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
