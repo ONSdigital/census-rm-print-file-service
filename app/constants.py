@@ -78,6 +78,12 @@ class ActionType(Enum):
     P_RD_2RL1_3 = 'P_RD_2RL1_3'
     P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
 
+    # Household Unique Access Codes via paper
+    P_UAC_HX = 'P_UAC_HX'
+
+    # Information leaflet
+    P_ER_IL = 'P_ER_IL'
+
 
 class PackCode(Enum):
     # Initial contact letters
@@ -189,6 +195,15 @@ class PackCode(Enum):
     P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
     P_RD_2RL1_3 = 'P_RD_2RL1_3'
     P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
+
+    # Household Unique Access Codes via paper
+    P_UAC_UACHHP1 = 'P_UAC_UACHHP1'
+    P_UAC_UACHHP2B = 'P_UAC_UACHHP2B'
+    P_UAC_UACHHP4 = 'P_UAC_UACHHP4'
+
+    # Information leaflet
+    P_ER_ILER1 = 'P_ER_ILER1'
+    P_ER_ILER2B = 'P_ER_ILER2B'
 
 
 class Dataset(Enum):
