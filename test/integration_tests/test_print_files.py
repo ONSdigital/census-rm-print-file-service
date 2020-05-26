@@ -670,7 +670,7 @@ def test_P_TB_TBPOL1(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Translation Booklet for England  - Polish',
+                                    'description': 'Translation Booklet for England - Polish',
                                     'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -724,7 +724,7 @@ def test_P_OR_I2(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Individual Questionnaire for Wales (English)',
+                                    'description': 'Individual Questionnaire for Wales (in English)',
                                     'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -751,7 +751,7 @@ def test_P_OR_I2W(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Individual Questionnaire for Wales (Welsh)',
+                                    'description': 'Individual Questionnaire for Wales (in Welsh)',
                                     'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -778,7 +778,7 @@ def test_P_OR_I4(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Individual Questionnaire for Northern Ireland (English)',
+                                    'description': 'Individual Questionnaire for Northern Ireland (in English)',
                                     'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
 
 
