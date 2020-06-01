@@ -16,8 +16,6 @@ class Config:
     RABBIT_USERNAME = os.getenv('RABBIT_USERNAME')
     RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD')
     RABBIT_ROUTING_KEY = os.getenv('RABBIT_ROUTING_KEY', 'Action.Printer.binding')
-    RABBIT_QUARANTINE_QUEUE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineQueue')
-    RABBIT_QUARANTINE_EXCHANGE = os.getenv('RABBIT_QUARANTINE_QUEUE', 'quarantineExchange')
 
     PARTIAL_FILES_DIRECTORY = Path(os.getenv('PARTIAL_FILES_DIRECTORY', 'partial_files/'))
     ENCRYPTED_FILES_DIRECTORY = Path(os.getenv('ENCRYPTED_FILES_DIRECTORY', 'encrypted_files/'))

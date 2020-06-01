@@ -4,11 +4,9 @@ import json
 import logging
 
 import requests
-from pika.spec import PERSISTENT_DELIVERY_MODE
 from structlog import wrap_logger
 
 from app.json_helper import CustomJSONEncoder
-from app.rabbit_context import RabbitContext
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))
@@ -30,7 +28,6 @@ def _report_exception_for_advice(message_hash, service, queue, exception_class, 
 
 def _quarantine_message(body: bytes, message_hash, exception_class, properties):
     _quarantine_message_in_exception_manager(body, message_hash, exception_class, properties.headers)
-    _quarantine_message_in_rabbit(body, properties)
 
 
 def _quarantine_message_in_exception_manager(body: bytes, message_hash, exception_class, headers):
@@ -48,16 +45,6 @@ def _quarantine_message_in_exception_manager(body: bytes, message_hash, exceptio
     response = requests.post(f'{Config.EXCEPTION_MANAGER_URL}/storeskippedmessage', data=json.dumps(
         quarantine_payload, cls=CustomJSONEncoder), headers={'Content-Type': 'application/json'})
     response.raise_for_status()
-
-
-def _quarantine_message_in_rabbit(body: bytes, properties):
-    properties.delivery_mode = PERSISTENT_DELIVERY_MODE
-    with RabbitContext(queue_name=Config.RABBIT_QUARANTINE_QUEUE) as rabbit:
-        rabbit.channel.basic_publish(Config.RABBIT_QUARANTINE_EXCHANGE,
-                                     rabbit.queue_name,
-                                     body,
-                                     properties=properties,
-                                     mandatory=True)
 
 
 def _peek_message(message_hash, body: bytes):

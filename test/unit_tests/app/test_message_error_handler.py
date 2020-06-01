@@ -6,7 +6,6 @@ from unittest.mock import Mock, patch
 
 import pika
 from pika import BasicProperties
-from pika.spec import PERSISTENT_DELIVERY_MODE
 
 from app.message_error_handler import handle_message_error
 from config import TestConfig
@@ -120,8 +119,7 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     properties = BasicProperties(content_type='application/json',
                                  headers={'time': datetime.datetime(2019, 11, 18, 10, 59, 42)})
     # When
-    with patch('app.message_error_handler.requests.post') as patched_post, patch(
-            'app.message_error_handler.RabbitContext') as patched_rabbit:
+    with patch('app.message_error_handler.requests.post') as patched_post:
         patched_post.return_value.json.return_value = mock_advice
         handle_message_error(message, processing_exception, mock_channel, mock_method.delivery_tag, properties)
 
@@ -131,14 +129,6 @@ def test_handle_error_quarantine_message(init_logger, caplog):
     assert post_calls[1][0][0] == f'{TestConfig.EXCEPTION_MANAGER_URL}/storeskippedmessage'
     assert post_calls[1][1]['data'] == expected_quarantine_message
 
-    patched_rabbit_channel = patched_rabbit.return_value.__enter__.channel
-    assert patched_rabbit_channel.basic_publish.called_once_with(TestConfig.RABBIT_QUARANTINE_EXCHANGE,
-                                                                 TestConfig.RABBIT_QUEUE,
-                                                                 message,
-                                                                 properties=properties,
-                                                                 mandatory=True)
-
-    assert properties.delivery_mode == PERSISTENT_DELIVERY_MODE
     assert "Attempting to quarantine and skip bad message" in caplog.text
     assert "Successfully quarantined and skipped bad message" in caplog.text
     assert f'"queue": "{TestConfig.RABBIT_QUEUE}"' in caplog.text
