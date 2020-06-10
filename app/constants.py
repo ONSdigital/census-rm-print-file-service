@@ -78,6 +78,12 @@ class ActionType(Enum):
     P_RD_2RL1_3 = 'P_RD_2RL1_3'
     P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
 
+    # Response driven reminders, for RH launched surveys
+    P_RL_1RL1A = 'P_RL_1RL1A'
+    P_RL_1RL2BA = 'P_RL_1RL2BA'
+    P_RL_2RL1A = 'P_RL_2RL1A'
+    P_RL_2RL2BA = 'P_RL_2RL2BA'
+
     # Household Unique Access Codes via paper
     P_UAC_HX = 'P_UAC_HX'
 
@@ -249,12 +255,19 @@ class PackCode(Enum):
     P_TB_TBVIE1 = "P_TB_TBVIE1"
     P_TB_TBYSH1 = "P_TB_TBYSH1"
 
+    # Reminders
     P_RD_2RL1_1 = 'P_RD_2RL1_1'
     P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
     P_RD_2RL1_2 = 'P_RD_2RL1_2'
     P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
     P_RD_2RL1_3 = 'P_RD_2RL1_3'
     P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
+
+    # Reminders for survey already started
+    P_RL_1RL1A = 'P_RL_1RL1A'
+    P_RL_1RL2BA = 'P_RL_1RL2BA'
+    P_RL_2RL1A = 'P_RL_2RL1A'
+    P_RL_2RL2BA = 'P_RL_2RL2BA'
 
     # Household Unique Access Codes via paper
     P_UAC_UACHHP1 = 'P_UAC_UACHHP1'
