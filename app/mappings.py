@@ -23,6 +23,13 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_1RL4: '1st Reminder, Letter - for Ireland addresses',
     PackCode.P_RL_2RL1_3a: '3rd Reminder, Letter - for England addresses',
     PackCode.P_RL_2RL2B_3a: '3rd Reminder, Letter - for Wales addresses',
+
+    PackCode.P_RL_1RL1A: '1st Reminder, Letter - for England addresses for survey launched but not completed',
+    PackCode.P_RL_1RL2BA: '1st Reminder, Letter - for Wales addresses (bilingual Welsh and English) for survey'
+                          ' launched but not completed',
+    PackCode.P_RL_2RL1A: '2nd Reminder, Letter - for England addresses for survey launched but not completed',
+    PackCode.P_RL_2RL2BA: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English) for survey'
+                         ' launched but not completed',
     PackCode.P_LP_HL1: 'Household Questionnaire Large Print pack for England',
     PackCode.P_LP_HL2: 'Household Questionnaire Large Print pack for Wales (English)',
     PackCode.P_LP_HL2W: 'Household Questionnaire Large Print pack for Wales (Welsh)',
@@ -167,6 +174,10 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RL_1RL1_2: Dataset.PPD1_2,
     PackCode.P_RL_1RL2B_1: Dataset.PPD1_2,
     PackCode.P_RL_1RL2B_2: Dataset.PPD1_2,
+    PackCode.P_RL_1RL1A: Dataset.PPD1_2,
+    PackCode.P_RL_1RL2BA: Dataset.PPD1_2,
+    PackCode.P_RL_2RL1A: Dataset.PPD1_2,
+    PackCode.P_RL_2RL2BA: Dataset.PPD1_2,
     PackCode.P_RL_1RL4: Dataset.PPD1_2,
     PackCode.P_RL_2RL1_3a: Dataset.PPD1_2,
     PackCode.P_RL_2RL2B_3a: Dataset.PPD1_2,
@@ -274,6 +285,7 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RD_2RL2B_2: Dataset.PPD1_2,
     PackCode.P_RD_2RL1_3: Dataset.PPD1_2,
     PackCode.P_RD_2RL2B_3: Dataset.PPD1_2,
+
     PackCode.D_CE1A_ICLCR1: Dataset.PPD1_7,
     PackCode.D_CE1A_ICLCR2B: Dataset.PPD1_7,
     PackCode.D_ICA_ICLR1: Dataset.PPD1_7,
@@ -332,6 +344,10 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RL_1RL2B_1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL2B_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL1A: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL2BA: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_2RL1A: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_2RL2BA: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_OR_IX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE,

@@ -490,6 +490,34 @@ def test_P_RL_1RL1_1(sftp_client):
                                     'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
 
 
+def test_P_RL_1RL1A(sftp_client):
+    # Given
+    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RL_1RL1A', 'P_RL_1RL1A')
+    send_action_messages(messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'P_RL_1RL1A')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1A||||\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description':
+                                        '1st Reminder, Letter - for England addresses'
+                                        ' for survey launched but not completed',
+                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
+
+
 def test_P_LP_HL1(sftp_client):
     # Given
     messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
