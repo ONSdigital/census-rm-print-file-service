@@ -14,7 +14,7 @@ from app.encryption import pgp_encrypt_message
 from app.manifest_file_builder import generate_manifest_file
 from app.mappings import PACK_CODE_TO_DATASET, \
     SUPPLIER_TO_SFTP_DIRECTORY, DATASET_TO_SUPPLIER, SUPPLIER_TO_PRINT_TEMPLATE
-from app.printfile_sorting import sort_print_file_if_required
+from app.printfile_sorter import sort_print_file_if_required
 from config import Config
 
 logger = wrap_logger(logging.getLogger(__name__))

@@ -16,7 +16,7 @@ from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 from google.cloud import exceptions
 
-resource_file_path = Path(__file__).parents[2].joinpath('resources')
+from test.unit_tests import RESOURCE_FILE_PATH
 
 
 def test_copy_files_to_sftp():
@@ -39,7 +39,7 @@ def test_copy_files_to_sftp():
 
 
 def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
     with patch('app.file_sender.sftp.SftpUtility') as patched_sftp, patch('app.file_sender.datetime') as patch_datetime:
@@ -62,7 +62,7 @@ def test_processing_complete_file_uploads_correct_files(cleanup_test_files):
 
 def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_files, reduce_max_partial_file_size):
     # This file is roughly 800B and we've reduced the max file size limit to 500B
-    shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.10'),
+    shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.10'),
                     TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.10'))
     with patch('app.file_sender.datetime') as patch_datetime:
         mock_time = datetime(2019, 1, 1, 7, 6, 5)
@@ -77,7 +77,7 @@ def test_processing_complete_file_splits_and_uploads_correct_files(cleanup_test_
 
 
 def test_local_files_are_deleted_after_upload(cleanup_test_files):
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
     with patch('app.file_sender.sftp.SftpUtility'):
@@ -91,7 +91,7 @@ def test_local_files_are_deleted_after_upload(cleanup_test_files):
 
 def test_generating_manifest_file_ppd(cleanup_test_files):
     manifest_file = cleanup_test_files.encrypted_files.joinpath('P_IC_ICL1_2019-07-05T08-15-41.manifest')
-    print_file = resource_file_path.joinpath('P_IC_ICL1_2019-07-05T08-15-41.csv.gpg')
+    print_file = RESOURCE_FILE_PATH.joinpath('P_IC_ICL1_2019-07-05T08-15-41.csv.gpg')
     generate_manifest_file(manifest_file, print_file, PackCode.P_IC_ICL1, row_count=10)
 
     manifest_json = json.loads(manifest_file.read_text())
@@ -105,7 +105,7 @@ def test_generating_manifest_file_ppd(cleanup_test_files):
 
 def test_generating_manifest_file_qm(cleanup_test_files):
     manifest_file = cleanup_test_files.encrypted_files.joinpath('P_IC_H1_2019-07-08T11-57-11.manifest')
-    print_file = resource_file_path.joinpath('P_IC_H1_2019-07-08T11-57-11.csv.gpg')
+    print_file = RESOURCE_FILE_PATH.joinpath('P_IC_H1_2019-07-08T11-57-11.csv.gpg')
     generate_manifest_file(manifest_file, print_file, PackCode.P_IC_H1, row_count=10)
 
     manifest_json = json.loads(manifest_file.read_text())
@@ -119,7 +119,7 @@ def test_generating_manifest_file_qm(cleanup_test_files):
 
 def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files):
     # Given
-    partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac')
+    partial_duplicate_path = RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac')
     mock_logger = Mock()
 
     # When
@@ -132,7 +132,7 @@ def test_check_partial_has_no_duplicates_with_duplicates(cleanup_test_files):
 
 def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
     # Given
-    partial_duplicate_path = resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2')
+    partial_duplicate_path = RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.2')
 
     # When
     result = check_partial_has_no_duplicates(partial_duplicate_path, PackCode.P_IC_ICL1, Mock())
@@ -143,7 +143,7 @@ def test_check_partial_has_no_duplicates_without_duplicates(cleanup_test_files):
 
 def test_quarantine_partial_file(cleanup_test_files):
     # Given
-    partial_print_file = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac'),
+    partial_print_file = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.2.duplicate_uac'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.2')))
     partial_print_file_text = partial_print_file.read_text()
     expected_destination = Path(TestConfig.QUARANTINED_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.2'))
@@ -159,7 +159,7 @@ def test_quarantine_partial_file(cleanup_test_files):
 
 def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
     # Given
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
     sftp_failure_exception_message = 'Simulate SFTP transfer failure'
@@ -200,7 +200,7 @@ def test_check_partial_files_processes_complete_file(cleanup_test_files):
         check_partial_files(cleanup_test_files.partial_files)
         client.assert_not_called()
 
-        Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+        Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
                              cleanup_test_files.partial_files.joinpath('ICL1E.P_IC_ICL1.1.1')))
         check_partial_files(cleanup_test_files.partial_files)
 
@@ -210,7 +210,7 @@ def test_check_partial_files_processes_complete_file(cleanup_test_files):
 
 def test_split_partial_file(cleanup_test_files):
     # Given
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.8'),
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.8'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.8')))
     action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(complete_file_path.name)
 
@@ -230,7 +230,7 @@ def test_split_partial_file(cleanup_test_files):
 
 def test_split_file_too_small(cleanup_test_files):
     # Given
-    complete_file_path = Path(shutil.copyfile(resource_file_path.joinpath('ICL1E.P_IC_ICL1.1.1'),
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     action_type, pack_code, batch_id, batch_quantity = get_metadata_from_partial_file_name(complete_file_path.name)
 
