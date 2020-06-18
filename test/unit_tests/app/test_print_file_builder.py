@@ -46,7 +46,7 @@ def test_action_type_mappings(cleanup_test_files, action_type):
     # Given
     json_body = json.dumps({
         "actionType": action_type.value,
-        # Use a hardcoded pack code just to test all the pack codes, we don't care here if it's correct
+        # Use a hardcoded pack code just to test all the action types, we don't care here if it's correct
         "packCode": "P_IC_ICL1",
         "batchId": "1",
         "batchQuantity": 1,
