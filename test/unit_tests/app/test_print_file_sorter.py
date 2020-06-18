@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest.mock import Mock
 
 from app.constants import ActionType, PackCode, PrintTemplate
-from app.printfile_sorter import sort_print_file_if_required, get_column_indexes_by_name_from_template
+from app.print_file_sorter import sort_print_file_if_required, get_column_indexes_by_name_from_template
 from config import TestConfig
 from test.unit_tests import RESOURCE_FILE_PATH
 
