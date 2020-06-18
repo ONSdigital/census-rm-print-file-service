@@ -2,8 +2,80 @@ import json
 
 import pytest
 
+from app.constants import PackCode, ActionType, PrintTemplate
 from app.exceptions import MalformedMessageError
+from app.mappings import ACTION_TYPE_TO_PRINT_TEMPLATE
 from app.print_file_builder import generate_print_row
+
+
+@pytest.mark.parametrize("pack_code", [pack_code.value for pack_code in PackCode])
+def test_pack_code_mappings(cleanup_test_files, pack_code):
+    # Given
+    json_body = json.dumps({
+        "packCode": pack_code,
+        # Use a hardcoded action type just to test all the pack codes, we don't care here if it's correct
+        "actionType": "ICHHQE",
+        "batchId": "1",
+        "batchQuantity": 1,
+        "uac": "test_uac",
+        "qid": "test_qid",
+        "uacWales": "test_wales_uac",
+        "qidWales": "test_wales_qid",
+        "caseRef": "test_caseref",  # NB: ignored
+        "fieldCoordinatorId": "test_qm_coordinator_id",
+        "addressLine1": "123 Fake Street",
+        "addressLine2": "Duffryn",
+        "townName": "Newport",
+        "postcode": "NPXXXX",
+        "organisationName": "ONS",
+        "fieldOfficerId": "012345678"
+    })
+
+    # When
+    generate_print_row(json_body, cleanup_test_files.partial_files)
+
+    # Then
+    generated_print_file = cleanup_test_files.partial_files.joinpath(f'ICHHQE.{pack_code}.1.1')
+    assert generated_print_file.read_text() == (
+        'test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id|'
+        f'|||123 Fake Street|Duffryn||Newport|NPXXXX|{pack_code}|ONS|012345678\n')
+
+
+@pytest.mark.parametrize("action_type", [action_type for action_type in ActionType])
+def test_action_type_mappings(cleanup_test_files, action_type):
+    # Given
+    json_body = json.dumps({
+        "actionType": action_type.value,
+        # Use a hardcoded pack code just to test all the pack codes, we don't care here if it's correct
+        "packCode": "P_IC_ICL1",
+        "batchId": "1",
+        "batchQuantity": 1,
+        "uac": "test_uac",
+        "qid": "test_qid",
+        "uacWales": "test_wales_uac",
+        "qidWales": "test_wales_qid",
+        "caseRef": "test_caseref",  # NB: ignored
+        "fieldCoordinatorId": "test_qm_coordinator_id",
+        "addressLine1": "123 Fake Street",
+        "addressLine2": "Duffryn",
+        "townName": "Newport",
+        "postcode": "NPXXXX",
+        "organisationName": "ONS",
+        "fieldOfficerId": "012345678"
+    })
+    if ACTION_TYPE_TO_PRINT_TEMPLATE[action_type] == PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE:
+        expected_row = ('test_uac|test_qid|test_wales_uac|test_wales_qid|test_qm_coordinator_id|'
+                        '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1|ONS|012345678\n')
+    else:
+        expected_row = ('test_uac|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|'
+                        'P_IC_ICL1|test_qid|ONS|test_qm_coordinator_id|012345678\n')
+
+    # When
+    generate_print_row(json_body, cleanup_test_files.partial_files)
+
+    # Then
+    generated_print_file = cleanup_test_files.partial_files.joinpath(f'{action_type.value}.P_IC_ICL1.1.1')
+    assert generated_print_file.read_text() == expected_row
 
 
 def test_generate_print_row_valid_ICL1E(cleanup_test_files):
