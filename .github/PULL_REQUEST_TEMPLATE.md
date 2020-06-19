@@ -1,6 +1,6 @@
 # Motivation and Context
 <!--- Why is this change required? What problem does it solve? -->
-
+- [ ] Updated ops tool with any new scheduled action types?
 # What has changed
 <!--- What code changes has been made -->
 <!--- Has there been any refactoring -->
