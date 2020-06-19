@@ -21,11 +21,11 @@ def logger_initial_config():
         Add the logging level to the event dict as 'severity'
         """
         if method_name == "warn":
-            # The stdlib has an alias
+            # The stdlib has an alias, we always want 'warning' in full
             method_name = "warning"
 
         if method_name == "exception":
-            # exception level is not as universal
+            # exception level is not as universal, use 'error' instead
             method_name = "error"
 
         event_dict["severity"] = method_name

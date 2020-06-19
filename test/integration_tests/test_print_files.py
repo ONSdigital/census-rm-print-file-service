@@ -4,39 +4,13 @@ from pathlib import Path
 from time import sleep
 
 import paramiko
-import pgpy
 import pytest
 
 from app.constants import ActionType, PackCode
 from config import TestConfig
 from test.integration_tests.utilities import build_test_messages, send_action_messages, ICL_message_template, \
     print_questionnaire_message_template, P_OR_message_template, PPD1_3_message_template, reminder_message_template
-
-
-def test_ICL1E(sftp_client):
-    # Given
-    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')
-    send_action_messages(icl1e_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_IC_ICL1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Initial contact letter households - England',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+from test.utilities import decrypt_message
 
 
 def test_ICL1E_split_files(sftp_client):
@@ -84,15 +58,15 @@ def test_ICL1E_split_files(sftp_client):
                   '20|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n'))
 
 
-def test_ICL2W(sftp_client):
+def test_ICL1E_PPD1_1(sftp_client):
     # Given
-    icl2w_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL2W', 'P_IC_ICL2B')
-    send_action_messages(icl2w_messages)
+    icl1e_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL1E', 'P_IC_ICL1')
+    send_action_messages(icl1e_messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_IC_ICL2B')
+                                                                                 'P_IC_ICL1')
 
     # Then
     decrypted_print_file = get_and_check_print_file(
@@ -101,24 +75,24 @@ def test_ICL2W(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL2B||||\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Initial contact letter households - Wales',
+                                    'description': 'Initial contact letter households - England',
                                     'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_ICL4N(sftp_client):
+def test_P_RL_1RL1A_PPD1_2(sftp_client):
     # Given
-    icl4n_messages, _ = build_test_messages(ICL_message_template, 1, 'ICL2W', 'P_IC_ICL4')
-    send_action_messages(icl4n_messages)
+    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RL_1RL1A', 'P_RL_1RL1A')
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
                                                                                  TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_IC_ICL4')
+                                                                                 'P_RL_1RL1A')
 
     # Then
     decrypted_print_file = get_and_check_print_file(
@@ -127,48 +101,71 @@ def test_ICL4N(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_ppo_supplier_private_key.asc'),
         decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_ICL4||||\n')
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1A||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Initial contact letter households - Northern Ireland',
-                                    'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
+                                    'description':
+                                        '1st Reminder, Letter - for England addresses'
+                                        ' for survey launched but not completed',
+                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_ICHHQE(sftp_client):
+def test_P_LP_HL1_PPD1_3(sftp_client):
     # Given
-    ichhqe_messages, _ = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQE', 'P_IC_H1')
-    send_action_messages(ichhqe_messages)
+    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
+    send_action_messages(messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_IC_H1')
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'P_LP_HL1')
 
     # Then
     decrypted_print_file = get_and_check_print_file(
         sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1||\n'
-            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1||\n'
-            '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H1||\n'))
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_LP_HL1||||\n')
 
     get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Initial contact questionnaire households - England',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
+                                    'description': 'Household Questionnaire Large Print pack for England',
+                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_ICHHQW(sftp_client):
+def test_CE1_IC01_PPD1_7(sftp_client):
+    # Given
+    ce1_ic01_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC01', 'D_CE1A_ICLCR1', ce=True)
+    send_action_messages(ce1_ic01_messages)
+
+    # When
+    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
+                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
+                                                                                 'D_CE1A_ICLCR1')
+
+    # Then
+    decrypted_print_file = get_and_check_print_file(
+        sftp=sftp_client,
+        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
+        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
+                                                               'dummy_ppo_supplier_private_key.asc'),
+        decryption_key_passphrase='test',
+        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR1|english_qid|ONS'
+                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
+
+    get_and_check_manifest_file(sftp=sftp_client,
+                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
+                                expected_values={
+                                    'description': 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
+                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
+
+
+def test_ICHHQW_QM3_2(sftp_client):
     # Given
     ichhqw_messages, _ = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQW', 'P_IC_H2')
     send_action_messages(ichhqw_messages)
@@ -200,696 +197,7 @@ def test_ICHHQW(sftp_client):
                                     'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_ICHHQN(sftp_client):
-    # Given
-    ichhqn_messages, _ = build_test_messages(print_questionnaire_message_template, 3, 'ICHHQN', 'P_IC_H4')
-    send_action_messages(ichhqn_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_IC_H4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4||\n'
-            '2|english_qid|3|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4||\n'
-            '4|english_qid|5|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_IC_H4||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Initial contact questionnaire households - Northern Ireland',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_H1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H1')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_H1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H1||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire for England',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_H2(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H2')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_H2')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire for Wales (English)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_H2W(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H2W')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_H2W')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire for Wales (Welsh)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_H4(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H4')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_H4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H4||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire for Northern Ireland (English)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_HC1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC1')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_HC1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC1||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Continuation Questionnaire for England',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_HC2(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC2')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_HC2')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Continuation Questionnaire for Wales (English)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_HC2W(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC2W')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_HC2W')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC2W||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Continuation Questionnaire for Wales (Welsh)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_HC4(sftp_client):
-    # Given
-    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_HC4')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_HC4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4||\n'
-            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4||\n'
-            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_HC4||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Continuation Questionnaire for Northern Ireland (English)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RL_1RL1_1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RL_1RL1_1', 'P_RL_1RL1_1')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RL_1RL1_1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1_1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': '1st Reminder, Letter - for England addresses',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RL_1RL1A(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RL_1RL1A', 'P_RL_1RL1A')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RL_1RL1A')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RL_1RL1A||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description':
-                                        '1st Reminder, Letter - for England addresses'
-                                        ' for survey launched but not completed',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_LP_HL1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_LP_HLX', 'P_LP_HL1', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_LP_HL1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_LP_HL1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire Large Print pack for England',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_UAC_UACHHP1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_HX', 'P_UAC_UACHHP1', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_UAC_UACHHP1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACHHP1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Unique Access Code for England via paper',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_UAC_UACHHP2B(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_HX', 'P_UAC_UACHHP2B', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_UAC_UACHHP2B')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACHHP2B||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Unique Access Code for Wales '
-                                                   '(English/Welsh - Bilingual) via paper',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_UAC_UACHHP4(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_HX', 'P_UAC_UACHHP4', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_UAC_UACHHP4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACHHP4||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Unique Access Code for Northern Ireland via paper',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_ER_ILER1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_ER_IL', 'P_ER_ILER1', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_ER_ILER1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_ER_ILER1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Information leaflet (Easy Read) for England',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_ER_ILER2B(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_ER_IL', 'P_ER_ILER2B', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_ER_ILER2B')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_ER_ILER2B||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Information leaflet (Easy Read) for Wales '
-                                                   '(English/Welsh - Bilingual)',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_TB_TBPOL1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_TB_TBX', 'P_TB_TBPOL1', uac=False)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_TB_TBPOL1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_TB_TBPOL1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Translation Booklet for England - Polish',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_UAC_UACIP1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_IX', 'P_UAC_UACIP1', uac=True)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_UAC_UACIP1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACIP1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Unique Access Code for England via paper',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_UAC_UACIP2B(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_IX', 'P_UAC_UACIP2B', uac=True)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_UAC_UACIP2B')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACIP2B||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Unique Access Code for Wales (English/Welsh - Bilingual)'
-                                                   ' via paper',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_UAC_UACIP4(sftp_client):
-    # Given
-    messages, _ = build_test_messages(PPD1_3_message_template, 1, 'P_UAC_IX', 'P_UAC_UACIP4', uac=True)
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_UAC_UACIP4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref|Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_UAC_UACIP4||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Unique Access Code for Northern Ireland via paper',
-                                    'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_I1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I1')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_I1')
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I1||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Questionnaire for England',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_I2(sftp_client):
-    # Given
-    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I2')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_I2')
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I2||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Questionnaire for Wales (in English)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_I2W(sftp_client):
-    # Given
-    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I2W')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_I2W')
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I2W||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Questionnaire for Wales (in Welsh)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_OR_I4(sftp_client):
-    # Given
-    messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'P_OR_IX', 'P_OR_I4')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'P_OR_I4')
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected=(
-            '0|english_qid|1|welsh_qid|test_qm_coordinator_id|'
-            '|||123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_I4||\n'))
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Questionnaire for Northern Ireland (in English)',
-                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_QU_H2(sftp_client):
+def test_P_QU_H2_QM3_3(sftp_client):
     # Given
     messages, _ = build_test_messages(print_questionnaire_message_template, 3, ActionType.P_QU_H2.value,
                                       PackCode.P_QU_H2.value)
@@ -922,333 +230,15 @@ def test_P_QU_H2(sftp_client):
                                     'dataset': 'QM3.3'}, decrypted_print_file=decrypted_print_file)
 
 
-def test_P_RD_2RL1_1(sftp_client):
+def test_P_OR_H2W_QM3_4(sftp_client):
     # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RD_2RL1_1', 'P_RD_2RL1_1')
+    messages, _ = build_test_messages(P_OR_message_template, 3, 'P_OR_HX', 'P_OR_H2W')
     send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RD_2RL1_1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Response driven reminder group 1 English',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RD_2RL2B_1(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RD_2RL2B_1', 'P_RD_2RL2B_1')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RD_2RL2B_1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Response driven reminder group 1 Welsh',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RD_2RL1_2(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RD_2RL1_2', 'P_RD_2RL1_2')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RD_2RL1_2')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_2||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Response driven reminder group 2 English',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RD_2RL2B_2(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RD_2RL2B_2', 'P_RD_2RL2B_2')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RD_2RL2B_2')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_2||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Response driven reminder group 2 Welsh',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RD_2RL1_3(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RD_2RL1_3', 'P_RD_2RL1_3')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RD_2RL1_3')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL1_3||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Response driven reminder group 3 English',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_P_RD_2RL2B_3(sftp_client):
-    # Given
-    messages, _ = build_test_messages(reminder_message_template, 1, 'P_RD_2RL2B_3', 'P_RD_2RL2B_3')
-    send_action_messages(messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_RD_2RL2B_3')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_RD_2RL2B_3||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Response driven reminder group 3 Welsh',
-                                    'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE1_IC01(sftp_client):
-    # Given
-    ce1_ic01_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC01', 'D_CE1A_ICLCR1', ce=True)
-    send_action_messages(ce1_ic01_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_CE1A_ICLCR1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR1|english_qid|ONS'
-                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE1_IC02(sftp_client):
-    # Given
-    ce1_ic02_messages, _ = build_test_messages(ICL_message_template, 1, 'CE1_IC02', 'D_CE1A_ICLCR2B', ce=True)
-    send_action_messages(ce1_ic02_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_CE1A_ICLCR2B')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE1A_ICLCR2B|english_qid|ONS'
-                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'CE1 ICL with UAC for Wales (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC03_1(sftp_client):
-    # Given
-    ce_ic03_1_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC03_1', 'D_ICA_ICLR1', ce=True)
-    send_action_messages(ce_ic03_1_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_ICA_ICLR1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_ICA_ICLR1|english_qid|ONS'
-                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual ICL with UAC for England (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC04_1(sftp_client):
-    # Given
-    ce_ic04_1_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC04_1', 'D_ICA_ICLR2B', ce=True)
-    send_action_messages(ce_ic04_1_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_ICA_ICLR2B')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_ICA_ICLR2B|english_qid|ONS'
-                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC05(sftp_client):
-    # Given
-    ce_ic05_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC05', 'D_CE4A_ICLR4', ce=True)
-    send_action_messages(ce_ic05_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_CE4A_ICLR4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE4A_ICLR4|english_qid|ONS'
-                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'CE resident letter',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC06(sftp_client):
-    # Given
-    ce_ic06_messages, _ = build_test_messages(ICL_message_template, 1, 'CE_IC06', 'D_CE4A_ICLS4', ce=True)
-    send_action_messages(ce_ic06_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'D_CE4A_ICLS4')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|D_CE4A_ICLS4|english_qid|ONS'
-                 '|ppo_field_coordinator_id|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'CE student letter',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC08(sftp_client):
-    # Given
-    ce_ic08_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'CE_IC08', 'D_FDCE_I4', ce=True)
-    send_action_messages(ce_ic08_messages)
 
     # When
     matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
                                                                                  TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'D_FDCE_I4')
+                                                                                 'P_OR_H2W')
 
     # Then
     decrypted_print_file = get_and_check_print_file(
@@ -1257,175 +247,16 @@ def test_CE_IC08(sftp_client):
         decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
                                                                'dummy_qm_supplier_private_key.asc'),
         decryption_key_passphrase='supplier',
-        expected='0|english_qid|1|welsh_qid|ppo_field_coordinator_id||||123 Fake Street|Duffryn||Newport|NPXXXX'
-                 '|D_FDCE_I4|ONS|dummy_field_officer_id\n')
+        expected=(
+            '0|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'
+            '1|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'
+            '2|english_qid||||Mr|Test|McTest|123 Fake Street|Duffryn||Newport|NPXXXX|P_OR_H2W||\n'))
 
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Individual Questionnaire for NI (Hand delivery) Addressed',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC09(sftp_client):
-    # Given
-    ce_ic09_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'CE_IC09', 'D_FDCE_I1', ce=True)
-    send_action_messages(ce_ic09_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'D_FDCE_I1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected='0|english_qid|1|welsh_qid|ppo_field_coordinator_id||||123 Fake Street|Duffryn||Newport|NPXXXX'
-                 '|D_FDCE_I1|ONS|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Questionnaire for England (Hand delivery) Addressed',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_CE_IC10(sftp_client):
-    # Given
-    ce_ic10_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'CE_IC10', 'D_FDCE_I2',
-                                              ce=True)
-    send_action_messages(ce_ic10_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'D_FDCE_I2')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected='0|english_qid|1|welsh_qid|ppo_field_coordinator_id||||123 Fake Street|Duffryn||Newport|NPXXXX'
-                 '|D_FDCE_I2|ONS|dummy_field_officer_id\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Individual Questionnaire for Wales (Hand delivery) Addressed',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_SPG_IC11(sftp_client):
-    # Given
-    spg_ic11_messages, _ = build_test_messages(ICL_message_template, 1, 'SPG_IC11', 'P_ICCE_ICL1')
-    send_action_messages(spg_ic11_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_ICCE_ICL1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_ICCE_ICL1||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household ICL with UAC for England (Post Out) Addressed',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_SPG_IC12(sftp_client):
-    # Given
-    spg_ic12_messages, _ = build_test_messages(ICL_message_template, 1, 'SPG_IC12', 'P_ICCE_ICL2B')
-    send_action_messages(spg_ic12_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_PPO_DIRECTORY,
-                                                                                 'P_ICCE_ICL2B')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_PPO_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_ppo_supplier_private_key.asc'),
-        decryption_key_passphrase='test',
-        expected='0|test_caseref||||123 Fake Street|Duffryn||Newport|NPXXXX|P_ICCE_ICL2B||||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household ICL with UAC for Wales (Post Out) Addressed',
-                                    'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_SPG_IC13(sftp_client):
-    # Given
-    spg_ic13_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'SPG_IC13', 'D_FDCE_H1')
-    send_action_messages(spg_ic13_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'D_FDCE_H1')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected='0|english_qid|1|welsh_qid|test_qm_coordinator_id||||123 Fake Street|Duffryn||Newport'
-                 '|NPXXXX|D_FDCE_H1||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire for England (Hand delivery) Addressed',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
-
-
-def test_SPG_IC14(sftp_client):
-    # Given
-    spg_ic14_messages, _ = build_test_messages(print_questionnaire_message_template, 1, 'SPG_IC14', 'D_FDCE_H2', )
-    send_action_messages(spg_ic14_messages)
-
-    # When
-    matched_manifest_file, matched_print_file = get_print_and_manifest_filenames(sftp_client,
-                                                                                 TestConfig.SFTP_QM_DIRECTORY,
-                                                                                 'D_FDCE_H2')
-
-    # Then
-    decrypted_print_file = get_and_check_print_file(
-        sftp=sftp_client,
-        remote_print_file_path=TestConfig.SFTP_QM_DIRECTORY + matched_print_file,
-        decryption_key_path=Path(__file__).parents[2].joinpath('dummy_keys',
-                                                               'dummy_qm_supplier_private_key.asc'),
-        decryption_key_passphrase='supplier',
-        expected='0|english_qid|1|welsh_qid|test_qm_coordinator_id||||123 Fake Street|Duffryn||Newport'
-                 '|NPXXXX|D_FDCE_H2||\n')
-
-    get_and_check_manifest_file(sftp=sftp_client,
-                                remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
-                                expected_values={
-                                    'description': 'Household Questionnaire for Wales (Hand Delivery) Addressed',
-                                    'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
+                                    'description': 'Household Questionnaire for Wales (Welsh)',
+                                    'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
 
 
 def test_our_decryption_key(sftp_client):
@@ -1527,14 +358,6 @@ def get_and_check_multiple_print_files(sftp, remote_print_file_directory, print_
                                                    decryption_key_passphrase)
         assert decrypted_print_file in expected
         assert len(decrypted_print_file.splitlines()) == 10
-
-
-def decrypt_message(message, key_file_path, key_passphrase):
-    key, _ = pgpy.PGPKey.from_file(key_file_path)
-    with key.unlock(key_passphrase):
-        encrypted_text_message = pgpy.PGPMessage.from_blob(message)
-        message_text = key.decrypt(encrypted_text_message)
-        return message_text.message
 
 
 @pytest.fixture(autouse=True)
