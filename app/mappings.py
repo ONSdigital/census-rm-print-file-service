@@ -5,17 +5,21 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_IC_ICL1: 'Initial contact letter households - England',
     PackCode.P_IC_ICL2B: 'Initial contact letter households - Wales',
     PackCode.P_IC_ICL4: 'Initial contact letter households - Northern Ireland',
+
     PackCode.P_IC_H1: 'Initial contact questionnaire households - England',
     PackCode.P_IC_H2: 'Initial contact questionnaire households - Wales',
     PackCode.P_IC_H4: 'Initial contact questionnaire households - Northern Ireland',
+
     PackCode.P_OR_H1: 'Household Questionnaire for England',
     PackCode.P_OR_H2: 'Household Questionnaire for Wales (English)',
     PackCode.P_OR_H2W: 'Household Questionnaire for Wales (Welsh)',
     PackCode.P_OR_H4: 'Household Questionnaire for Northern Ireland (English)',
+
     PackCode.P_OR_HC1: 'Continuation Questionnaire for England',
     PackCode.P_OR_HC2: 'Continuation Questionnaire for Wales (English)',
     PackCode.P_OR_HC2W: 'Continuation Questionnaire for Wales (Welsh)',
     PackCode.P_OR_HC4: 'Continuation Questionnaire for Northern Ireland (English)',
+
     PackCode.P_RL_1RL1_1: '1st Reminder, Letter - for England addresses',
     PackCode.P_RL_1RL1_2: '2nd Reminder, Letter - for England addresses',
     PackCode.P_RL_1RL2B_1: '1st Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
@@ -29,11 +33,17 @@ PACK_CODE_TO_DESCRIPTION = {
                           ' launched but not completed',
     PackCode.P_RL_2RL1A: '2nd Reminder, Letter - for England addresses for survey launched but not completed',
     PackCode.P_RL_2RL2BA: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English) for survey'
-                         ' launched but not completed',
+                          ' launched but not completed',
+
+    # TODO
+    PackCode.P_RL_1IRL1: '1IRL1 dev placeholder',
+    PackCode.P_RL_1IRL2B: '1IRL2B dev placeholder',
+
     PackCode.P_LP_HL1: 'Household Questionnaire Large Print pack for England',
     PackCode.P_LP_HL2: 'Household Questionnaire Large Print pack for Wales (English)',
     PackCode.P_LP_HL2W: 'Household Questionnaire Large Print pack for Wales (Welsh)',
     PackCode.P_LP_HL4: 'Household Questionnaire Large Print pack for Northern Ireland',
+
     PackCode.P_TB_TBALB1: 'Translation Booklet for England - Albanian',
     PackCode.P_TB_TBAMH1: 'Translation Booklet for England - Amharic',
     PackCode.P_TB_TBARA1: 'Translation Booklet for England - Arabic',
@@ -119,37 +129,46 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_TB_TBURD1: 'Translation Booklet for England - Urdu',
     PackCode.P_TB_TBVIE1: 'Translation Booklet for England - Vietnamese',
     PackCode.P_TB_TBYSH1: 'Translation Booklet for England - Yiddish',
+
     PackCode.P_OR_I1: 'Individual Questionnaire for England',
     PackCode.P_OR_I2: 'Individual Questionnaire for Wales (in English)',
     PackCode.P_OR_I2W: 'Individual Questionnaire for Wales (in Welsh)',
     PackCode.P_OR_I4: 'Individual Questionnaire for Northern Ireland (in English)',
+
     PackCode.P_QU_H1: '3rd Reminder, Questionnaire - for England addresses',
     PackCode.P_QU_H2: '3rd Reminder, Questionnaire - for Wales addresses',
     PackCode.P_QU_H4: '2nd Reminder, Questionnaire - for Ireland addresses',
+
     PackCode.P_RD_2RL1_1: 'Response driven reminder group 1 English',
     PackCode.P_RD_2RL2B_1: 'Response driven reminder group 1 Welsh',
     PackCode.P_RD_2RL1_2: 'Response driven reminder group 2 English',
     PackCode.P_RD_2RL2B_2: 'Response driven reminder group 2 Welsh',
     PackCode.P_RD_2RL1_3: 'Response driven reminder group 3 English',
     PackCode.P_RD_2RL2B_3: 'Response driven reminder group 3 Welsh',
+
     PackCode.D_CE1A_ICLCR1: 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
     PackCode.D_CE1A_ICLCR2B: 'CE1 ICL with UAC for Wales (Hand Delivery) Addressed',
     PackCode.D_ICA_ICLR1: 'Individual ICL with UAC for England (Hand Delivery) Addressed',
     PackCode.D_ICA_ICLR2B: 'Individual ICL with UAC for Wales (Hand Delivery) Addressed',
     PackCode.D_CE4A_ICLR4: 'CE resident letter',
     PackCode.D_CE4A_ICLS4: 'CE student letter',
+
     PackCode.P_ICCE_ICL1: 'Household ICL with UAC for England (Post Out) Addressed',
     PackCode.P_ICCE_ICL2B: 'Household ICL with UAC for Wales (Post Out) Addressed',
+
     PackCode.D_FDCE_I4: 'Individual Questionnaire for NI (Hand delivery) Addressed',
     PackCode.D_FDCE_I1: 'Individual Questionnaire for England (Hand delivery) Addressed',
     PackCode.D_FDCE_I2: 'Individual Questionnaire for Wales (Hand delivery) Addressed',
     PackCode.D_FDCE_H1: 'Household Questionnaire for England (Hand delivery) Addressed',
     PackCode.D_FDCE_H2: 'Household Questionnaire for Wales (Hand Delivery) Addressed',
+
     PackCode.P_UAC_UACHHP1: 'Household Unique Access Code for England via paper',
     PackCode.P_UAC_UACHHP2B: 'Household Unique Access Code for Wales (English/Welsh - Bilingual) via paper',
     PackCode.P_UAC_UACHHP4: 'Household Unique Access Code for Northern Ireland via paper',
+
     PackCode.P_ER_ILER1: 'Information leaflet (Easy Read) for England',
     PackCode.P_ER_ILER2B: 'Information leaflet (Easy Read) for Wales (English/Welsh - Bilingual)',
+
     PackCode.P_UAC_UACIP1: 'Individual Unique Access Code for England via paper',
     PackCode.P_UAC_UACIP2B: 'Individual Unique Access Code for Wales (English/Welsh - Bilingual) via paper',
     PackCode.P_UAC_UACIP4: 'Individual Unique Access Code for Northern Ireland via paper'
@@ -159,9 +178,11 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_IC_ICL1: Dataset.PPD1_1,
     PackCode.P_IC_ICL2B: Dataset.PPD1_1,
     PackCode.P_IC_ICL4: Dataset.PPD1_1,
+
     PackCode.P_IC_H1: Dataset.QM3_2,
     PackCode.P_IC_H2: Dataset.QM3_2,
     PackCode.P_IC_H4: Dataset.QM3_2,
+
     PackCode.P_OR_H1: Dataset.QM3_4,
     PackCode.P_OR_H2: Dataset.QM3_4,
     PackCode.P_OR_H2W: Dataset.QM3_4,
@@ -170,6 +191,7 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_OR_HC2: Dataset.QM3_4,
     PackCode.P_OR_HC2W: Dataset.QM3_4,
     PackCode.P_OR_HC4: Dataset.QM3_4,
+
     PackCode.P_RL_1RL1_1: Dataset.PPD1_2,
     PackCode.P_RL_1RL1_2: Dataset.PPD1_2,
     PackCode.P_RL_1RL2B_1: Dataset.PPD1_2,
@@ -181,10 +203,15 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RL_1RL4: Dataset.PPD1_2,
     PackCode.P_RL_2RL1_3a: Dataset.PPD1_2,
     PackCode.P_RL_2RL2B_3a: Dataset.PPD1_2,
+
+    PackCode.P_RL_1IRL1: Dataset.PPD1_2,
+    PackCode.P_RL_1IRL2B: Dataset.PPD1_2,
+
     PackCode.P_LP_HL1: Dataset.PPD1_3,
     PackCode.P_LP_HL2: Dataset.PPD1_3,
     PackCode.P_LP_HL2W: Dataset.PPD1_3,
     PackCode.P_LP_HL4: Dataset.PPD1_3,
+
     PackCode.P_TB_TBALB1: Dataset.PPD1_3,
     PackCode.P_TB_TBAMH1: Dataset.PPD1_3,
     PackCode.P_TB_TBARA1: Dataset.PPD1_3,
@@ -270,15 +297,19 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_TB_TBURD1: Dataset.PPD1_3,
     PackCode.P_TB_TBVIE1: Dataset.PPD1_3,
     PackCode.P_TB_TBYSH1: Dataset.PPD1_3,
+
     PackCode.P_ER_ILER1: Dataset.PPD1_3,
     PackCode.P_ER_ILER2B: Dataset.PPD1_3,
+
     PackCode.P_OR_I1: Dataset.QM3_4,
     PackCode.P_OR_I2: Dataset.QM3_4,
     PackCode.P_OR_I2W: Dataset.QM3_4,
     PackCode.P_OR_I4: Dataset.QM3_4,
+
     PackCode.P_QU_H1: Dataset.QM3_3,
     PackCode.P_QU_H2: Dataset.QM3_3,
     PackCode.P_QU_H4: Dataset.QM3_3,
+
     PackCode.P_RD_2RL1_1: Dataset.PPD1_2,
     PackCode.P_RD_2RL2B_1: Dataset.PPD1_2,
     PackCode.P_RD_2RL1_2: Dataset.PPD1_2,
@@ -294,11 +325,13 @@ PACK_CODE_TO_DATASET = {
     PackCode.D_CE4A_ICLS4: Dataset.PPD1_7,
     PackCode.P_ICCE_ICL1: Dataset.PPD1_7,
     PackCode.P_ICCE_ICL2B: Dataset.PPD1_7,
+
     PackCode.D_FDCE_I4: Dataset.QM3_2,
     PackCode.D_FDCE_I1: Dataset.QM3_2,
     PackCode.D_FDCE_I2: Dataset.QM3_2,
     PackCode.D_FDCE_H1: Dataset.QM3_2,
     PackCode.D_FDCE_H2: Dataset.QM3_2,
+
     PackCode.P_UAC_UACHHP1: Dataset.PPD1_3,
     PackCode.P_UAC_UACHHP2B: Dataset.PPD1_3,
     PackCode.P_UAC_UACHHP4: Dataset.PPD1_3,
@@ -333,10 +366,11 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.ICL1E: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.ICL2W: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.ICL4N: PrintTemplate.PPO_LETTER_TEMPLATE,
+
     ActionType.ICHHQE: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.ICHHQW: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.ICHHQN: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
-    ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+
     ActionType.P_RL_1RL1_1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL1_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL4: PrintTemplate.PPO_LETTER_TEMPLATE,
@@ -348,18 +382,21 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RL_1RL2BA: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL1A: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL2BA: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_OR_IX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
-    ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE,
+
+    ActionType.P_RL_1IRL1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1IRL2B: PrintTemplate.PPO_LETTER_TEMPLATE,
+
     ActionType.P_QU_H1: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_QU_H2: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_QU_H4: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+
     ActionType.P_RD_2RL1_1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RD_2RL2B_1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RD_2RL1_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RD_2RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RD_2RL1_3: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RD_2RL2B_3: PrintTemplate.PPO_LETTER_TEMPLATE,
+
     ActionType.CE1_IC01: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE1_IC02: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE_IC03: PrintTemplate.PPO_LETTER_TEMPLATE,
@@ -371,13 +408,19 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.CE_IC08: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.CE_IC09: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.CE_IC10: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+
     ActionType.SPG_IC11: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.SPG_IC12: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.SPG_IC13: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.SPG_IC14: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+
+    ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_OR_IX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_UAC_HX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_ER_IL: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_UAC_IX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
