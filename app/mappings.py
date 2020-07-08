@@ -35,9 +35,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_2RL2BA: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English) for survey'
                           ' launched but not completed',
 
-    # TODO
-    PackCode.P_RL_1IRL1: '1IRL1 dev placeholder',
-    PackCode.P_RL_1IRL2B: '1IRL2B dev placeholder',
+    # TODO confirm description
+    PackCode.P_RL_1IRL1: 'Individual response reminder letter for England addresses',
+    PackCode.P_RL_1IRL2B: 'Individual response reminder letter for Wales addresses',
 
     PackCode.P_LP_HL1: 'Household Questionnaire Large Print pack for England',
     PackCode.P_LP_HL2: 'Household Questionnaire Large Print pack for Wales (English)',

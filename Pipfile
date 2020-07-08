@@ -17,7 +17,7 @@ paramiko = "*"
 retrying = "*"
 requests = "*"
 google-cloud-storage = "*"
-csvsort = "*"
+csvsort = "<1.6" # 1.6 breaks print file service by trying to use multiprocessing within a deamon process
 
 [requires]
 python_version = "3.7"
