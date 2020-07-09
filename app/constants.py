@@ -47,13 +47,16 @@ class ActionType(Enum):
     # On request individual fulfilment questionnaires
     P_OR_IX = 'P_OR_IX'
 
-    # Large print fulfilments
+    # Large print fulfilments Household questionnaire fulfilments
     P_LP_HLX = 'P_LP_HLX'
+
+    # Large print individual questionnaire fulfilments
+    P_LP_ILX = 'P_LP_ILX'
 
     # Translation booklet fulfilments
     P_TB_TBX = 'P_TB_TBX'
 
-    # individual UAC print fulfilments
+    # Individual UAC print fulfilments
     P_UAC_IX = 'P_UAC_IX'
 
     # Reminder letters
@@ -162,11 +165,17 @@ class PackCode(Enum):
     P_UAC_UACIP2B = 'P_UAC_UACIP2B'
     P_UAC_UACIP4 = 'P_UAC_UACIP4'
 
-    # Large print fulfilments
+    # Large print Household questionnaire fulfilments
     P_LP_HL1 = "P_LP_HL1"
     P_LP_HL2 = "P_LP_HL2"
     P_LP_HL2W = "P_LP_HL2W"
     P_LP_HL4 = "P_LP_HL4"
+
+    # Large print individual questionnaire fulfilments
+    P_LP_ILP1 = "P_LP_ILP1"
+    P_LP_ILP2 = "P_LP_ILP2"
+    P_LP_ILP2W = "P_LP_ILP2W"
+    P_LP_IL4 = "P_LP_IL4"
 
     # Translation booklet fulfilments
     P_TB_TBALB1 = "P_TB_TBALB1"
