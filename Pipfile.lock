@@ -122,7 +122,7 @@
                 "sha256:b2d34042979cd843c29c50ff6cd8e62579e9e0008b7551fbb11f06cfe41004ab"
             ],
             "index": "pypi",
-            "version": "==1.6.1"
+            "version": "==1.5"
         },
         "google-api-core": {
             "hashes": [
