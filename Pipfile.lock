@@ -119,7 +119,7 @@
         },
         "csvsort": {
             "hashes": [
-                "sha256:b2d34042979cd843c29c50ff6cd8e62579e9e0008b7551fbb11f06cfe41004ab"
+                "sha256:150dcd0bc6769a2e1950a8d42ba810b7e07fefb7f019f5018915bbec975da8b1"
             ],
             "index": "pypi",
             "version": "==1.5"
