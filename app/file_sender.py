@@ -188,7 +188,7 @@ def check_gcp_bucket_ready():
     try:
         storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
     except Exception:
-        logger.exception(f'Print file upload bucket cannot be accessed', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
+        logger.exception('Print file upload bucket cannot be accessed', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
         return
     logger.info('Successfully got print file bucket', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
 

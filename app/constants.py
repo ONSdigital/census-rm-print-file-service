@@ -84,6 +84,10 @@ class ActionType(Enum):
     P_RL_2RL1A = 'P_RL_2RL1A'
     P_RL_2RL2BA = 'P_RL_2RL2BA'
 
+    # Individual response reminders
+    P_RL_1IRL1 = 'P_RL_1IRL1'
+    P_RL_1IRL2B = 'P_RL_1IRL2B'
+
     # Household Unique Access Codes via paper
     P_UAC_HX = 'P_UAC_HX'
 
@@ -268,6 +272,10 @@ class PackCode(Enum):
     P_RL_1RL2BA = 'P_RL_1RL2BA'
     P_RL_2RL1A = 'P_RL_2RL1A'
     P_RL_2RL2BA = 'P_RL_2RL2BA'
+
+    # Individual response reminders
+    P_RL_1IRL1 = 'P_RL_1IRL1'
+    P_RL_1IRL2B = 'P_RL_1IRL2B'
 
     # Household Unique Access Codes via paper
     P_UAC_UACHHP1 = 'P_UAC_UACHHP1'
