@@ -43,6 +43,11 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_LP_HL2W: 'Household Questionnaire Large Print pack for Wales (Welsh)',
     PackCode.P_LP_HL4: 'Household Questionnaire Large Print pack for Northern Ireland',
 
+    PackCode.P_LP_ILP1: 'Individual Questionnaire (Large Print) for England',
+    PackCode.P_LP_ILP2: 'Individual Questionnaire (Large Print) for Wales (in English)',
+    PackCode.P_LP_ILP2W: 'Individual Questionnaire (Large Print) for Wales (in Welsh)',
+    PackCode.P_LP_IL4: 'Individual Questionnaire (Large Print) for Northern Ireland',
+
     PackCode.P_TB_TBALB1: 'Translation Booklet for England - Albanian',
     PackCode.P_TB_TBAMH1: 'Translation Booklet for England - Amharic',
     PackCode.P_TB_TBARA1: 'Translation Booklet for England - Arabic',
@@ -210,6 +215,11 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_LP_HL2: Dataset.PPD1_3,
     PackCode.P_LP_HL2W: Dataset.PPD1_3,
     PackCode.P_LP_HL4: Dataset.PPD1_3,
+
+    PackCode.P_LP_ILP1: Dataset.PPD1_3,
+    PackCode.P_LP_ILP2: Dataset.PPD1_3,
+    PackCode.P_LP_ILP2W: Dataset.PPD1_3,
+    PackCode.P_LP_IL4: Dataset.PPD1_3,
 
     PackCode.P_TB_TBALB1: Dataset.PPD1_3,
     PackCode.P_TB_TBAMH1: Dataset.PPD1_3,
@@ -414,6 +424,7 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.SPG_IC14: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 
     ActionType.P_LP_HLX: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_LP_ILX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_OR_IX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_TB_TBX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_UAC_HX: PrintTemplate.PPO_LETTER_TEMPLATE,
