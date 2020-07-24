@@ -28,8 +28,9 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_2RL1_3a: '3rd Reminder, Letter - for England addresses',
     PackCode.P_RL_2RL2B_3a: '3rd Reminder, Letter - for Wales addresses',
 
-    PackCode.P_RL_1RL1B: '1st Reminder, Letter - for England paper first households',
-    PackCode.P_RL_1RL2BB: '1st Reminder, Letter - for paper first households bilingual Welsh and English',
+    PackCode.P_RL_1RL1B: '1st Reminder, Letter - for England paper first addresses with survey not launched',
+    PackCode.P_RL_1RL2BB: '1st Reminder, Letter - for Wales paper first addresses with survey not launched',
+    PackCode.P_RL_1RL4A: '1st Reminder, Letter - for Ireland paper first addresses with survey not launched',
 
     PackCode.P_RL_1RL1A: '1st Reminder, Letter - for England addresses for survey launched but not completed',
     PackCode.P_RL_1RL2BA: '1st Reminder, Letter - for Wales addresses (bilingual Welsh and English) for survey'
@@ -213,6 +214,7 @@ PACK_CODE_TO_DATASET = {
 
     PackCode.P_RL_1RL1B: Dataset.PPD1_2,
     PackCode.P_RL_1RL2BB: Dataset.PPD1_2,
+    PackCode.P_RL_1RL4A: Dataset.PPD1_2,
 
     PackCode.P_RL_1IRL1: Dataset.PPD1_2,
     PackCode.P_RL_1IRL2B: Dataset.PPD1_2,
@@ -400,6 +402,7 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
 
     ActionType.P_RL_1RL1B: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL2BB: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_1RL4A: PrintTemplate.PPO_LETTER_TEMPLATE,
 
     ActionType.P_RL_1IRL1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1IRL2B: PrintTemplate.PPO_LETTER_TEMPLATE,

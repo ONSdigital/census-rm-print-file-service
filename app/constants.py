@@ -71,6 +71,7 @@ class ActionType(Enum):
     # Reminder letters for paper first households
     P_RL_1RL1B = 'P_RL_1RL1B'
     P_RL_1RL2BB = 'P_RL_1RL2BB'
+    P_RL_1RL4A = 'P_RL_1RL4A'
 
     # Reminder Questionnaires
     P_QU_H1 = 'P_QU_H1'
@@ -148,6 +149,7 @@ class PackCode(Enum):
     # Reminder letters for paper first households
     P_RL_1RL1B = 'P_RL_1RL1B'
     P_RL_1RL2BB = 'P_RL_1RL2BB'
+    P_RL_1RL4A = 'P_RL_1RL4A'
 
     # Reminder Questionnaires
     P_QU_H1 = "P_QU_H1"
