@@ -175,7 +175,14 @@ PACK_CODE_TO_DESCRIPTION = {
 
     PackCode.P_UAC_UACIP1: 'Individual Unique Access Code for England via paper',
     PackCode.P_UAC_UACIP2B: 'Individual Unique Access Code for Wales (English/Welsh - Bilingual) via paper',
-    PackCode.P_UAC_UACIP4: 'Individual Unique Access Code for Northern Ireland via paper'
+    PackCode.P_UAC_UACIP4: 'Individual Unique Access Code for Northern Ireland via paper',
+    PackCode.P_UAC_UACIPA1: 'Individual Unique Access Code for England via paper - Request from EQ',
+    PackCode.P_UAC_UACIPA2B: 'Individual Unique Access Code for Wales (English/Welsh - Bilingual) via paper - Request'
+                             ' from EQ',
+    PackCode.P_UAC_UACIPA4: 'Individual Unique Access Code for Northern Ireland via paper - Request from EQ',
+
+    PackCode.P_UAC_UACCEP1: 'UAC provided to Communal Establishment manager in England via paper',
+    PackCode.P_UAC_UACCEP2B: 'UAC provided to Communal Establishment manager in Wales via paper (Bilingual)'
 }
 
 PACK_CODE_TO_DATASET = {
@@ -347,6 +354,11 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_UAC_UACIP1: Dataset.PPD1_3,
     PackCode.P_UAC_UACIP2B: Dataset.PPD1_3,
     PackCode.P_UAC_UACIP4: Dataset.PPD1_3,
+    PackCode.P_UAC_UACIPA1: Dataset.PPD1_3,
+    PackCode.P_UAC_UACIPA2B: Dataset.PPD1_3,
+    PackCode.P_UAC_UACIPA4: Dataset.PPD1_3,
+    PackCode.P_UAC_UACCEP1: Dataset.PPD1_3,
+    PackCode.P_UAC_UACCEP2B: Dataset.PPD1_3,
 }
 
 DATASET_TO_SUPPLIER = {
@@ -431,6 +443,7 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_ER_IL: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_UAC_IX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
+    ActionType.P_UAC_CX: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
