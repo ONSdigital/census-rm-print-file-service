@@ -26,12 +26,14 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_1RL2B_2: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
     PackCode.P_RL_1RL4: '1st Reminder, Letter - for Ireland addresses',
     PackCode.P_RL_2RL4: '2nd Reminder, Letter - for Ireland addresses',
+    PackCode.P_RL_2RL1: '2nd Reminder, Letter - for England addresses without survey launched',
     PackCode.P_RL_2RL1_3a: '3rd Reminder, Letter - for England addresses',
     PackCode.P_RL_2RL2B_3a: '3rd Reminder, Letter - for Wales addresses',
 
     PackCode.P_RL_1RL1B: '1st Reminder, Letter - for England paper first addresses with survey not launched',
     PackCode.P_RL_1RL2BB: '1st Reminder, Letter - for Wales paper first addresses with survey not launched',
     PackCode.P_RL_1RL4A: '1st Reminder, Letter - for Ireland paper first addresses with survey not launched',
+    PackCode.P_RL_2RL2B: '2nd Reminder, Letter - for Wales addresses when survey not launched',
     PackCode.P_RL_3RL1: '3rd Reminder, Letter - for England addresses when survey not launched',
     PackCode.P_RL_3RL2B: '3rd Reminder, Letter - for Wales UAC first addresses when survey not launched',
 
@@ -210,11 +212,13 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RL_1RL1A: Dataset.PPD1_2,
     PackCode.P_RL_1RL2BA: Dataset.PPD1_2,
     PackCode.P_RL_2RL1A: Dataset.PPD1_2,
+    PackCode.P_RL_2RL2B: Dataset.PPD1_2,
     PackCode.P_RL_2RL2BA: Dataset.PPD1_2,
     PackCode.P_RL_1RL4: Dataset.PPD1_2,
     PackCode.P_RL_2RL1_3a: Dataset.PPD1_2,
     PackCode.P_RL_2RL2B_3a: Dataset.PPD1_2,
 
+    PackCode.P_RL_2RL1: Dataset.PPD1_2,
     PackCode.P_RL_2RL4: Dataset.PPD1_2,
     PackCode.P_RL_3RL1: Dataset.PPD1_2,
     PackCode.P_RL_3RL2B: Dataset.PPD1_2,
@@ -407,7 +411,9 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RL_2RL1A: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL2BA: PrintTemplate.PPO_LETTER_TEMPLATE,
 
+    ActionType.P_RL_2RL1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL4: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RL_2RL2B: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_3RL1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_3RL2B: PrintTemplate.PPO_LETTER_TEMPLATE,
 
