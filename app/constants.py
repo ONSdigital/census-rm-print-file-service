@@ -104,6 +104,9 @@ class ActionType(Enum):
     # Household Unique Access Codes via paper
     P_UAC_HX = 'P_UAC_HX'
 
+    # UAC provided to CE manager via paper
+    P_UAC_CX = 'P_UAC_CX'
+
     # Information leaflet
     P_ER_IL = 'P_ER_IL'
 
@@ -189,6 +192,9 @@ class PackCode(Enum):
     P_UAC_UACIP1 = 'P_UAC_UACIP1'
     P_UAC_UACIP2B = 'P_UAC_UACIP2B'
     P_UAC_UACIP4 = 'P_UAC_UACIP4'
+    P_UAC_UACIPA1 = 'P_UAC_UACIPA1'
+    P_UAC_UACIPA2B = 'P_UAC_UACIPA2B'
+    P_UAC_UACIPA4 = 'P_UAC_UACIPA4'
 
     # Large print Household questionnaire fulfilments
     P_LP_HL1 = "P_LP_HL1"
@@ -311,6 +317,10 @@ class PackCode(Enum):
     P_UAC_UACHHP1 = 'P_UAC_UACHHP1'
     P_UAC_UACHHP2B = 'P_UAC_UACHHP2B'
     P_UAC_UACHHP4 = 'P_UAC_UACHHP4'
+
+    # UAC provided to CE manager via paper
+    P_UAC_UACCEP1 = 'P_UAC_UACCEP1'
+    P_UAC_UACCEP2B = 'P_UAC_UACCEP2B'
 
     # Information leaflet
     P_ER_ILER1 = 'P_ER_ILER1'
