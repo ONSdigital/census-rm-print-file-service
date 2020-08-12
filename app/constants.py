@@ -65,8 +65,18 @@ class ActionType(Enum):
     P_RL_1RL4 = 'P_RL_1RL4'
     P_RL_1RL1_2 = 'P_RL_1RL1_2'
     P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
+    P_RL_2RL1 = 'P_RL_2RL1'
+    P_RL_2RL2B = 'P_RL_2RL2B'
     P_RL_2RL1_3a = 'P_RL_2RL1_3a'
     P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
+
+    # Reminder letters for paper first households
+    P_RL_1RL1B = 'P_RL_1RL1B'
+    P_RL_1RL2BB = 'P_RL_1RL2BB'
+    P_RL_1RL4A = 'P_RL_1RL4A'
+    P_RL_2RL4 = 'P_RL_2RL4'
+    P_RL_3RL1 = 'P_RL_3RL1'
+    P_RL_3RL2B = 'P_RL_3RL2B'
 
     # Reminder Questionnaires
     P_QU_H1 = 'P_QU_H1'
@@ -141,8 +151,19 @@ class PackCode(Enum):
     P_RL_1RL4 = 'P_RL_1RL4'
     P_RL_1RL1_2 = 'P_RL_1RL1_2'
     P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
+    P_RL_2RL1 = 'P_RL_2RL1'
+    P_RL_2RL2B = 'P_RL_2RL2B'
     P_RL_2RL1_3a = 'P_RL_2RL1_3a'
     P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
+
+    P_RL_2RL4 = 'P_RL_2RL4'
+    P_RL_3RL1 = 'P_RL_3RL1'
+    P_RL_3RL2B = 'P_RL_3RL2B'
+
+    # Reminder letters for paper first households
+    P_RL_1RL1B = 'P_RL_1RL1B'
+    P_RL_1RL2BB = 'P_RL_1RL2BB'
+    P_RL_1RL4A = 'P_RL_1RL4A'
 
     # Reminder Questionnaires
     P_QU_H1 = "P_QU_H1"
