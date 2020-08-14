@@ -24,7 +24,7 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_1RL1_2: '2nd Reminder, Letter - for England addresses',
     PackCode.P_RL_1RL2B_1: '1st Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
     PackCode.P_RL_1RL2B_2: '2nd Reminder, Letter - for Wales addresses (bilingual Welsh and English)',
-    PackCode.P_RL_1RL4: '1st Reminder, Letter - for Ireland addresses',
+    PackCode.P_RL_1RL4: "R1b NI - first reminder, haven't launched EQ",
     PackCode.P_RL_2RL4: '2nd Reminder, Letter - for Ireland addresses',
     PackCode.P_RL_2RL1: '2nd Reminder, Letter - for England addresses without survey launched',
     PackCode.P_RL_2RL1_3a: '3rd Reminder, Letter - for England addresses',
@@ -32,7 +32,7 @@ PACK_CODE_TO_DESCRIPTION = {
 
     PackCode.P_RL_1RL1B: '1st Reminder, Letter - for England paper first addresses with survey not launched',
     PackCode.P_RL_1RL2BB: '1st Reminder, Letter - for Wales paper first addresses with survey not launched',
-    PackCode.P_RL_1RL4A: '1st Reminder, Letter - for Ireland paper first addresses with survey not launched',
+    PackCode.P_RL_1RL4A: 'R1a NI - first reminder, have launched EQ',
     PackCode.P_RL_2RL2B: '2nd Reminder, Letter - for Wales addresses when survey not launched',
     PackCode.P_RL_3RL1: '3rd Reminder, Letter - for England addresses when survey not launched',
     PackCode.P_RL_3RL2B: '3rd Reminder, Letter - for Wales UAC first addresses when survey not launched',
