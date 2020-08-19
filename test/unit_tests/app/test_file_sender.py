@@ -97,7 +97,7 @@ def test_generating_manifest_file_ppd(cleanup_test_files):
     manifest_json = json.loads(manifest_file.read_text())
 
     assert manifest_json['schemaVersion'] == '1'
-    assert manifest_json['description'] == 'Initial contact letter households - England'
+    assert manifest_json['description'] == 'Initial contact pack for English households'
     assert manifest_json['sourceName'] == 'ONS_RM'
     assert manifest_json['dataset'] == 'PPD1.1'
     assert manifest_json['files'][0]['rows'] == 10
@@ -111,7 +111,7 @@ def test_generating_manifest_file_qm(cleanup_test_files):
     manifest_json = json.loads(manifest_file.read_text())
 
     assert manifest_json['schemaVersion'] == '1'
-    assert manifest_json['description'] == 'Initial contact questionnaire households - England'
+    assert manifest_json['description'] == 'Household Questionnaire for England'
     assert manifest_json['sourceName'] == 'ONS_RM'
     assert manifest_json['dataset'] == 'QM3.2'
     assert manifest_json['files'][0]['rows'] == 10

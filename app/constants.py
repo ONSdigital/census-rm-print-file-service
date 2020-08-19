@@ -63,12 +63,8 @@ class ActionType(Enum):
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
     P_RL_1RL4 = 'P_RL_1RL4'
-    P_RL_1RL1_2 = 'P_RL_1RL1_2'
-    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
     P_RL_2RL1 = 'P_RL_2RL1'
     P_RL_2RL2B = 'P_RL_2RL2B'
-    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
-    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
     # Reminder letters for paper first households
     P_RL_1RL1B = 'P_RL_1RL1B'
@@ -82,14 +78,6 @@ class ActionType(Enum):
     P_QU_H1 = 'P_QU_H1'
     P_QU_H2 = 'P_QU_H2'
     P_QU_H4 = 'P_QU_H4'
-
-    # Response driven reminders
-    P_RD_2RL1_1 = 'P_RD_2RL1_1'
-    P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
-    P_RD_2RL1_2 = 'P_RD_2RL1_2'
-    P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
-    P_RD_2RL1_3 = 'P_RD_2RL1_3'
-    P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
 
     # Response driven reminders, for RH launched surveys
     P_RL_1RL1A = 'P_RL_1RL1A'
@@ -149,12 +137,8 @@ class PackCode(Enum):
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
     P_RL_1RL4 = 'P_RL_1RL4'
-    P_RL_1RL1_2 = 'P_RL_1RL1_2'
-    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
     P_RL_2RL1 = 'P_RL_2RL1'
     P_RL_2RL2B = 'P_RL_2RL2B'
-    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
-    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
     P_RL_2RL4 = 'P_RL_2RL4'
     P_RL_3RL1 = 'P_RL_3RL1'
@@ -294,14 +278,6 @@ class PackCode(Enum):
     P_TB_TBURD1 = "P_TB_TBURD1"
     P_TB_TBVIE1 = "P_TB_TBVIE1"
     P_TB_TBYSH1 = "P_TB_TBYSH1"
-
-    # Reminders
-    P_RD_2RL1_1 = 'P_RD_2RL1_1'
-    P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
-    P_RD_2RL1_2 = 'P_RD_2RL1_2'
-    P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
-    P_RD_2RL1_3 = 'P_RD_2RL1_3'
-    P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
 
     # Reminders for survey already started
     P_RL_1RL1A = 'P_RL_1RL1A'

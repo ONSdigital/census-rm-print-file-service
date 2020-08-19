@@ -200,17 +200,13 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_OR_HC4: Dataset.QM3_4,
 
     PackCode.P_RL_1RL1_1: Dataset.PPD1_2,
-    PackCode.P_RL_1RL1_2: Dataset.PPD1_2,
     PackCode.P_RL_1RL2B_1: Dataset.PPD1_2,
-    PackCode.P_RL_1RL2B_2: Dataset.PPD1_2,
     PackCode.P_RL_1RL1A: Dataset.PPD1_2,
     PackCode.P_RL_1RL2BA: Dataset.PPD1_2,
     PackCode.P_RL_2RL1A: Dataset.PPD1_2,
     PackCode.P_RL_2RL2B: Dataset.PPD1_2,
     PackCode.P_RL_2RL2BA: Dataset.PPD1_2,
     PackCode.P_RL_1RL4: Dataset.PPD1_2,
-    PackCode.P_RL_2RL1_3a: Dataset.PPD1_2,
-    PackCode.P_RL_2RL2B_3a: Dataset.PPD1_2,
 
     PackCode.P_RL_2RL1: Dataset.PPD1_2,
     PackCode.P_RL_2RL4: Dataset.PPD1_2,
@@ -332,13 +328,6 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_QU_H2: Dataset.QM3_3,
     PackCode.P_QU_H4: Dataset.QM3_3,
 
-    PackCode.P_RD_2RL1_1: Dataset.PPD1_2,
-    PackCode.P_RD_2RL2B_1: Dataset.PPD1_2,
-    PackCode.P_RD_2RL1_2: Dataset.PPD1_2,
-    PackCode.P_RD_2RL2B_2: Dataset.PPD1_2,
-    PackCode.P_RD_2RL1_3: Dataset.PPD1_2,
-    PackCode.P_RD_2RL2B_3: Dataset.PPD1_2,
-
     PackCode.D_CE1A_ICLCR1: Dataset.PPD1_7,
     PackCode.D_CE1A_ICLCR2B: Dataset.PPD1_7,
     PackCode.D_ICA_ICLR1: Dataset.PPD1_7,
@@ -399,12 +388,8 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.ICHHQN: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
 
     ActionType.P_RL_1RL1_1: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RL_1RL1_2: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL4: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RL_2RL1_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL2B_1: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RL_1RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RL_2RL2B_3a: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL1A: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL2BA: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_2RL1A: PrintTemplate.PPO_LETTER_TEMPLATE,
@@ -426,13 +411,6 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_QU_H1: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_QU_H2: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_QU_H4: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
-
-    ActionType.P_RD_2RL1_1: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RD_2RL2B_1: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RD_2RL1_2: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RD_2RL2B_2: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RD_2RL1_3: PrintTemplate.PPO_LETTER_TEMPLATE,
-    ActionType.P_RD_2RL2B_3: PrintTemplate.PPO_LETTER_TEMPLATE,
 
     ActionType.CE1_IC01: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.CE1_IC02: PrintTemplate.PPO_LETTER_TEMPLATE,
