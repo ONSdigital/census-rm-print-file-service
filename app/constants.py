@@ -15,10 +15,6 @@ class ActionType(Enum):
     CE_IC03 = 'CE_IC03'
     CE_IC04 = 'CE_IC04'
 
-    # Individual addressed initial contact letters for CE Units
-    CE_IC03_1 = 'CE_IC03_1'
-    CE_IC04_1 = 'CE_IC04_1'
-
     # Individual addressed initial contact letters CE (Northern Ireland)
     CE_IC05 = 'CE_IC05'
     CE_IC06 = 'CE_IC06'
