@@ -15,10 +15,6 @@ class ActionType(Enum):
     CE_IC03 = 'CE_IC03'
     CE_IC04 = 'CE_IC04'
 
-    # Individual addressed initial contact letters for CE Units
-    CE_IC03_1 = 'CE_IC03_1'
-    CE_IC04_1 = 'CE_IC04_1'
-
     # Individual addressed initial contact letters CE (Northern Ireland)
     CE_IC05 = 'CE_IC05'
     CE_IC06 = 'CE_IC06'
@@ -63,12 +59,8 @@ class ActionType(Enum):
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
     P_RL_1RL4 = 'P_RL_1RL4'
-    P_RL_1RL1_2 = 'P_RL_1RL1_2'
-    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
     P_RL_2RL1 = 'P_RL_2RL1'
     P_RL_2RL2B = 'P_RL_2RL2B'
-    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
-    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
     # Reminder letters for paper first households
     P_RL_1RL1B = 'P_RL_1RL1B'
@@ -82,14 +74,6 @@ class ActionType(Enum):
     P_QU_H1 = 'P_QU_H1'
     P_QU_H2 = 'P_QU_H2'
     P_QU_H4 = 'P_QU_H4'
-
-    # Response driven reminders
-    P_RD_2RL1_1 = 'P_RD_2RL1_1'
-    P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
-    P_RD_2RL1_2 = 'P_RD_2RL1_2'
-    P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
-    P_RD_2RL1_3 = 'P_RD_2RL1_3'
-    P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
 
     # Response driven reminders, for RH launched surveys
     P_RL_1RL1A = 'P_RL_1RL1A'
@@ -149,12 +133,8 @@ class PackCode(Enum):
     P_RL_1RL1_1 = 'P_RL_1RL1_1'
     P_RL_1RL2B_1 = 'P_RL_1RL2B_1'
     P_RL_1RL4 = 'P_RL_1RL4'
-    P_RL_1RL1_2 = 'P_RL_1RL1_2'
-    P_RL_1RL2B_2 = 'P_RL_1RL2B_2'
     P_RL_2RL1 = 'P_RL_2RL1'
     P_RL_2RL2B = 'P_RL_2RL2B'
-    P_RL_2RL1_3a = 'P_RL_2RL1_3a'
-    P_RL_2RL2B_3a = 'P_RL_2RL2B_3a'
 
     P_RL_2RL4 = 'P_RL_2RL4'
     P_RL_3RL1 = 'P_RL_3RL1'
@@ -295,14 +275,6 @@ class PackCode(Enum):
     P_TB_TBVIE1 = "P_TB_TBVIE1"
     P_TB_TBYSH1 = "P_TB_TBYSH1"
 
-    # Reminders
-    P_RD_2RL1_1 = 'P_RD_2RL1_1'
-    P_RD_2RL2B_1 = 'P_RD_2RL2B_1'
-    P_RD_2RL1_2 = 'P_RD_2RL1_2'
-    P_RD_2RL2B_2 = 'P_RD_2RL2B_2'
-    P_RD_2RL1_3 = 'P_RD_2RL1_3'
-    P_RD_2RL2B_3 = 'P_RD_2RL2B_3'
-
     # Reminders for survey already started
     P_RL_1RL1A = 'P_RL_1RL1A'
     P_RL_1RL2BA = 'P_RL_1RL2BA'
@@ -381,7 +353,6 @@ class PrintTemplate:
 
 class PrintFileSorting:
     SORTING_KEY = ['fieldOfficerId', 'organisationName']
-    PACKCODES_TO_SORT = {PackCode.D_CE1A_ICLCR1, PackCode.D_CE1A_ICLCR2B, PackCode.D_ICA_ICLR1, PackCode.D_ICA_ICLR1,
-                         PackCode.D_ICA_ICLR2B, PackCode.D_ICA_ICLR2B, PackCode.D_FDCE_I1, PackCode.D_FDCE_I2,
-                         PackCode.D_FDCE_I4, PackCode.D_CE4A_ICLR4, PackCode.D_CE4A_ICLS4,
-                         PackCode.D_FDCE_H1, PackCode.D_FDCE_H2}
+    PACKCODES_TO_SORT = {PackCode.D_CE1A_ICLCR1, PackCode.D_CE1A_ICLCR2B, PackCode.D_ICA_ICLR1, PackCode.D_ICA_ICLR2B,
+                         PackCode.D_FDCE_I1, PackCode.D_FDCE_I2, PackCode.D_FDCE_I4, PackCode.D_CE4A_ICLR4,
+                         PackCode.D_CE4A_ICLS4, PackCode.D_FDCE_H1, PackCode.D_FDCE_H2}

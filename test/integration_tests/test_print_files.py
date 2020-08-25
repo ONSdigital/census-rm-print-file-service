@@ -25,7 +25,7 @@ def test_ICL1E_split_files(sftp_client):
     # Then
     get_and_check_multiple_manifest_files(sftp=sftp_client, remote_manifest_directory=TestConfig.SFTP_PPO_DIRECTORY,
                                           manifest_files=matched_manifest_files,
-                                          expected_values={'description': 'Initial contact letter households - England',
+                                          expected_values={'description': 'Initial contact pack for English households',
                                                            'dataset': 'PPD1.1'})
 
     get_and_check_multiple_print_files(
@@ -80,7 +80,7 @@ def test_ICL1E_PPD1_1(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Initial contact letter households - England',
+                                    'description': 'Initial contact pack for English households',
                                     'dataset': 'PPD1.1'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -107,8 +107,7 @@ def test_P_RL_1RL1A_PPD1_2(sftp_client):
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
                                     'description':
-                                        '1st Reminder, Letter - for England addresses'
-                                        ' for survey launched but not completed',
+                                        'RU1 England- First reminder going to those who have launched EQ',
                                     'dataset': 'PPD1.2'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -134,7 +133,7 @@ def test_P_LP_HL1_PPD1_3(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Household Questionnaire Large Print pack for England',
+                                    'description': 'Household Questionnaire (Large Print) for England',
                                     'dataset': 'PPD1.3'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -161,7 +160,7 @@ def test_CE1_IC01_PPD1_7(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_PPO_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'CE1 ICL with UAC for England (Hand Delivery) Addressed',
+                                    'description': 'CE1 Packs (Hand Delivery) Addressed England',
                                     'dataset': 'PPD1.7'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -193,7 +192,7 @@ def test_ICHHQW_QM3_2(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Initial contact questionnaire households - Wales',
+                                    'description': 'Household Questionnaire for Wales',
                                     'dataset': 'QM3.2'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -226,7 +225,7 @@ def test_P_QU_H2_QM3_3(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': '3rd Reminder, Questionnaire - for Wales addresses',
+                                    'description': 'RP1 - Wales Paper questionnaire going to HtC willingness 4&5',
                                     'dataset': 'QM3.3'}, decrypted_print_file=decrypted_print_file)
 
 
@@ -255,7 +254,7 @@ def test_P_OR_H2W_QM3_4(sftp_client):
     get_and_check_manifest_file(sftp=sftp_client,
                                 remote_manifest_path=TestConfig.SFTP_QM_DIRECTORY + matched_manifest_file,
                                 expected_values={
-                                    'description': 'Household Questionnaire for Wales (Welsh)',
+                                    'description': 'Household Questionnaire for Wales (in Welsh)',
                                     'dataset': 'QM3.4'}, decrypted_print_file=decrypted_print_file)
 
 
