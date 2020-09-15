@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch, call
 
 import paramiko
 import pytest
+from google.cloud import exceptions
 
 from app.constants import PackCode, ActionType
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
@@ -14,8 +15,6 @@ from app.file_sender import copy_files_to_sftp, process_complete_file, \
     get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket, check_gcp_bucket_ready
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
-from google.cloud import exceptions
-
 from test.unit_tests import RESOURCE_FILE_PATH
 
 
@@ -174,6 +173,9 @@ def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
         # When
         process_complete_file(complete_file_path, PackCode.P_IC_ICL1, ActionType.ICL1E, context_logger)
 
+    if not str(raised_exception.value) == sftp_failure_exception_message:
+        raise raised_exception.value
+
     # Then
     # Check encrypted_files_directory is empty
     assert not any(cleanup_test_files.encrypted_files.iterdir())
@@ -183,6 +185,77 @@ def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
 
     # Check original exception is re-raised
     assert str(raised_exception.value) == sftp_failure_exception_message
+
+
+def test_failed_uploads_of_sorted_file_does_not_break_name(cleanup_test_files):
+    # This test is relevant because we had a bug where `.sorted` was repeatedly appended to the same file on failed
+    # upload attempts
+
+    # Given
+    # Note D_FDCE_I4 is a sorted action type
+    sorted_partial_file_name = 'CE_IC08.D_FDCE_I4.1.10.sorted'
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath(sorted_partial_file_name),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath(sorted_partial_file_name)))
+    context_logger = Mock()
+    sftp_failure_exception_message = 'Simulate SFTP transfer failure'
+
+    def simulate_sftp_failure(*_args, **_kwargs):
+        raise Exception(sftp_failure_exception_message)
+
+    with patch('app.file_sender.sftp.paramiko.SSHClient') as client, \
+            pytest.raises(Exception) as raised_exception:
+        client.return_value.open_sftp.side_effect = simulate_sftp_failure
+
+        # When
+        process_complete_file(complete_file_path, PackCode.D_FDCE_I4, ActionType.CE_IC08, context_logger)
+
+    if not str(raised_exception.value) == sftp_failure_exception_message:
+        raise raised_exception.value
+
+    # Then
+    # Check encrypted_files_directory is empty
+    assert not any(cleanup_test_files.encrypted_files.iterdir())
+    partial_files_after_attempt = list(cleanup_test_files.partial_files.iterdir())
+
+    assert len(partial_files_after_attempt) == 1
+
+    # Double check the name of the sorted file has not changed (no extra .sorted on the end)
+    assert partial_files_after_attempt[0].name == sorted_partial_file_name
+
+
+def test_failed_uploads_of_sorted_file_keeps_sorting_progress(cleanup_test_files):
+    # This test is relevant because we had a bug where `.sorted` was repeatedly appended to the same file on failed
+    # upload attempts
+
+    # Given
+    # Note D_FDCE_I4 is a sorted action type
+    unsorted_partial_file_name = 'CE_IC08.D_FDCE_I4.1.10'
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath(unsorted_partial_file_name),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath(unsorted_partial_file_name)))
+    context_logger = Mock()
+    sftp_failure_exception_message = 'Simulate SFTP transfer failure'
+
+    def simulate_sftp_failure(*_args, **_kwargs):
+        raise Exception(sftp_failure_exception_message)
+
+    with patch('app.file_sender.sftp.paramiko.SSHClient') as client, \
+            pytest.raises(Exception) as raised_exception:
+        client.return_value.open_sftp.side_effect = simulate_sftp_failure
+
+        # When
+        process_complete_file(complete_file_path, PackCode.D_FDCE_I4, ActionType.CE_IC08, context_logger)
+    if not str(raised_exception.value) == sftp_failure_exception_message:
+        raise raised_exception.value
+
+    # Then
+    # Check encrypted_files_directory is empty
+    assert not any(cleanup_test_files.encrypted_files.iterdir())
+    partial_files_after_attempt = list(cleanup_test_files.partial_files.iterdir())
+
+    assert len(partial_files_after_attempt) == 1
+
+    # Double check the name of the sorted file has not changed (no extra .sorted on the end)
+    assert partial_files_after_attempt[0].name == unsorted_partial_file_name + '.sorted'
 
 
 def test_check_partial_files_processes_complete_file(cleanup_test_files):
@@ -277,7 +350,6 @@ def test_write_to_gcp_bucket():
 
 
 def test_gcp_bucket_ready_value_not_set():
-
     with patch('app.file_sender.storage') as google_storage:
         check_gcp_bucket_ready()
 
