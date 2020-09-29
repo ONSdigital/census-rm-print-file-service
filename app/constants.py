@@ -352,7 +352,7 @@ class PrintTemplate:
 
 
 class PrintFileSorting:
-    SORTING_KEY = ['fieldOfficerId', 'organisationName']
+    SORTING_KEY = ['fieldOfficerId', 'postcode']
     PACKCODES_TO_SORT = {PackCode.D_CE1A_ICLCR1, PackCode.D_CE1A_ICLCR2B, PackCode.D_ICA_ICLR1, PackCode.D_ICA_ICLR2B,
                          PackCode.D_FDCE_I1, PackCode.D_FDCE_I2, PackCode.D_FDCE_I4, PackCode.D_CE4A_ICLR4,
                          PackCode.D_CE4A_ICLS4, PackCode.D_FDCE_H1, PackCode.D_FDCE_H2}
