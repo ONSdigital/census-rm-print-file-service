@@ -2,13 +2,17 @@ version: '3'
 services:
   rabbitmq:
     container_name: dev-print-file-service-rabbitmq
-    image: rabbitmq:3.6.10-management
+    image: rabbitmq:3.8-management
     ports:
       - "35672:5672"
       - "49672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmquser
+      - RABBITMQ_DEFAULT_PASS=rmqp455w0rd
+      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf
     volumes:
-      - ./test/resources/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
-      - ./test/resources/definitions.json:/opt/definitions.json:ro
+      - ./test/resources/definitions.json:/opt/definitions.json
+      - ./test/resources/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
 
   sftp:
     container_name: dev-print-file-service-sftp
@@ -27,8 +31,8 @@ services:
       - RABBIT_HOST=dev-print-file-service-rabbitmq
       - RABBIT_PORT=5672
       - RABBIT_VIRTUALHOST=/
-      - RABBIT_USERNAME=guest
-      - RABBIT_PASSWORD=guest
+      - RABBIT_USERNAME=rmquser
+      - RABBIT_PASSWORD=rmqp455w0rd
       - RABBIT_QUEUE=Action.Printer
       - READINESS_FILE_PATH=/tmp/ready
       - SFTP_HOST=dev-print-file-service-sftp

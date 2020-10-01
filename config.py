@@ -71,8 +71,8 @@ class Config:
 class DevConfig(Config):
     RABBIT_HOST = os.getenv('RABBIT_HOST', 'localhost')
     RABBIT_PORT = os.getenv('RABBIT_PORT', '6672')
-    RABBIT_USERNAME = os.getenv('RABBIT_USERNAME', 'guest')
-    RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD', 'guest')
+    RABBIT_USERNAME = os.getenv('RABBIT_USERNAME', 'rmquser')
+    RABBIT_PASSWORD = os.getenv('RABBIT_PASSWORD', 'rmqp455w0rd')
 
     FILE_POLLING_DELAY_SECONDS = int(os.getenv('FILE_POLLING_DELAY_SECONDS', 1))
 
