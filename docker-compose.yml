@@ -8,7 +8,7 @@ services:
       - "49672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=rmquser
-      - RABBITMQ_DEFAULT_PASS=rmqp455w0rd
+      - RABBITMQ_DEFAULT_PASS=qpassword
       - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf
     volumes:
       - ./test/resources/definitions.json:/opt/definitions.json
@@ -32,7 +32,7 @@ services:
       - RABBIT_PORT=5672
       - RABBIT_VIRTUALHOST=/
       - RABBIT_USERNAME=rmquser
-      - RABBIT_PASSWORD=rmqp455w0rd
+      - RABBIT_PASSWORD=qpassword
       - RABBIT_QUEUE=Action.Printer
       - READINESS_FILE_PATH=/tmp/ready
       - SFTP_HOST=dev-print-file-service-sftp
