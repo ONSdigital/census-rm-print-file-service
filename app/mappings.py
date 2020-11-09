@@ -33,6 +33,11 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_RL_3RL1: 'R3 - England   Third reminder letter going to anyone except those getting RP1/2/3',
     PackCode.P_RL_3RL2B: 'R3 - Wales   Third reminder letter going to anyone except those getting RP1/2/3',
 
+    PackCode.P_RD_RNP41: 'RDR1 - England   Response-driven reminder 1 going to worst performing areas',
+    PackCode.P_RD_RNP42B: 'RDR1 - Wales   Response-driven reminder 1 going to worst performing areas',
+    PackCode.P_RD_RNP51: 'RDR2 - England   Response-driven reminder 2 going to worst performing areas',
+    PackCode.P_RD_RNP52B: 'RDR2 - Wales   Response-driven reminder 2 going to worst performing areas',
+
     PackCode.P_RL_1RL1A: 'RU1 England- First reminder going to those who have launched EQ',
     PackCode.P_RL_1RL2BA: 'RU1 Wales- First reminder going to those who have launched EQ',
     PackCode.P_RL_2RL1A: 'RU2 England- First reminder going to those who have launched EQ',
@@ -212,6 +217,11 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_RL_2RL4: Dataset.PPD1_2,
     PackCode.P_RL_3RL1: Dataset.PPD1_2,
     PackCode.P_RL_3RL2B: Dataset.PPD1_2,
+
+    PackCode.P_RD_RNP41: Dataset.PPD1_2,
+    PackCode.P_RD_RNP42B: Dataset.PPD1_2,
+    PackCode.P_RD_RNP51: Dataset.PPD1_2,
+    PackCode.P_RD_RNP52B: Dataset.PPD1_2,
 
     PackCode.P_RL_1RL1B: Dataset.PPD1_2,
     PackCode.P_RL_1RL2BB: Dataset.PPD1_2,
@@ -400,6 +410,11 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_RL_2RL2B: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_3RL1: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_3RL2B: PrintTemplate.PPO_LETTER_TEMPLATE,
+
+    ActionType.P_RD_RNP41: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_RNP42B: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_RNP51: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_RD_RNP52B: PrintTemplate.PPO_LETTER_TEMPLATE,
 
     ActionType.P_RL_1RL1B: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_RL_1RL2BB: PrintTemplate.PPO_LETTER_TEMPLATE,
