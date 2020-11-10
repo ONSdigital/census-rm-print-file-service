@@ -2,7 +2,8 @@ install:
 	pipenv install --dev
 
 check:
-	PIPENV_PYUP_API_KEY="" pipenv check
+	# TODO: explicity ignore (unused) cryptography package warning for now
+	PIPENV_PYUP_API_KEY="" pipenv check -i 38932
 
 lint:
 	pipenv run flake8
