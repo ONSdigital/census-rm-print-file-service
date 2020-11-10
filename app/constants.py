@@ -94,6 +94,20 @@ class ActionType(Enum):
     # Information leaflet
     P_ER_IL = 'P_ER_IL'
 
+    # RERUN IC TYPES
+    ICHHQE_RERUN = 'ICHHQE_RERUN'
+    ICHHQW_RERUN = 'ICHHQW_RERUN'
+    ICHHQN_RERUN = 'ICHHQN_RERUN'
+    ICL1E_RERUN = 'ICL1E_RERUN'
+    ICL2W_RERUN = 'ICL2W_RERUN'
+    ICL4N_RERUN = 'ICL4N_RERUN'
+    CE1_IC01_RERUN = 'CE1_IC01_RERUN'
+    CE1_IC02_RERUN = 'CE1_IC02_RERUN'
+    SPG_IC11_RERUN = 'SPG_IC11_RERUN'
+    SPG_IC12_RERUN = 'SPG_IC12_RERUN'
+    SPG_IC13_RERUN = 'SPG_IC13_RERUN'
+    SPG_IC14_RERUN = 'SPG_IC14_RERUN'
+
 
 class PackCode(Enum):
     # Initial contact letters
