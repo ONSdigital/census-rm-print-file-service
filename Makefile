@@ -2,7 +2,7 @@ install:
 	pipenv install --dev
 
 check:
-	# TODO: 38932 - Explicitly ignore (unused) cryptography package warning for now
+	# TODO: 38932 - Explicitly ignore RSA decryption warning (unused by this service)
 	PIPENV_PYUP_API_KEY="" pipenv check -i 38932
 
 lint:
