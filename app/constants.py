@@ -75,6 +75,12 @@ class ActionType(Enum):
     P_QU_H2 = 'P_QU_H2'
     P_QU_H4 = 'P_QU_H4'
 
+    # Response-driven reminders (by LSOA)
+    P_RD_RNP41 = 'P_RD_RNP41'
+    P_RD_RNP42B = 'P_RD_RNP42B'
+    P_RD_RNP51 = 'P_RD_RNP51'
+    P_RD_RNP52B = 'P_RD_RNP52B'
+
     # Response driven reminders, for RH launched surveys
     P_RL_1RL1A = 'P_RL_1RL1A'
     P_RL_1RL2BA = 'P_RL_1RL2BA'
@@ -149,6 +155,12 @@ class PackCode(Enum):
     P_QU_H1 = "P_QU_H1"
     P_QU_H2 = "P_QU_H2"
     P_QU_H4 = "P_QU_H4"
+
+    # Response-driven reminders (by LSOA)
+    P_RD_RNP41 = 'P_RD_RNP41'
+    P_RD_RNP42B = 'P_RD_RNP42B'
+    P_RD_RNP51 = 'P_RD_RNP51'
+    P_RD_RNP52B = 'P_RD_RNP52B'
 
     # On request questionnaire fulfilments
     P_OR_H1 = 'P_OR_H1'
