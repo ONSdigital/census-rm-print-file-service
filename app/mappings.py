@@ -183,7 +183,10 @@ PACK_CODE_TO_DESCRIPTION = {
     PackCode.P_UAC_UACIPA4: 'Individual Unique Access Code for Northern Ireland via paper - Request from EQ',
 
     PackCode.P_UAC_UACCEP1: 'UAC provided to Communal Establishment manager in England via paper',
-    PackCode.P_UAC_UACCEP2B: 'UAC provided to Communal Establishment manager in Wales via paper (Bilingual)'
+    PackCode.P_UAC_UACCEP2B: 'UAC provided to Communal Establishment manager in Wales via paper (Bilingual)',
+
+    PackCode.P_NC_NCLTA1: 'Non Compliance Warning Letter 1 England',
+    PackCode.P_NC_NCLTA2B: 'Non Compliance Warning Letter 1 Wales'
 }
 
 PACK_CODE_TO_DATASET = {
@@ -364,6 +367,9 @@ PACK_CODE_TO_DATASET = {
     PackCode.P_UAC_UACIPA4: Dataset.PPD1_3,
     PackCode.P_UAC_UACCEP1: Dataset.PPD1_3,
     PackCode.P_UAC_UACCEP2B: Dataset.PPD1_3,
+
+    PackCode.P_NC_NCLTA1: Dataset.PPD1_8,
+    PackCode.P_NC_NCLTA2B: Dataset.PPD1_8,
 }
 
 DATASET_TO_SUPPLIER = {
@@ -451,6 +457,9 @@ ACTION_TYPE_TO_PRINT_TEMPLATE = {
     ActionType.P_UAC_IX: PrintTemplate.PPO_LETTER_TEMPLATE,
     ActionType.P_OR_HX: PrintTemplate.QM_QUESTIONNAIRE_TEMPLATE,
     ActionType.P_UAC_CX: PrintTemplate.PPO_LETTER_TEMPLATE,
+
+    ActionType.P_NC_NCLTA1: PrintTemplate.PPO_LETTER_TEMPLATE,
+    ActionType.P_NC_NCLTA2B: PrintTemplate.PPO_LETTER_TEMPLATE,
 }
 
 SUPPLIER_TO_PRINT_TEMPLATE = {
