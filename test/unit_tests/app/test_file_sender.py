@@ -23,12 +23,13 @@ def test_copy_files_to_sftp():
     test_files = [Path('test1'), Path('test2'), Path('test3')]
     os.environ['SFTP_DIRECTORY'] = 'test_path'
     mock_storage_client = Mock()
+    context_logger = Mock()
 
     # When
     with patch('app.file_sender.sftp.paramiko.SSHClient') as client:
         client.return_value.open_sftp.return_value = mock_storage_client  # mock the sftp client connection
         mock_storage_client.stat.return_value.st_mode = paramiko.sftp_client.stat.S_IFDIR  # mock directory exists
-        copy_files_to_sftp(test_files, 'testdir')
+        copy_files_to_sftp(test_files, 'testdir', context_logger)
 
     mock_put_file = mock_storage_client.put
 
@@ -331,6 +332,7 @@ def test_write_to_gcp_bucket():
     test_manifest_file = Path('test2')
     mock_storage_client = Mock()
     mock_bucket = Mock()
+    context_logger = Mock()
 
     # When
     with patch('app.file_sender.storage') as google_storage, \
@@ -339,7 +341,7 @@ def test_write_to_gcp_bucket():
         google_storage.Client.return_value = mock_storage_client  # mock the cloud client
         mock_storage_client.get_bucket.return_value = mock_bucket
 
-        upload_files_to_bucket(test_printfile, test_manifest_file)
+        upload_files_to_bucket(test_printfile, test_manifest_file, context_logger)
 
     mock_write_file = mock_bucket.blob
 
