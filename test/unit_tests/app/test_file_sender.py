@@ -318,13 +318,13 @@ def test_split_file_too_small(cleanup_test_files):
 def test_failing_write_to_gcp_bucket_is_handled():
     # When
     with patch('app.file_sender.storage.Client') as bucket_client:
+        # Simulate an error from the GCS storage client
         bucket_client.side_effect = exceptions.GoogleCloudError("bucket doesn't exist")
 
         try:
-            write_file_to_bucket(None)
+            write_file_to_bucket(RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'))
         except Exception:
             assert False, "Exception msgs from writing to GCP bucket should be handled"
-
 
 def test_write_to_gcp_bucket():
     # Given
@@ -380,4 +380,4 @@ def test_failing_check_of_gcp_bucket_is_handled():
         try:
             check_gcp_bucket_ready()
         except Exception:
-            assert False, "Exception msgs from writing to GCP bucket should be handled"
+            assert False, "Exception msgs when checking GCP bucket should be handled"

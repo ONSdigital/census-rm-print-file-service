@@ -200,26 +200,29 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory, context_l
             sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
 
         context_logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
-                            sftp_directory=sftp_client.sftp_directory)
+                            sftp_directory=sftp_client.sftp_directory,
+                            file_names=[str(file_path.name) for file_path in file_paths])
 
 
-def upload_files_to_bucket(manifest_file, encrypted_print_file, context_logger):
+def upload_files_to_bucket(manifest_file: Path, encrypted_print_file: Path, context_logger):
     if not Config.SENT_PRINT_FILE_BUCKET:
         context_logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
         return
 
-    context_logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET)
+    context_logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET,
+                        file_name=encrypted_print_file.name)
 
     write_file_to_bucket(manifest_file)
     write_file_to_bucket(encrypted_print_file)
 
 
-def write_file_to_bucket(file_path):
+def write_file_to_bucket(file_path: Path):
     try:
         bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
     except Exception:
-        logger.exception(f'File upload to GCS bucket failed {Config.SENT_PRINT_FILE_BUCKET}')
+        logger.exception('File upload to GCS bucket failed', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET,
+                         file_name=file_path.name)
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):
