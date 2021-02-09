@@ -326,6 +326,7 @@ def test_failing_write_to_gcp_bucket_is_handled():
         except Exception:
             assert False, "Exception msgs from writing to GCP bucket should be handled"
 
+
 def test_write_to_gcp_bucket():
     # Given
     test_printfile = Path('test1')
