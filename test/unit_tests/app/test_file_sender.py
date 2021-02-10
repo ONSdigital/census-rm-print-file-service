@@ -23,12 +23,13 @@ def test_copy_files_to_sftp():
     test_files = [Path('test1'), Path('test2'), Path('test3')]
     os.environ['SFTP_DIRECTORY'] = 'test_path'
     mock_storage_client = Mock()
+    context_logger = Mock()
 
     # When
     with patch('app.file_sender.sftp.paramiko.SSHClient') as client:
         client.return_value.open_sftp.return_value = mock_storage_client  # mock the sftp client connection
         mock_storage_client.stat.return_value.st_mode = paramiko.sftp_client.stat.S_IFDIR  # mock directory exists
-        copy_files_to_sftp(test_files, 'testdir')
+        copy_files_to_sftp(test_files, 'testdir', context_logger)
 
     mock_put_file = mock_storage_client.put
 
@@ -317,10 +318,11 @@ def test_split_file_too_small(cleanup_test_files):
 def test_failing_write_to_gcp_bucket_is_handled():
     # When
     with patch('app.file_sender.storage.Client') as bucket_client:
+        # Simulate an error from the GCS storage client
         bucket_client.side_effect = exceptions.GoogleCloudError("bucket doesn't exist")
 
         try:
-            write_file_to_bucket(None)
+            write_file_to_bucket(RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'))
         except Exception:
             assert False, "Exception msgs from writing to GCP bucket should be handled"
 
@@ -331,6 +333,7 @@ def test_write_to_gcp_bucket():
     test_manifest_file = Path('test2')
     mock_storage_client = Mock()
     mock_bucket = Mock()
+    context_logger = Mock()
 
     # When
     with patch('app.file_sender.storage') as google_storage, \
@@ -339,7 +342,7 @@ def test_write_to_gcp_bucket():
         google_storage.Client.return_value = mock_storage_client  # mock the cloud client
         mock_storage_client.get_bucket.return_value = mock_bucket
 
-        upload_files_to_bucket(test_printfile, test_manifest_file)
+        upload_files_to_bucket(test_printfile, test_manifest_file, context_logger)
 
     mock_write_file = mock_bucket.blob
 
@@ -378,4 +381,4 @@ def test_failing_check_of_gcp_bucket_is_handled():
         try:
             check_gcp_bucket_ready()
         except Exception:
-            assert False, "Exception msgs from writing to GCP bucket should be handled"
+            assert False, "Exception msgs when checking GCP bucket should be handled"

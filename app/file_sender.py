@@ -33,7 +33,7 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, acti
     context_logger.info('Sending files to SFTP', file_paths=list(map(str, temporary_files_paths)))
 
     try:
-        copy_files_to_sftp(temporary_files_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier])
+        copy_files_to_sftp(temporary_files_paths, SUPPLIER_TO_SFTP_DIRECTORY[supplier], context_logger)
     except Exception as ex:
         context_logger.error('Failed to send files to SFTP', file_paths=list(map(str, temporary_files_paths)))
         context_logger.warn('Deleting failed encrypted and manifest print files',
@@ -45,7 +45,7 @@ def process_complete_file(complete_partial_file: Path, pack_code: PackCode, acti
     context_logger.info('Deleting partial files', file_paths=list(map(str, [complete_partial_file])))
     delete_local_files([complete_partial_file])
 
-    upload_files_to_bucket(manifest_file, encrypted_print_file)
+    upload_files_to_bucket(manifest_file, encrypted_print_file, context_logger)
 
     context_logger.info('Deleting temporary files', file_paths=list(map(str, temporary_files_paths)))
     delete_local_files(temporary_files_paths)
@@ -193,33 +193,36 @@ def check_gcp_bucket_ready():
     logger.info('Successfully got print file bucket', bucket_name=Config.SENT_PRINT_FILE_BUCKET)
 
 
-def copy_files_to_sftp(file_paths: Collection[Path], remote_directory):
+def copy_files_to_sftp(file_paths: Collection[Path], remote_directory, context_logger):
     with sftp.SftpUtility(remote_directory) as sftp_client:
-        logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
+        context_logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
         for file_path in file_paths:
             sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
 
-        logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
-                    sftp_directory=sftp_client.sftp_directory)
+        context_logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
+                            sftp_directory=sftp_client.sftp_directory,
+                            file_names=[str(file_path.name) for file_path in file_paths])
 
 
-def upload_files_to_bucket(manifest_file, encrypted_print_file):
+def upload_files_to_bucket(manifest_file: Path, encrypted_print_file: Path, context_logger):
     if not Config.SENT_PRINT_FILE_BUCKET:
-        logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
+        context_logger.warn('SENT_PRINT_FILE_BUCKET set to empty, skipping uploading files to GCP')
         return
 
-    logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET)
+    context_logger.info('Copying files to GCP Bucket', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET,
+                        file_name=encrypted_print_file.name)
 
     write_file_to_bucket(manifest_file)
     write_file_to_bucket(encrypted_print_file)
 
 
-def write_file_to_bucket(file_path):
+def write_file_to_bucket(file_path: Path):
     try:
         bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
         bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
     except Exception:
-        logger.exception(f'File upload to GCS bucket failed {Config.SENT_PRINT_FILE_BUCKET}')
+        logger.exception('File upload to GCS bucket failed', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET,
+                         file_name=file_path.name)
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):
