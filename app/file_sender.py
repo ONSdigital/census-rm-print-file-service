@@ -5,6 +5,7 @@ from pathlib import Path
 from time import sleep
 from typing import Collection, Iterable
 
+import tenacity
 from google.cloud import storage
 from structlog import wrap_logger
 
@@ -197,11 +198,25 @@ def copy_files_to_sftp(file_paths: Collection[Path], remote_directory, context_l
     with sftp.SftpUtility(remote_directory) as sftp_client:
         context_logger.info('Copying files to SFTP remote', sftp_directory=sftp_client.sftp_directory)
         for file_path in file_paths:
-            sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
+            try:
+                put_file_on_sftp_retry(sftp_client, file_path, context_logger)
+            except Exception:
+                context_logger.exception('SFTP upload failed, exhausted retry attempts')
+                raise
 
         context_logger.info(f'All {len(file_paths)} files successfully written to SFTP remote',
                             sftp_directory=sftp_client.sftp_directory,
                             file_names=[str(file_path.name) for file_path in file_paths])
+
+
+@tenacity.retry(wait=tenacity.wait_exponential(1, min=1, max=10),
+                stop=tenacity.stop_after_attempt(5))
+def put_file_on_sftp_retry(sftp_client, file_path, context_logger):
+    try:
+        sftp_client.put_file(local_path=str(file_path), filename=file_path.name)
+    except Exception:
+        context_logger.exception('Exception when attempting to upload file to SFTP')
+        raise
 
 
 def upload_files_to_bucket(manifest_file: Path, encrypted_print_file: Path, context_logger):
@@ -218,11 +233,18 @@ def upload_files_to_bucket(manifest_file: Path, encrypted_print_file: Path, cont
 
 def write_file_to_bucket(file_path: Path):
     try:
-        bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
-        bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
-    except Exception:
+        write_file_to_bucket_retry(file_path)
+    except tenacity.RetryError:
+        # If retries are exhausted we allow the GCS upload to fail
         logger.exception('File upload to GCS bucket failed', sent_print_files_bucket=Config.SENT_PRINT_FILE_BUCKET,
                          file_name=file_path.name)
+
+
+@tenacity.retry(wait=tenacity.wait_exponential(1, min=1, max=10),
+                stop=(tenacity.stop_after_attempt(5) | tenacity.stop_after_delay(30)))
+def write_file_to_bucket_retry(file_path: Path):
+    bucket = storage.Client().get_bucket(Config.SENT_PRINT_FILE_BUCKET)
+    bucket.blob(file_path.name).upload_from_filename(filename=str(file_path))
 
 
 def check_partial_has_no_duplicates(partial_file_path: Path, pack_code: PackCode, context_logger):

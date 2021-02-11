@@ -8,11 +8,13 @@ from unittest.mock import Mock, patch, call
 import paramiko
 import pytest
 from google.cloud import exceptions
+from tenacity import wait_none, RetryError
 
 from app.constants import PackCode, ActionType
 from app.file_sender import copy_files_to_sftp, process_complete_file, \
     check_partial_has_no_duplicates, quarantine_partial_file, check_partial_files, split_partial_file, \
-    get_metadata_from_partial_file_name, write_file_to_bucket, upload_files_to_bucket, check_gcp_bucket_ready
+    get_metadata_from_partial_file_name, upload_files_to_bucket, check_gcp_bucket_ready, \
+    write_file_to_bucket_retry, write_file_to_bucket, put_file_on_sftp_retry
 from app.manifest_file_builder import generate_manifest_file
 from config import TestConfig
 from test.unit_tests import RESOURCE_FILE_PATH
@@ -157,19 +159,77 @@ def test_quarantine_partial_file(cleanup_test_files):
     assert expected_destination.read_text() == partial_print_file_text
 
 
-def test_failed_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
+def test_put_file_on_sftp_retry():
+    # Given
+    # Turn off retry waits
+    put_file_on_sftp_retry.retry.wait = wait_none()
+    context_logger = Mock()
+
+    mock_sftp_client = Mock()
+    # Raise exception on the first call then succeed on the next
+    mock_sftp_client.put_file.side_effect = [Exception('Simulate SFTP transfer failure'), Mock()]
+
+    # When
+    put_file_on_sftp_retry(mock_sftp_client, RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'), context_logger)
+
+    # Then
+    # Check it was retried
+    assert mock_sftp_client.put_file.call_count == 2
+
+
+def test_put_file_on_sftp_retry_finite_attempts():
+    # Given
+    # Turn off retry waits
+    put_file_on_sftp_retry.retry.wait = wait_none()
+    context_logger = Mock()
+
+    mock_sftp_client = Mock()
+    # Raise exception on all calls
+    mock_sftp_client.put_file.side_effect = Exception('Simulate SFTP transfer failure')
+
+    # When, then raises
+    with pytest.raises(RetryError):
+        put_file_on_sftp_retry(mock_sftp_client, RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'), context_logger)
+
+
+def test_sftp_transfer_failure_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
+    # Given
+    # Turn off retry waits
+    put_file_on_sftp_retry.retry.wait = wait_none()
+
+    complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
+                                              TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
+    context_logger = Mock()
+    with patch('app.file_sender.sftp') as mock_sftp, \
+            pytest.raises(Exception) as raised_exception:
+        mock_sftp.SftpUtility.return_value.__enter__.return_value.put_file.side_effect = Exception(
+            'Simulate SFTP transfer failure')
+
+        # When
+        process_complete_file(complete_file_path, PackCode.P_IC_ICL1, ActionType.ICL1E, context_logger)
+
+    # Then
+    # The exception should be a RetryError from exhausting retry attempts
+    if not raised_exception.type == RetryError:
+        raise raised_exception
+
+    # Check encrypted_files_directory is empty
+    assert not any(cleanup_test_files.encrypted_files.iterdir())
+
+    # Check complete partial file is still there
+    assert complete_file_path.exists()
+
+
+def test_sftp_connection_failure_encrypted_files_and_manifests_are_deleted(cleanup_test_files):
     # Given
     complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath('ICL1E.P_IC_ICL1.1.1'),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath('ICL1E.P_IC_ICL1.1.1')))
     context_logger = Mock()
-    sftp_failure_exception_message = 'Simulate SFTP transfer failure'
-
-    def simulate_sftp_failure(*_args, **_kwargs):
-        raise Exception(sftp_failure_exception_message)
+    sftp_failure_exception_message = 'Simulate SFTP initial connection failure'
 
     with patch('app.file_sender.sftp.paramiko.SSHClient') as client, \
             pytest.raises(Exception) as raised_exception:
-        client.return_value.open_sftp.side_effect = simulate_sftp_failure
+        client.return_value.open_sftp.side_effect = Exception(sftp_failure_exception_message)
 
         # When
         process_complete_file(complete_file_path, PackCode.P_IC_ICL1, ActionType.ICL1E, context_logger)
@@ -198,14 +258,11 @@ def test_failed_uploads_of_sorted_file_does_not_break_name(cleanup_test_files):
     complete_file_path = Path(shutil.copyfile(RESOURCE_FILE_PATH.joinpath(sorted_partial_file_name),
                                               TestConfig.PARTIAL_FILES_DIRECTORY.joinpath(sorted_partial_file_name)))
     context_logger = Mock()
-    sftp_failure_exception_message = 'Simulate SFTP transfer failure'
-
-    def simulate_sftp_failure(*_args, **_kwargs):
-        raise Exception(sftp_failure_exception_message)
+    sftp_failure_exception_message = 'Simulate SFTP initial connection failure'
 
     with patch('app.file_sender.sftp.paramiko.SSHClient') as client, \
             pytest.raises(Exception) as raised_exception:
-        client.return_value.open_sftp.side_effect = simulate_sftp_failure
+        client.return_value.open_sftp.side_effect = Exception(sftp_failure_exception_message)
 
         # When
         process_complete_file(complete_file_path, PackCode.D_FDCE_I4, ActionType.CE_IC08, context_logger)
@@ -236,12 +293,9 @@ def test_failed_uploads_of_sorted_file_keeps_sorting_progress(cleanup_test_files
     context_logger = Mock()
     sftp_failure_exception_message = 'Simulate SFTP transfer failure'
 
-    def simulate_sftp_failure(*_args, **_kwargs):
-        raise Exception(sftp_failure_exception_message)
-
     with patch('app.file_sender.sftp.paramiko.SSHClient') as client, \
             pytest.raises(Exception) as raised_exception:
-        client.return_value.open_sftp.side_effect = simulate_sftp_failure
+        client.return_value.open_sftp.side_effect = Exception(sftp_failure_exception_message)
 
         # When
         process_complete_file(complete_file_path, PackCode.D_FDCE_I4, ActionType.CE_IC08, context_logger)
@@ -315,16 +369,58 @@ def test_split_file_too_small(cleanup_test_files):
     assert str(e.value) == 'Cannot split file with less than 2 rows'
 
 
-def test_failing_write_to_gcp_bucket_is_handled():
+def test_write_to_gcp_bucket_is_retried():
+    # Given
+    # Turn off the retry wait for test
+    write_file_to_bucket_retry.retry.wait = wait_none()
+
     # When
     with patch('app.file_sender.storage.Client') as bucket_client:
-        # Simulate an error from the GCS storage client
-        bucket_client.side_effect = exceptions.GoogleCloudError("bucket doesn't exist")
+        # Simulate an error from the GCS storage client on the first call, then on the next call return a mock
+        # which should allow the function to complete
+        bucket_client.side_effect = [exceptions.GoogleCloudError("Simulate bucket unavailable"), Mock()]
 
         try:
+            write_file_to_bucket_retry(RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'))
+
+        # Then no exception is raised
+        except Exception as e:
+            # If all attempts are exhausted then we allow the GCS upload to fail
+            pytest.fail(f"Exception msgs from writing to GCP bucket should be handled, exception: {repr(e)}")
+
+
+def test_write_to_gcp_bucket_retry_finite_retries():
+    # Given
+    # Turn off the retry wait for test
+    write_file_to_bucket_retry.retry.wait = wait_none()
+
+    # When
+    with patch('app.file_sender.storage.Client') as bucket_client:
+        # Simulate an error from the GCS storage client on all calls
+        bucket_client.side_effect = exceptions.GoogleCloudError("Simulate bucket doesn't exist")
+
+        # Then
+        with pytest.raises(RetryError):
+            # If the retrying function should raise after finite retries are exhausted
+            write_file_to_bucket_retry(RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'))
+
+
+def test_write_to_gcp_bucket_exhausted_retries_does_not_error():
+    # When
+    # Turn off the retry wait for test
+    write_file_to_bucket_retry.retry.wait = wait_none()
+
+    # Patch storage client with a mock to simulate an error
+    with patch('app.file_sender.storage.Client') as bucket_client:
+        # Simulate an error from the GCS storage client on all calls
+        bucket_client.side_effect = exceptions.GoogleCloudError("Simulate bucket doesn't exist")
+        try:
             write_file_to_bucket(RESOURCE_FILE_PATH.joinpath('dummy_print_file.txt'))
-        except Exception:
-            assert False, "Exception msgs from writing to GCP bucket should be handled"
+
+        # Then no exception is raised
+        except Exception as e:
+            pytest.fail(
+                f'Write file to bucket should not raise exceptions if retry attempts are exhausted, raised {repr(e)}')
 
 
 def test_write_to_gcp_bucket():
@@ -380,5 +476,5 @@ def test_failing_check_of_gcp_bucket_is_handled():
 
         try:
             check_gcp_bucket_ready()
-        except Exception:
-            assert False, "Exception msgs when checking GCP bucket should be handled"
+        except Exception as e:
+            pytest.fail(f"Exception msgs when checking GCP bucket should be handled, exception: {repr(e)}")
